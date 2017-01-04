@@ -1,0 +1,206 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		E1FB9A8F1E1DC98A00DEAE0F /* EPUB Actions */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E1FB9A921E1DC98C00DEAE0F /* Build configuration list for PBXAggregateTarget "EPUB Actions" */;
+			buildPhases = (
+			);
+			dependencies = (
+				E12161571E1DCFEC002C6F1F /* PBXTargetDependency */,
+				E121617B1E1DFB5D002C6F1F /* PBXTargetDependency */,
+			);
+			name = "EPUB Actions";
+			productName = "EPUB Actions";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXContainerItemProxy section */
+		E12161561E1DCFEC002C6F1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB9AAF1E1DCA0700DEAE0F /* ImagesToEPUBAction.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FB9A9C1E1DCA0600DEAE0F;
+			remoteInfo = "Images to EPUB";
+		};
+		E12161781E1DD09D002C6F1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E12161741E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E12161621E1DD09B002C6F1F;
+			remoteInfo = ConvertMarkupToEPUBNavigationAction;
+		};
+		E121617A1E1DFB5D002C6F1F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E12161741E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E12161611E1DD09B002C6F1F;
+			remoteInfo = "Convert Markup to EPUB Navigation";
+		};
+		E1FB9AB31E1DCA0B00DEAE0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1FB9AAF1E1DCA0700DEAE0F /* ImagesToEPUBAction.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E1FB9A9D1E1DCA0600DEAE0F;
+			remoteInfo = ImagesToEPUBAction;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E12161741E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ConvertMarkupToEPUBNavigationAction.xcodeproj; path = ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj; sourceTree = "<group>"; };
+		E1FB9AAF1E1DCA0700DEAE0F /* ImagesToEPUBAction.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ImagesToEPUBAction.xcodeproj; path = ImagesToEPUBAction/ImagesToEPUBAction.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		E12161751E1DD09B002C6F1F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E12161791E1DD09D002C6F1F /* ConvertMarkupToEPUBNavigationAction.action */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E1B155A61E1DBC74007D04A5 = {
+			isa = PBXGroup;
+			children = (
+				E1FB9AAF1E1DCA0700DEAE0F /* ImagesToEPUBAction.xcodeproj */,
+				E12161741E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		E1FB9AB01E1DCA0700DEAE0F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E1FB9AB41E1DCA0B00DEAE0F /* ImagesToEPUBAction.action */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		E1B155A71E1DBC75007D04A5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				TargetAttributes = {
+					E1FB9A8F1E1DC98A00DEAE0F = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E1B155AA1E1DBC75007D04A5 /* Build configuration list for PBXProject "EPUB Actions" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E1B155A61E1DBC74007D04A5;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E12161751E1DD09B002C6F1F /* Products */;
+					ProjectRef = E12161741E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.xcodeproj */;
+				},
+				{
+					ProductGroup = E1FB9AB01E1DCA0700DEAE0F /* Products */;
+					ProjectRef = E1FB9AAF1E1DCA0700DEAE0F /* ImagesToEPUBAction.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E1FB9A8F1E1DC98A00DEAE0F /* EPUB Actions */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E12161791E1DD09D002C6F1F /* ConvertMarkupToEPUBNavigationAction.action */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ConvertMarkupToEPUBNavigationAction.action;
+			remoteRef = E12161781E1DD09D002C6F1F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E1FB9AB41E1DCA0B00DEAE0F /* ImagesToEPUBAction.action */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ImagesToEPUBAction.action;
+			remoteRef = E1FB9AB31E1DCA0B00DEAE0F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXTargetDependency section */
+		E12161571E1DCFEC002C6F1F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Images to EPUB";
+			targetProxy = E12161561E1DCFEC002C6F1F /* PBXContainerItemProxy */;
+		};
+		E121617B1E1DFB5D002C6F1F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Convert Markup to EPUB Navigation";
+			targetProxy = E121617A1E1DFB5D002C6F1F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E1B155AB1E1DBC75007D04A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		E1B155AC1E1DBC75007D04A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		E1FB9A901E1DC98C00DEAE0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E1FB9A911E1DC98C00DEAE0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E1B155AA1E1DBC75007D04A5 /* Build configuration list for PBXProject "EPUB Actions" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1B155AB1E1DBC75007D04A5 /* Debug */,
+				E1B155AC1E1DBC75007D04A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1FB9A921E1DC98C00DEAE0F /* Build configuration list for PBXAggregateTarget "EPUB Actions" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1FB9A901E1DC98C00DEAE0F /* Debug */,
+				E1FB9A911E1DC98C00DEAE0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E1B155A71E1DBC75007D04A5 /* Project object */;
+}

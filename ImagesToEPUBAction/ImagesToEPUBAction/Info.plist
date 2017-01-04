@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMAccepts</key>
+	<dict>
+		<key>Container</key>
+		<string>List</string>
+		<key>Optional</key>
+		<false/>
+		<key>Types</key>
+		<array>
+			<string>com.apple.cocoa.path</string>
+		</array>
+	</dict>
+	<key>AMApplication</key>
+	<string>iBooks</string>
+	<key>AMCanShowSelectedItemsWhenRun</key>
+	<true/>
+	<key>AMCanShowWhenRun</key>
+	<true/>
+	<key>AMCategory</key>
+	<string>AMCategoryUtilities</string>
+	<key>AMDefaultParameters</key>
+	<dict/>
+	<key>AMDescription</key>
+	<dict>
+		<key>AMDInput</key>
+		<string>Image Files</string>
+		<key>AMDRelatedActions</key>
+		<string>com.the-wabe.ConvertMarkupToEPUBNavigationAction</string>
+		<key>AMDResult</key>
+		<string>EPUB document</string>
+		<key>AMDSummary</key>
+		<string>Creates a fixed-layout EPUB document from a set of images, optionally adding navigation markup.</string>
+		<key>AMDWebsite</key>
+		<string>http://www.the-wabe.com/epub-automator/</string>
+	</dict>
+	<key>AMKeywords</key>
+	<array>
+		<string>File</string>
+		<string>Create</string>
+		<string>Make</string>
+		<string>iBooks</string>
+		<string>EPUB</string>
+		<string>Comic</string>
+		<string>Book</string>
+		<string>Images</string>
+		<string>JPEG</string>
+		<string>PNG</string>
+		<string>GIF</string>
+		<string>TIFF</string>
+	</array>
+	<key>AMName</key>
+	<string>Images to EPUB</string>
+	<key>AMProvides</key>
+	<dict>
+		<key>Container</key>
+		<string>List</string>
+		<key>Types</key>
+		<array>
+			<string>com.apple.cocoa.path</string>
+		</array>
+	</dict>
+	<key>AMRequiredResources</key>
+	<array/>
+	<key>AMWarning</key>
+	<dict>
+		<key>Level</key>
+		<integer>0</integer>
+	</dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2017 Rob Menke. All rights reserved.</string>
+	<key>NSPrincipalClass</key>
+	<string>ImagesToEPUBAction</string>
+</dict>
+</plist>
