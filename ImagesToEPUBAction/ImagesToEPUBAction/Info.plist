@@ -22,7 +22,28 @@
 	<key>AMCategory</key>
 	<string>AMCategoryUtilities</string>
 	<key>AMDefaultParameters</key>
-	<dict/>
+	<dict>
+		<key>outputFolder</key>
+		<string>~/Desktop</string>
+		<key>title</key>
+		<string>Untitled</string>
+		<key>authors</key>
+		<string></string>
+		<key>publicationID</key>
+		<string></string>
+		<key>pageWidth</key>
+		<integer>768</integer>
+		<key>pageHeight</key>
+		<integer>1024</integer>
+		<key>pageMargin</key>
+		<integer>0</integer>
+		<key>disableUpscaling</key>
+		<false/>
+		<key>backgroundColor</key>
+		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEBAYY=</data>
+		<key>doPanelAnalysis</key>
+		<false/>
+	</dict>
 	<key>AMDescription</key>
 	<dict>
 		<key>AMDInput</key>

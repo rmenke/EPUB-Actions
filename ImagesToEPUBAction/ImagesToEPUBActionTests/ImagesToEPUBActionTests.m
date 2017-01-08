@@ -6,12 +6,15 @@
 //  Copyright © 2017 Rob Menke. All rights reserved.
 //
 
+#include "ImagesToEPUBAction.h"
+
 @import XCTest;
 @import Automator.AMBundleAction;
+@import ObjectiveC.runtime;
 
 @interface ImagesToEPUBActionTests : XCTestCase
 
-@property (strong, nonatomic) AMBundleAction *action;
+@property (strong, nonatomic) id action;
 
 @end
 
@@ -35,6 +38,112 @@
     _action = nil;
 
     [super tearDown];
+}
+
+- (void)testLoadParametersFailure {
+    [[_action parameters] removeAllObjects];
+
+    NSLog(@"The following assertion failure is expected:");
+    XCTAssertThrows([_action loadParameters]);
+}
+
+- (void)testLoadParameters {
+    XCTAssertNoThrow([_action loadParameters]);
+
+    NSDictionary<NSString *, id> *parameters = [_action parameters];
+
+    objc_property_t *properties = class_copyPropertyList([_action class], NULL);
+    for (objc_property_t *p = properties; *p; ++p) {
+        NSString *propertyName = @(property_getName(*p));
+        if (parameters[propertyName]) {
+            XCTAssertEqualObjects([_action valueForKey:propertyName], parameters[propertyName]);
+        }
+    }
+    free(properties);
+
+    XCTAssertEqualObjects([_action valueForKey:@"pageColor"], @"#ffffff");
+}
+
+- (void)testLoadParametersWithColor {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.5 alpha:1.0]];
+
+    XCTAssertNoThrow([_action loadParameters]);
+
+    objc_property_t *properties = class_copyPropertyList([_action class], NULL);
+    for (objc_property_t *p = properties; *p; ++p) {
+        NSString *propertyName = @(property_getName(*p));
+        if (parameters[propertyName]) {
+            XCTAssertEqualObjects([_action valueForKey:propertyName], parameters[propertyName]);
+        }
+    }
+    free(properties);
+
+    XCTAssertEqualObjects([_action valueForKey:@"pageColor"], @"#ff7f7f");
+}
+
+- (void)testBadOutputFolder {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"outputFolder"] = @"/foo/bar";
+    parameters[@"title"] = @"baz";
+
+    [_action loadParameters];
+
+    XCTAssertEqualObjects([[_action valueForKey:@"outputURL"] path], @"/foo/bar/baz.epub");
+}
+
+- (void)testCreateWorkingDirectory {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"outputFolder"] = NSTemporaryDirectory();
+    parameters[@"title"] = @"Unit Testing";
+
+    [_action loadParameters];
+
+    NSURL *outputURL = [_action valueForKey:@"outputURL"];
+
+    XCTAssertNil([_action valueForKey:@"workingURL"]);
+
+    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+
+    NSError * __autoreleasing error;
+    XCTAssert([_action createWorkingDirectory:&error], @"failed to create working directory: %@", error);
+
+    NSURL *workingURL = [_action valueForKey:@"workingURL"];
+
+    XCTAssertNotNil(workingURL);
+
+    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL]);
+    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:workingURL error:&error], @"%@", error);
+}
+
+- (void)testCopyWorkingDirectory {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"outputFolder"] = NSTemporaryDirectory();
+    parameters[@"title"] = @"Unit Testing";
+
+    [_action loadParameters];
+
+    NSURL *outputURL = [_action valueForKey:@"outputURL"];
+
+    XCTAssertNil([_action valueForKey:@"workingURL"]);
+
+    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+
+    NSError * __autoreleasing error;
+    XCTAssert([_action createWorkingDirectory:&error], @"failed to create working directory: %@", error);
+
+    NSURL *workingURL = [_action valueForKey:@"workingURL"];
+
+    NSURL *finalURL = [_action copyTemporaryToOutput:&error];
+
+    XCTAssertEqualObjects(finalURL.absoluteString, outputURL.absoluteString);
+
+    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:workingURL error:NULL]);
+    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
 @end

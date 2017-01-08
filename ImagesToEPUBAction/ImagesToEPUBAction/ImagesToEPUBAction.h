@@ -6,11 +6,27 @@
 //  Copyright © 2017 Rob Menke. All rights reserved.
 //
 
-#import <Automator/AMBundleAction.h>
+@import Automator.AMBundleAction;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ImagesToEPUBAction : AMBundleAction
+
+@property (nonatomic) NSString *outputFolder;
+@property (nonatomic) NSString *title;
+@property (nonatomic) NSString *authors;
+@property (nonatomic) NSString *publicationID;
+@property (nonatomic) NSUInteger pageWidth, pageHeight, pageMargin;
+@property (nonatomic) BOOL disableUpscaling;
+@property (nonatomic) NSData *backgroundColor;
+@property (nonatomic) BOOL doPanelAnalysis;
+
+@property (nonatomic, readonly) NSString *pageColor;
+@property (nonatomic, readonly) NSURL *outputURL;
+
+- (void)loadParameters;
+- (BOOL)createWorkingDirectory:(NSError **)error;
+- (nullable NSURL *)copyTemporaryToOutput:(NSError **)error;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 
