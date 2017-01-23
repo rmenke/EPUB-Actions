@@ -213,4 +213,25 @@
     XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
+/*!
+ * This is not a proper test, but more of an exploration into binding progress objects to AMBundleAction instances.
+ * Consider it a spike, as it demonstrates the approach used within @c runWithInput:error: in the action.
+ */
+- (void)testProgressMonitor {
+    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
+
+    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.00)];
+    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.25)];
+    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.50)];
+    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(1.00)];
+
+    [_action bind:@"progressValue" toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+
+    progress.completedUnitCount += 25;
+    progress.completedUnitCount += 25;
+    progress.completedUnitCount += 50;
+
+    [self waitForExpectationsWithTimeout:0.0 handler:NULL];
+}
+
 @end

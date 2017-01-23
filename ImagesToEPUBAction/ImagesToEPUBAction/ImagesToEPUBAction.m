@@ -9,8 +9,11 @@
 #import "ImagesToEPUBAction.h"
 
 @import AppKit.NSColor;
+@import AppKit.NSKeyValueBinding;
 
 NS_ASSUME_NONNULL_BEGIN
+
+static NSString * const AMProgressValueBinding = @"progressValue";
 
 @interface ImagesToEPUBAction ()
 
@@ -19,6 +22,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @implementation ImagesToEPUBAction
+
+- (void)dealloc {
+    [self unbind:AMProgressValueBinding];
+}
 
 - (void)loadParameters {
     NSDictionary<NSString *, id> *parameters = self.parameters;
@@ -73,7 +80,14 @@ NS_ASSUME_NONNULL_BEGIN
 
     [self loadParameters];
 
-    return nil;
+    if (![self createWorkingDirectory:error]) return nil;
+
+    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
+
+    [self bind:AMProgressValueBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+
+    NSURL *outputURL = [self copyTemporaryToOutput:error];
+    return outputURL ? @[outputURL.path] : nil;
 }
 
 @end
