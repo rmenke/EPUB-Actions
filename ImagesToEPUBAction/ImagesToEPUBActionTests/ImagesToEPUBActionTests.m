@@ -184,4 +184,33 @@
     XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
+- (void)testCreateWorkingDirectoryOddTitle {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"outputFolder"] = NSTemporaryDirectory();
+    parameters[@"title"] = @"The annoying conjuction: And/Or";
+
+    [_action loadParameters];
+
+    NSURL *outputURL = [_action valueForKey:@"outputURL"];
+
+    XCTAssertNotEqualObjects(outputURL.lastPathComponent, @"Or.epub", @"expected slash to be removed from path, but got %@", outputURL.absoluteString);
+
+    XCTAssertNil([_action valueForKey:@"workingURL"]);
+
+    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+
+    NSError * __autoreleasing error;
+    XCTAssert([_action createWorkingDirectory:&error], @"failed to create working directory: %@", error);
+
+    NSURL *workingURL = [_action valueForKey:@"workingURL"];
+
+    NSURL *finalURL = [_action copyTemporaryToOutput:&error];
+
+    XCTAssertEqualObjects(finalURL.absoluteString, outputURL.absoluteString);
+
+    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:workingURL error:NULL]);
+    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
+}
+
 @end

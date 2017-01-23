@@ -51,10 +51,11 @@ NS_ASSUME_NONNULL_BEGIN
         _pageColor = @"#ffffff";
     }
 
-    _outputURL = [NSURL fileURLWithPath:_outputFolder.stringByExpandingTildeInPath isDirectory:YES];
-    _outputURL = [NSURL fileURLWithPath:[_title stringByAppendingPathExtension:@"epub"] isDirectory:YES relativeToURL:_outputURL];
+    NSURL *folderURL   = [NSURL fileURLWithPath:_outputFolder.stringByExpandingTildeInPath isDirectory:YES];
+    NSString *filename = [[_title stringByReplacingOccurrencesOfString:@"/" withString:@"-"] stringByAppendingPathExtension:@"epub"];
 
-    _workingURL = nil;
+    _outputURL         = [NSURL fileURLWithPath:filename isDirectory:YES relativeToURL:folderURL];
+    _workingURL        = nil;
 }
 
 - (BOOL)createWorkingDirectory:(NSError **)error {
