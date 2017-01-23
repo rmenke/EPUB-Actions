@@ -67,7 +67,7 @@
 - (void)testLoadParametersWithColor {
     NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
 
-    parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.5 alpha:1.0]];
+    parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0]];
 
     XCTAssertNoThrow([_action loadParameters]);
 
@@ -81,6 +81,44 @@
     free(properties);
 
     XCTAssertEqualObjects([_action valueForKey:@"pageColor"], @"#ff7f7f");
+}
+
+- (void)testLoadParametersWithColorNonRGBA {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]];
+
+    XCTAssertNoThrow([_action loadParameters]);
+
+    objc_property_t *properties = class_copyPropertyList([_action class], NULL);
+    for (objc_property_t *p = properties; *p; ++p) {
+        NSString *propertyName = @(property_getName(*p));
+        if (parameters[propertyName]) {
+            XCTAssertEqualObjects([_action valueForKey:propertyName], parameters[propertyName]);
+        }
+    }
+    free(properties);
+
+    XCTAssertEqualObjects([_action valueForKey:@"pageColor"], @"#7f7f7f");
+}
+
+- (void)testLoadParametersWithColorMissing {
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"backgroundColor"] = nil;
+
+    XCTAssertNoThrow([_action loadParameters]);
+
+    objc_property_t *properties = class_copyPropertyList([_action class], NULL);
+    for (objc_property_t *p = properties; *p; ++p) {
+        NSString *propertyName = @(property_getName(*p));
+        if (parameters[propertyName]) {
+            XCTAssertEqualObjects([_action valueForKey:propertyName], parameters[propertyName]);
+        }
+    }
+    free(properties);
+
+    XCTAssertEqualObjects([_action valueForKey:@"pageColor"], @"#ffffff");
 }
 
 - (void)testBadOutputFolder {

@@ -34,11 +34,16 @@ NS_ASSUME_NONNULL_BEGIN
     NSParameterAssert(_pageWidth  > 2 * _pageMargin);
     NSParameterAssert(_pageHeight > 2 * _pageMargin);
 
-    NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:_backgroundColor];
+    NSColor *backgroundColor = _backgroundColor ? [NSUnarchiver unarchiveObjectWithData:_backgroundColor] : nil;
+
     if (backgroundColor) {
-        const uint8_t r = backgroundColor.redComponent * 255.0;
-        const uint8_t g = backgroundColor.greenComponent * 255.0;
-        const uint8_t b = backgroundColor.blueComponent * 255.0;
+        CGFloat rgba[4];
+
+        [[backgroundColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getComponents:rgba];
+
+        const uint8_t r = rgba[0] * 255.0;
+        const uint8_t g = rgba[1] * 255.0;
+        const uint8_t b = rgba[2] * 255.0;
 
         _pageColor = [NSString stringWithFormat:@"#%02"PRIx8"%02"PRIx8"%02"PRIx8, r, g, b];
     }
@@ -59,8 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable NSURL *)copyTemporaryToOutput:(NSError **)error {
     NSURL * __autoreleasing url;
-    if (![[NSFileManager defaultManager] replaceItemAtURL:_outputURL withItemAtURL:_workingURL backupItemName:NULL options:0 resultingItemURL:&url error:error]) return nil;
-    return url;
+    return [[NSFileManager defaultManager] replaceItemAtURL:_outputURL withItemAtURL:_workingURL backupItemName:NULL options:0 resultingItemURL:&url error:error] ? url : nil;
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
