@@ -25,8 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSURL *outputURL;
 
 - (void)loadParameters;
+
 - (BOOL)createWorkingDirectory:(NSError **)error;
 - (nullable NSURL *)copyTemporaryToOutput:(NSError **)error;
+
+- (nullable NSArray<NSURL *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 

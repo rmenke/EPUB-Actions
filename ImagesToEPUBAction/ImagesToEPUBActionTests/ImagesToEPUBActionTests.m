@@ -234,4 +234,31 @@
     [self waitForExpectationsWithTimeout:0.0 handler:NULL];
 }
 
+- (void)testCopyItems {
+    NSURL *tmpDirectory = [NSURL fileURLWithPath:NSTemporaryDirectory() isDirectory:YES];
+    NSURL *outDirectory = [NSURL fileURLWithPath:NSUUID.UUID.UUIDString isDirectory:YES relativeToURL:tmpDirectory];
+
+    NSError * __autoreleasing error = nil;
+
+    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:outDirectory withIntermediateDirectories:YES attributes:nil error:&error]);
+
+    NSURL *file1 = [NSURL fileURLWithPath:@"img1.png" relativeToURL:tmpDirectory];
+    NSURL *file2 = [NSURL fileURLWithPath:@"img2.jpg" relativeToURL:tmpDirectory];
+    NSURL *file3 = [NSURL fileURLWithPath:@"file3.txt" relativeToURL:tmpDirectory];
+
+    NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path];
+
+    for (NSString *path in paths) {
+        [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
+    }
+
+    XCTAssert(([_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error]), @"%@", error);
+
+    [[NSFileManager defaultManager] removeItemAtURL:outDirectory error:NULL];
+
+    for (NSString *path in paths) {
+        [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+    }
+}
+
 @end

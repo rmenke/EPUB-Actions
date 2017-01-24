@@ -15,6 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSString * const AMProgressValueBinding = @"progressValue";
 
+static inline BOOL typeIsImage(NSString *typeIdentifier) {
+    return UTTypeConformsTo((__bridge CFStringRef)(typeIdentifier), kUTTypeImage);
+}
+
+static inline NSString *extensionForType(NSString *typeIdentifier) {
+    return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)(typeIdentifier), kUTTagClassFilenameExtension));
+}
+
 @interface ImagesToEPUBAction ()
 
 @property (nonatomic) NSURL *workingURL;
@@ -73,6 +81,38 @@ static NSString * const AMProgressValueBinding = @"progressValue";
 - (nullable NSURL *)copyTemporaryToOutput:(NSError **)error {
     NSURL * __autoreleasing url;
     return [[NSFileManager defaultManager] replaceItemAtURL:_outputURL withItemAtURL:_workingURL backupItemName:NULL options:0 resultingItemURL:&url error:error] ? url : nil;
+}
+
+- (nullable NSArray<NSURL *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error {
+    NSFileManager *manager = [NSFileManager defaultManager];
+
+    NSURL *contentURL = [NSURL fileURLWithPath:@"Contents" relativeToURL:directory];
+
+    if (![manager createDirectoryAtURL:contentURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+
+    const NSUInteger count = paths.count;
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
+
+    NSMutableArray<NSURL *> *result = [NSMutableArray arrayWithCapacity:count];
+
+    for (NSString *path in paths) {
+        NSURL *inputURL = [NSURL fileURLWithPath:path];
+
+        NSString * _Nonnull typeIdentifier = nil;
+
+        if (![inputURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return nil;
+
+        if (typeIsImage(typeIdentifier)) {
+            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", result.count + 1, extensionForType(typeIdentifier)] relativeToURL:contentURL];
+            if (![manager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;
+            [result addObject:outputURL];
+        }
+
+        progress.completedUnitCount++;
+    }
+
+    return result;
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
