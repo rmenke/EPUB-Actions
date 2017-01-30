@@ -23,12 +23,6 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
     return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)(typeIdentifier), kUTTagClassFilenameExtension));
 }
 
-@interface ImagesToEPUBAction ()
-
-@property (nonatomic) NSURL *workingURL;
-
-@end
-
 @implementation ImagesToEPUBAction
 
 - (void)dealloc {
@@ -70,20 +64,18 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
     NSString *filename = [[_title stringByReplacingOccurrencesOfString:@"/" withString:@"-"] stringByAppendingPathExtension:@"epub"];
 
     _outputURL         = [NSURL fileURLWithPath:filename isDirectory:YES relativeToURL:folderURL];
-    _workingURL        = nil;
 }
 
-- (BOOL)createWorkingDirectory:(NSError **)error {
-    _workingURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:_outputURL create:YES error:error];
-    return _workingURL != nil;
+- (nullable NSURL *)createWorkingDirectory:(NSError **)error {
+    return [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:_outputURL create:YES error:error];
 }
 
-- (nullable NSURL *)copyTemporaryToOutput:(NSError **)error {
-    NSURL * __autoreleasing url;
-    return [[NSFileManager defaultManager] replaceItemAtURL:_outputURL withItemAtURL:_workingURL backupItemName:NULL options:0 resultingItemURL:&url error:error] ? url : nil;
+- (nullable NSURL *)finalizeWorkingDirectory:(NSURL *)workingURL error:(NSError **)error {
+    NSURL * __autoreleasing outputURL;
+    return [[NSFileManager defaultManager] replaceItemAtURL:_outputURL withItemAtURL:workingURL backupItemName:NULL options:0 resultingItemURL:&outputURL error:error] ? outputURL : nil;
 }
 
-- (nullable NSArray<NSURL *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error {
+- (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
 
     NSURL *contentURL = [NSURL fileURLWithPath:@"Contents" relativeToURL:directory];
@@ -94,19 +86,33 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
 
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
 
-    NSMutableArray<NSURL *> *result = [NSMutableArray arrayWithCapacity:count];
+    NSMutableArray<NSDictionary<NSString *, id> *> *result = [NSMutableArray arrayWithCapacity:count];
+
+    NSDictionary<NSString *, id> *chapter = @{@"title": @""};
 
     for (NSString *path in paths) {
         NSURL *inputURL = [NSURL fileURLWithPath:path];
 
-        NSString * _Nonnull typeIdentifier = nil;
+        NSString * _Nonnull typeIdentifier;
 
         if (![inputURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return nil;
 
         if (typeIsImage(typeIdentifier)) {
-            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", result.count + 1, extensionForType(typeIdentifier)] relativeToURL:contentURL];
+            NSString * _Nonnull pendingChapter = inputURL.URLByDeletingLastPathComponent.lastPathComponent;
+
+            if (![chapter[@"title"] isEqualToString:pendingChapter]) {
+                NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"ch%04lu", (unsigned long)(result.count + 1)] isDirectory:YES relativeToURL:contentURL];
+                chapter = @{@"title":pendingChapter, @"pages":[NSMutableArray array], @"url":url};
+                [result addObject:chapter];
+
+                if (![manager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+            }
+
+            NSAssert(chapter == result.lastObject, @"chapter incorrect");
+
+            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"pages"] count] + 1, extensionForType(typeIdentifier)] relativeToURL:chapter[@"url"]];
             if (![manager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;
-            [result addObject:outputURL];
+            [chapter[@"pages"] addObject:outputURL];
         }
 
         progress.completedUnitCount++;
@@ -120,13 +126,15 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
 
     [self loadParameters];
 
-    if (![self createWorkingDirectory:error]) return nil;
+    NSURL *workingURL = [self createWorkingDirectory:error];
+
+    if (!workingURL) return nil;
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
 
     [self bind:AMProgressValueBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
 
-    NSURL *outputURL = [self copyTemporaryToOutput:error];
+    NSURL *outputURL = [self finalizeWorkingDirectory:workingURL error:error];
     return outputURL ? @[outputURL.path] : nil;
 }
 

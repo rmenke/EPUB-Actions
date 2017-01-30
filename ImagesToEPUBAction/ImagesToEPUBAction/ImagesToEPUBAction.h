@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)loadParameters;
 
-- (BOOL)createWorkingDirectory:(NSError **)error;
-- (nullable NSURL *)copyTemporaryToOutput:(NSError **)error;
+- (nullable NSURL *)createWorkingDirectory:(NSError **)error;
+- (nullable NSURL *)finalizeWorkingDirectory:(NSURL *)url error:(NSError **)error;
 
-- (nullable NSArray<NSURL *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error;
+- (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 
