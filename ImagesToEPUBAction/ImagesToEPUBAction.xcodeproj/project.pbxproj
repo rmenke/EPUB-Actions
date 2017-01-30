@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		E12161831E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */; };
 		E121618A1E1DFD7A002C6F1F /* Images to EPUB.action in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */; };
+		E1B5F5071E3EF8C70025D97B /* image01.png in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5031E3EF8C70025D97B /* image01.png */; };
+		E1B5F5081E3EF8C70025D97B /* image02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5041E3EF8C70025D97B /* image02.jpg */; };
+		E1B5F5091E3EF8C70025D97B /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5051E3EF8C70025D97B /* image03.gif */; };
+		E1B5F50A1E3EF8C70025D97B /* image04.tif in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5061E3EF8C70025D97B /* image04.tif */; };
 		E1FB9AA21E1DCA0600DEAE0F /* ImagesToEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */; };
 		E1FB9AA51E1DCA0700DEAE0F /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9AA31E1DCA0700DEAE0F /* main.xib */; };
 /* End PBXBuildFile section */
@@ -27,6 +31,10 @@
 		E12161801E1DFCD3002C6F1F /* Images to EPUB Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Images to EPUB Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesToEPUBActionTests.m; sourceTree = "<group>"; };
 		E12161841E1DFCD3002C6F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1B5F5031E3EF8C70025D97B /* image01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image01.png; sourceTree = "<group>"; };
+		E1B5F5041E3EF8C70025D97B /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image02.jpg; sourceTree = "<group>"; };
+		E1B5F5051E3EF8C70025D97B /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image03.gif; sourceTree = "<group>"; };
+		E1B5F5061E3EF8C70025D97B /* image04.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = image04.tif; sourceTree = "<group>"; };
 		E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Images to EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB9AA01E1DCA0600DEAE0F /* ImagesToEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesToEPUBAction.h; sourceTree = "<group>"; };
 		E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesToEPUBAction.m; sourceTree = "<group>"; };
@@ -56,6 +64,10 @@
 			isa = PBXGroup;
 			children = (
 				E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */,
+				E1B5F5031E3EF8C70025D97B /* image01.png */,
+				E1B5F5041E3EF8C70025D97B /* image02.jpg */,
+				E1B5F5051E3EF8C70025D97B /* image03.gif */,
+				E1B5F5061E3EF8C70025D97B /* image04.tif */,
 				E12161841E1DFCD3002C6F1F /* Info.plist */,
 			);
 			path = ImagesToEPUBActionTests;
@@ -173,6 +185,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E121618A1E1DFD7A002C6F1F /* Images to EPUB.action in Resources */,
+				E1B5F5071E3EF8C70025D97B /* image01.png in Resources */,
+				E1B5F5081E3EF8C70025D97B /* image02.jpg in Resources */,
+				E1B5F5091E3EF8C70025D97B /* image03.gif in Resources */,
+				E1B5F50A1E3EF8C70025D97B /* image04.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,6 +406,7 @@
 				E12161871E1DFCD3002C6F1F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E1FB9A971E1DCA0600DEAE0F /* Build configuration list for PBXProject "ImagesToEPUBAction" */ = {
 			isa = XCConfigurationList;

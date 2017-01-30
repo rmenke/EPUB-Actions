@@ -16,11 +16,35 @@ NS_ASSUME_NONNULL_BEGIN
 static NSString * const AMProgressValueBinding = @"progressValue";
 
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
-    return UTTypeConformsTo((__bridge CFStringRef)(typeIdentifier), kUTTypeImage);
+    static NSSet<NSString *> *imageTypes;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        imageTypes = [NSSet setWithArray:CFBridgingRelease(CGImageSourceCopyTypeIdentifiers())];
+    });
+
+    return [imageTypes containsObject:typeIdentifier];
 }
 
 static inline NSString *extensionForType(NSString *typeIdentifier) {
     return CFBridgingRelease(UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)(typeIdentifier), kUTTagClassFilenameExtension));
+}
+
+static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *typeIdentifier) {
+    static dispatch_once_t onceToken;
+    static NSDictionary<NSString *, NSSet<NSString *> *> *extensions;
+    dispatch_once(&onceToken, ^{
+        NSArray<NSString *> *imageTypes = CFBridgingRelease(CGImageSourceCopyTypeIdentifiers());
+        NSMutableArray<NSSet<NSString *> *> *extensionSets = [NSMutableArray arrayWithCapacity:imageTypes.count];
+
+        for (NSString *imageType in imageTypes) {
+            NSArray<NSString *> *extensionsForType = CFBridgingRelease(UTTypeCopyAllTagsWithClass((__bridge CFStringRef)(imageType), kUTTagClassFilenameExtension));
+            [extensionSets addObject:[NSSet setWithArray:extensionsForType]];
+        }
+
+        extensions = [NSDictionary dictionaryWithObjects:extensionSets forKeys:imageTypes];
+    });
+
+    return [extensions[typeIdentifier] containsObject:extension];
 }
 
 @implementation ImagesToEPUBAction
@@ -102,17 +126,20 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
 
             if (![chapter[@"title"] isEqualToString:pendingChapter]) {
                 NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"ch%04lu", (unsigned long)(result.count + 1)] isDirectory:YES relativeToURL:contentURL];
-                chapter = @{@"title":pendingChapter, @"pages":[NSMutableArray array], @"url":url};
+                chapter = @{@"title":pendingChapter, @"images":[NSMutableArray array], @"url":url};
                 [result addObject:chapter];
 
                 if (![manager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:error]) return nil;
             }
 
-            NSAssert(chapter == result.lastObject, @"chapter incorrect");
+            NSAssert(result.count > 0, @"Chapter has been recorded");
 
-            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"pages"] count] + 1, extensionForType(typeIdentifier)] relativeToURL:chapter[@"url"]];
+            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"images"] count] + 1, extensionForType(typeIdentifier)] relativeToURL:chapter[@"url"]];
             if (![manager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;
-            [chapter[@"pages"] addObject:outputURL];
+            [chapter[@"images"] addObject:outputURL];
+        }
+        else {
+            [self logMessageWithLevel:AMLogLevelWarn format:@"%@ is not a file type supported by this action", path.lastPathComponent];
         }
 
         progress.completedUnitCount++;
@@ -121,8 +148,101 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
     return result;
 }
 
+- (BOOL)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page url:(NSURL *)url error:(NSError **)error {
+    NSParameterAssert(page.count > 0);
+
+    return YES; // TODO: Implement
+}
+
+- (nullable NSArray<NSURL *> *)createPagesForChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error {
+    const CGFloat contentWidth  = _pageWidth  - 2 * _pageMargin;
+    const CGFloat contentHeight = _pageHeight - 2 * _pageMargin;
+
+    NSAssert(contentWidth > 0, @"Content width incorrect");
+    NSAssert(contentHeight > 0, @"Content height incorrect");
+
+    NSUInteger count = [[chapters valueForKeyPath:@"@sum.images.@count"] unsignedIntegerValue];
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
+
+    NSMutableArray<NSURL *> *result = [NSMutableArray array];
+
+    for (NSDictionary<NSString *, id> *chapter in chapters) {
+        NSURL *chapterURL = chapter[@"url"];
+
+        NSUInteger pageCount = 0;
+
+        NSMutableArray<NSDictionary<NSString *, id> *> *page = [NSMutableArray array];
+        CGFloat currentHeight = 0.0;
+
+        for (NSURL *url in chapter[@"images"]) {
+            CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)url, NULL);
+            if (!source) {
+                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSURLErrorKey:url}];
+                return nil;
+            }
+
+            id image = CFBridgingRelease(CGImageSourceCreateImageAtIndex(source, 0, NULL));
+            CFRelease(source);
+
+            if (!image) {
+                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSURLErrorKey:url}];
+                return nil;
+            }
+
+            CGFloat w = CGImageGetWidth((CGImageRef)image);
+            CGFloat h = CGImageGetHeight((CGImageRef)image);
+            NSString *typeIdentifier = (NSString *)CGImageGetUTType((CGImageRef)image);
+
+            NSURL *correctedURL;
+
+            if (isExtensionCorrectForType(url.pathExtension, typeIdentifier)) {
+                correctedURL = url;
+            }
+            else {
+                correctedURL = [url.URLByDeletingPathExtension URLByAppendingPathExtension:extensionForType(typeIdentifier)];
+                [self logMessageWithLevel:AMLogLevelWarn format:@"%@ has an incorrect extension; should be %@", url.lastPathComponent, correctedURL.lastPathComponent];
+                if (![[NSFileManager defaultManager] moveItemAtURL:url toURL:correctedURL error:error]) return nil;
+            }
+
+            CGFloat scale = fmin(contentWidth / w, contentHeight / h);
+
+            while ((h * scale > contentHeight) || (w * scale > contentWidth)) {
+                scale = nextafter(scale, 0.0);
+            }
+
+            if (_disableUpscaling && scale > 1.0) {
+                scale = 1.0;
+            }
+
+            NSAssert(w * scale <= contentWidth, @"width: %f, scale: %f, scaled width: %f, max: %f", w, scale, w * scale, contentWidth);
+            NSAssert(h * scale <= contentHeight, @"height: %f, scale: %f, scaled height: %f, max: %f", h, scale, h * scale, contentHeight);
+
+            NSDictionary<NSString *, id> *frame = @{@"image":image, @"url":correctedURL, @"scale": @(scale)};
+
+            if (currentHeight + h * scale > contentHeight) {
+                NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", (++pageCount)] relativeToURL:chapterURL];
+                if (![self createPage:page url:pageURL error:error]) return nil;
+
+                page = [NSMutableArray array];
+                currentHeight = 0.0;
+            }
+
+            [page addObject:frame];
+            currentHeight += h * scale;
+
+            progress.completedUnitCount++;
+        }
+
+        NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", (++pageCount)] relativeToURL:chapterURL];
+        if (![self createPage:page url:pageURL error:error]) return nil;
+    }
+
+    return result;
+}
+
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
-    if (input.count == 0) return @[];
+    if (!input || input.count == 0) return @[];
 
     [self loadParameters];
 
@@ -131,8 +251,23 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
     if (!workingURL) return nil;
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
-
     [self bind:AMProgressValueBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+
+    [progress becomeCurrentWithPendingUnitCount:25];
+    NSArray<NSDictionary<NSString *, id> *> *chapters = [self copyItemsFromPaths:input toDirectory:workingURL error:error];
+    [progress resignCurrent];
+
+    if (!chapters) return nil;
+    if (chapters.count == 0) { // This will happen if there are no image files in the input
+        if (![[NSFileManager defaultManager] removeItemAtURL:workingURL error:error]) return nil;
+        return @[];
+    }
+
+    [progress becomeCurrentWithPendingUnitCount:75];
+    NSArray<NSURL *> *pages = [self createPagesForChapters:chapters error:error];
+    [progress resignCurrent];
+
+    if (!pages) return nil;
 
     NSURL *outputURL = [self finalizeWorkingDirectory:workingURL error:error];
     return outputURL ? @[outputURL.path] : nil;
