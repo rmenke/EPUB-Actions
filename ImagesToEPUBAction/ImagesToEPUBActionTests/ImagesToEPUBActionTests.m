@@ -12,6 +12,35 @@
 @import Automator.AMBundleAction;
 @import ObjectiveC.runtime;
 
+#define XCTAssertEqualFileURLs(expression1, expression2, ...) \
+    XCTAssertEqualObjects((expression1).URLByStandardizingPath.absoluteString, (expression2).URLByStandardizingPath.absoluteString, ## __VA_ARGS__);
+
+@implementation NSURL (FilePropertyAccess)
+
+- (BOOL)isDirectoryOnFileSystem {
+    NSNumber *isDirectory;
+    NSError *error;
+
+    if (![self getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
+        [NSException raise:NSGenericException format:@"error - %@", error];
+    }
+
+    return isDirectory.boolValue;
+}
+
+- (BOOL)isRegularFileOnFileSystem {
+    NSNumber *isRegularFile;
+    NSError *error;
+
+    if (![self getResourceValue:&isRegularFile forKey:NSURLIsRegularFileKey error:&error]) {
+        [NSException raise:NSGenericException format:@"error - %@", error];
+    }
+
+    return isRegularFile.boolValue;
+}
+
+@end
+
 @interface ImagesToEPUBActionTests : XCTestCase
 
 @property (strong, nonatomic) id action;
@@ -19,10 +48,14 @@
 
 @end
 
-@implementation ImagesToEPUBActionTests
+@implementation ImagesToEPUBActionTests {
+    NSFileManager *fileManager;
+}
 
 - (void)setUp {
     [super setUp];
+
+    fileManager = [NSFileManager defaultManager];
 
     self.continueAfterFailure = NO;
 
@@ -151,15 +184,15 @@
 
     NSURL *outputURL = [_action valueForKey:@"outputURL"];
 
-    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+    [fileManager removeItemAtURL:outputURL error:NULL];
 
     NSError * __autoreleasing error;
     NSURL *workingURL = [_action createWorkingDirectory:&error];
 
     XCTAssertNotNil(workingURL, @"failed to create working directory: %@", error);
 
-    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL]);
-    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:workingURL error:&error], @"%@", error);
+    XCTAssertFalse([fileManager removeItemAtURL:outputURL error:NULL]);
+    XCTAssertTrue([fileManager removeItemAtURL:workingURL error:&error], @"%@", error);
 }
 
 - (void)testCopyWorkingDirectory {
@@ -172,7 +205,7 @@
 
     NSURL *outputURL = [_action valueForKey:@"outputURL"];
 
-    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+    [fileManager removeItemAtURL:outputURL error:NULL];
 
     NSError * __autoreleasing error;
 
@@ -183,8 +216,8 @@
 
     XCTAssertEqualObjects(finalURL.absoluteString, outputURL.absoluteString);
 
-    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:workingURL error:NULL]);
-    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
+    XCTAssertFalse([fileManager removeItemAtURL:workingURL error:NULL]);
+    XCTAssertTrue([fileManager removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
 - (void)testCreateWorkingDirectoryOddTitle {
@@ -199,7 +232,7 @@
 
     XCTAssertNotEqualObjects(outputURL.lastPathComponent, @"Or.epub", @"expected slash to be removed from path, but got %@", outputURL.absoluteString);
 
-    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:NULL];
+    [fileManager removeItemAtURL:outputURL error:NULL];
 
     NSError * __autoreleasing error;
 
@@ -210,8 +243,8 @@
 
     XCTAssertEqualObjects(finalURL.absoluteString, outputURL.absoluteString);
 
-    XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:workingURL error:NULL]);
-    XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:outputURL error:&error], @"%@", error);
+    XCTAssertFalse([fileManager removeItemAtURL:workingURL error:NULL]);
+    XCTAssertTrue([fileManager removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
 /*!
@@ -241,7 +274,7 @@
 
     NSError * __autoreleasing error = nil;
 
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:outDirectory withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:outDirectory withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
     NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:tmpDirectory];
     NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:tmpDirectory];
@@ -260,10 +293,25 @@
     XCTAssertEqualObjects([result.firstObject valueForKeyPath:@"images.@count"], @2);
     XCTAssertEqualObjects(([result.firstObject valueForKeyPath:@"images.lastPathComponent"]), (@[@"im0001.png", @"im0002.jpeg"]));
 
-    XCTAssert([[NSFileManager defaultManager] removeItemAtURL:outDirectory error:&error], @"%@", error);
+    NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:outDirectory includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
+        return [obj1.absoluteString compare:obj2.absoluteString];
+    }];
+
+    XCTAssertEqual(items.count, 4);
+    XCTAssertTrue(items[0].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"Contents"]);
+    XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001"]);
+    XCTAssertTrue(items[2].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[2], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/im0001.png"]);
+    XCTAssertTrue(items[3].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[3], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/im0002.jpeg"]);
+
+    XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
 
     for (NSString *path in paths) {
-        XCTAssert([[NSFileManager defaultManager] removeItemAtPath:path error:&error], @"%@", error);
+        XCTAssert([fileManager removeItemAtPath:path error:&error], @"%@", error);
     }
 }
 
@@ -273,7 +321,7 @@
 
     NSError * __autoreleasing error = nil;
 
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:outDirectory withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:outDirectory withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
     NSString *title1 = @"alpha";
     NSString *title2 = @"beta";
@@ -284,7 +332,7 @@
     NSArray<NSURL *> *chapters = @[ch1, ch2];
 
     for (NSURL *url in chapters) {
-        [[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
+        [fileManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
     }
 
     NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
@@ -308,10 +356,29 @@
     XCTAssertEqualObjects(([result[1] valueForKeyPath:@"images.@count"]), @1);
     XCTAssertEqualObjects(([result[1] valueForKeyPath:@"images.lastPathComponent"]), (@[@"im0001.jpeg"]));
 
-    XCTAssert([[NSFileManager defaultManager] removeItemAtURL:outDirectory error:&error], @"%@", error);
+    NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:outDirectory includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
+        return [obj1.absoluteString compare:obj2.absoluteString];
+    }];
+
+    XCTAssertEqual(items.count, 6);
+    XCTAssertTrue(items[0].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"Contents"]);
+    XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001"]);
+    XCTAssertTrue(items[2].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[2], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/im0001.png"]);
+    XCTAssertTrue(items[3].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[3], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/im0002.jpeg"]);
+    XCTAssertTrue(items[4].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002"]);
+    XCTAssertTrue(items[5].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[5], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/im0001.jpeg"]);
+
+    XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
 
     for (NSURL *url in chapters) {
-        XCTAssert([[NSFileManager defaultManager] removeItemAtURL:url error:&error], @"%@", error);
+        XCTAssert([fileManager removeItemAtURL:url error:&error], @"%@", error);
     }
 }
 
@@ -326,15 +393,15 @@
 
     NSError * __autoreleasing error = nil;
 
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
     NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images": @[_images[0], _images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[_images[2], _images[3]], @"url":ch2}];
 
     NSArray *result = [_action createPagesForChapters:chapters error:&error];
     XCTAssertNotNil(result, @"%@", error);
 
-    XCTAssert([[NSFileManager defaultManager] removeItemAtURL:outDirectory error:&error], @"%@", error);
+    XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
 }
 
 - (void)testCreatePagesFixImageExtensions {
@@ -350,28 +417,28 @@
 
     for (NSURL *url in _images) {
         NSURL *newURL = [[NSURL fileURLWithPath:url.lastPathComponent relativeToURL:tmpDirectory].URLByDeletingPathExtension URLByAppendingPathExtension:@"bmp"];
-        XCTAssert([[NSFileManager defaultManager] copyItemAtURL:url toURL:newURL error:&error], @"%@", error);
+        XCTAssert([fileManager copyItemAtURL:url toURL:newURL error:&error], @"%@", error);
         [images addObject:newURL];
     }
 
     NSURL *ch1 = [NSURL fileURLWithPath:@"ch0001" isDirectory:YES relativeToURL:outDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:@"ch0002" isDirectory:YES relativeToURL:outDirectory];
 
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
-    XCTAssert([[NSFileManager defaultManager] createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
+    XCTAssert([fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
     NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images": @[images[0], images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[images[2], images[3]], @"url":ch2}];
 
     NSArray *result = [_action createPagesForChapters:chapters error:&error];
     XCTAssertNotNil(result, @"%@", error);
 
-    XCTAssert([[NSFileManager defaultManager] removeItemAtURL:outDirectory error:&error], @"%@", error);
+    XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
 
     for (NSUInteger ix = 0; ix < 4; ++ix) {
         NSString *extension = @[@"png", @"jpeg", @"gif", @"tiff"][ix];
-        XCTAssertFalse([[NSFileManager defaultManager] removeItemAtURL:images[ix] error:NULL]);
+        XCTAssertFalse([fileManager removeItemAtURL:images[ix] error:NULL]);
         NSURL *newURL = [images[ix].URLByDeletingPathExtension URLByAppendingPathExtension:extension];
-        XCTAssertTrue([[NSFileManager defaultManager] removeItemAtURL:newURL error:&error], @"%@", error);
+        XCTAssertTrue([fileManager removeItemAtURL:newURL error:&error], @"%@", error);
     }
 }
 

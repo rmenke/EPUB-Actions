@@ -102,7 +102,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
 
-    NSURL *contentURL = [NSURL fileURLWithPath:@"Contents" relativeToURL:directory];
+    NSURL *contentURL = [NSURL fileURLWithPath:@"Contents" isDirectory:YES relativeToURL:directory];
 
     if (![manager createDirectoryAtURL:contentURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
 
