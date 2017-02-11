@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    border: 0;
+}
+
+body {
+    counter-reset: region;
+    position: relative;
+}
+
+img {
+    position: absolute;
+}
+
+div.panel-group::before {
+    counter-increment: region;
+    content: counter(region);
+    font-size: 72pt;
+}
+
+div.panel-group {
+    position: absolute;
+    z-index: 1;
+    background-color:
+    rgba(255,0,0,0.25);
+    color: rgba(0,0,0,0.5);
+    outline: 1px dotted red;
+    text-align: center;
+}

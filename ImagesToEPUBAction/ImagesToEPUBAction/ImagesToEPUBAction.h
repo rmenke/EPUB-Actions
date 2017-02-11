@@ -30,8 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSURL *)finalizeWorkingDirectory:(NSURL *)url error:(NSError **)error;
 
 - (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error;
-- (nullable NSArray<NSURL *> *)createPagesForChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error;
-- (BOOL)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page url:(NSURL *)url error:(NSError **)error;
+- (nullable NSArray<NSURL *> *)createChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error;
+- (nullable NSURL *)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page number:(NSUInteger)number inDirectory:(NSURL *)directory error:(NSError **)error;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 

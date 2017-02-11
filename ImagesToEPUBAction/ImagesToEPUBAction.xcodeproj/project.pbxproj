@@ -13,6 +13,11 @@
 		E1B5F5081E3EF8C70025D97B /* image02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5041E3EF8C70025D97B /* image02.jpg */; };
 		E1B5F5091E3EF8C70025D97B /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5051E3EF8C70025D97B /* image03.gif */; };
 		E1B5F50A1E3EF8C70025D97B /* image04.tif in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5061E3EF8C70025D97B /* image04.tif */; };
+		E1EE3C6A1E4EFB5600184583 /* container.xml in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C651E4EFB5600184583 /* container.xml */; };
+		E1EE3C6B1E4EFB5600184583 /* contents.css in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C661E4EFB5600184583 /* contents.css */; };
+		E1EE3C6C1E4EFB5600184583 /* nav.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C671E4EFB5600184583 /* nav.xhtml */; };
+		E1EE3C6D1E4EFB5600184583 /* package.opf in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C681E4EFB5600184583 /* package.opf */; };
+		E1EE3C6E1E4EFB5600184583 /* page.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C691E4EFB5600184583 /* page.xhtml */; };
 		E1FB9AA21E1DCA0600DEAE0F /* ImagesToEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */; };
 		E1FB9AA51E1DCA0700DEAE0F /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9AA31E1DCA0700DEAE0F /* main.xib */; };
 /* End PBXBuildFile section */
@@ -35,6 +40,11 @@
 		E1B5F5041E3EF8C70025D97B /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image02.jpg; sourceTree = "<group>"; };
 		E1B5F5051E3EF8C70025D97B /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image03.gif; sourceTree = "<group>"; };
 		E1B5F5061E3EF8C70025D97B /* image04.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = image04.tif; sourceTree = "<group>"; };
+		E1EE3C651E4EFB5600184583 /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
+		E1EE3C661E4EFB5600184583 /* contents.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = contents.css; sourceTree = "<group>"; };
+		E1EE3C671E4EFB5600184583 /* nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = nav.xhtml; sourceTree = "<group>"; };
+		E1EE3C681E4EFB5600184583 /* package.opf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = package.opf; sourceTree = "<group>"; };
+		E1EE3C691E4EFB5600184583 /* page.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = page.xhtml; sourceTree = "<group>"; };
 		E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Images to EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FB9AA01E1DCA0600DEAE0F /* ImagesToEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesToEPUBAction.h; sourceTree = "<group>"; };
 		E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesToEPUBAction.m; sourceTree = "<group>"; };
@@ -73,6 +83,18 @@
 			path = ImagesToEPUBActionTests;
 			sourceTree = "<group>";
 		};
+		E1EE3C641E4EFB5600184583 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE3C651E4EFB5600184583 /* container.xml */,
+				E1EE3C661E4EFB5600184583 /* contents.css */,
+				E1EE3C671E4EFB5600184583 /* nav.xhtml */,
+				E1EE3C681E4EFB5600184583 /* package.opf */,
+				E1EE3C691E4EFB5600184583 /* page.xhtml */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
 		E1FB9A931E1DCA0600DEAE0F = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +120,7 @@
 				E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */,
 				E1FB9AA31E1DCA0700DEAE0F /* main.xib */,
 				E1FB9AA61E1DCA0700DEAE0F /* Info.plist */,
+				E1EE3C641E4EFB5600184583 /* Templates */,
 			);
 			path = ImagesToEPUBAction;
 			sourceTree = "<group>";
@@ -197,6 +220,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FB9AA51E1DCA0700DEAE0F /* main.xib in Resources */,
+				E1EE3C6A1E4EFB5600184583 /* container.xml in Resources */,
+				E1EE3C6B1E4EFB5600184583 /* contents.css in Resources */,
+				E1EE3C6C1E4EFB5600184583 /* nav.xhtml in Resources */,
+				E1EE3C6D1E4EFB5600184583 /* package.opf in Resources */,
+				E1EE3C6E1E4EFB5600184583 /* page.xhtml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

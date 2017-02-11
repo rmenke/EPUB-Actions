@@ -148,13 +148,22 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return result;
 }
 
-- (BOOL)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page url:(NSURL *)url error:(NSError **)error {
+- (nullable NSURL *)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page number:(NSUInteger)pageNum inDirectory:(NSURL *)directory error:(NSError **)error {
     NSParameterAssert(page.count > 0);
 
-    return YES; // TODO: Implement
+    NSURL * _Nonnull templateURL = [self.bundle URLForResource:@"page" withExtension:@"xhtml"];
+    if (!templateURL) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml resource missing" userInfo:nil];
+
+    NSError * __autoreleasing loadError;
+
+    NSXMLDocument *pageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:templateURL options:0 error:&loadError];
+    if (!pageDocument) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:loadError}];
+
+    NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", pageNum] relativeToURL:directory];
+    return [[pageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:pageURL options:0 error:error] ? pageURL : nil;
 }
 
-- (nullable NSArray<NSURL *> *)createPagesForChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error {
+- (nullable NSArray<NSURL *> *)createChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error {
     const CGFloat contentWidth  = _pageWidth  - 2 * _pageMargin;
     const CGFloat contentHeight = _pageHeight - 2 * _pageMargin;
 
@@ -221,8 +230,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             NSDictionary<NSString *, id> *frame = @{@"image":image, @"url":correctedURL, @"scale": @(scale)};
 
             if (currentHeight + h * scale > contentHeight) {
-                NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", (++pageCount)] relativeToURL:chapterURL];
-                if (![self createPage:page url:pageURL error:error]) return nil;
+                NSURL *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapterURL error:error];
+                if (!pageURL) return nil;
+
+                [result addObject:pageURL];
 
                 page = [NSMutableArray array];
                 currentHeight = 0.0;
@@ -234,8 +245,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             progress.completedUnitCount++;
         }
 
-        NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", (++pageCount)] relativeToURL:chapterURL];
-        if (![self createPage:page url:pageURL error:error]) return nil;
+        NSURL *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapterURL error:error];
+        if (!pageURL) return nil;
+
+        [result addObject:pageURL];
     }
 
     return result;
@@ -264,7 +277,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     }
 
     [progress becomeCurrentWithPendingUnitCount:75];
-    NSArray<NSURL *> *pages = [self createPagesForChapters:chapters error:error];
+    NSArray<NSURL *> *pages = [self createChapters:chapters error:error];
     [progress resignCurrent];
 
     if (!pages) return nil;

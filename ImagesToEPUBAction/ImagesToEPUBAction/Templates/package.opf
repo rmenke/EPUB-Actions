@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="pub-id" prefix="rendition: http://www.idpf.org/vocab/rendition/#">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+        <dc:identifier id="pub-id"/>
+        <dc:title id="main-title"/>
+        <dc:language>en-US</dc:language>
+        <meta property="dcterms:modified"/>
+        <meta property="rendition:layout">pre-paginated</meta>
+    </metadata>
+    <manifest>
+        <item id="contents-css" href="contents.css" media-type="text/css"/>
+        <item id="nav" href="nav.xhtml" properties="nav" media-type="application/xhtml+xml"/>
+    </manifest>
+    <spine/>
+</package>
