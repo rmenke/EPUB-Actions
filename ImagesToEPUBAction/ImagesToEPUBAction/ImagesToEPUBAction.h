@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray<NSURL *> *)createChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error;
 - (nullable NSURL *)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page number:(NSUInteger)number inDirectory:(NSURL *)directory error:(NSError **)error;
 
+- (BOOL)addMetadataToDirectory:(NSURL *)url error:(NSError **)error;
+
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 
 @end

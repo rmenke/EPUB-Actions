@@ -254,6 +254,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return result;
 }
 
+- (BOOL)addMetadataToDirectory:(NSURL *)directory error:(NSError **)error {
+    if (![@"application/epub+zip" writeToURL:[directory URLByAppendingPathComponent:@"mimetype"] atomically:NO encoding:NSASCIIStringEncoding error:error]) return NO;
+
+    return YES;
+}
+
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     if (!input || input.count == 0) return @[];
 

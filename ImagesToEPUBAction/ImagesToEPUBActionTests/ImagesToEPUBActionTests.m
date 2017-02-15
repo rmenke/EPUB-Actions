@@ -513,4 +513,13 @@
     }
 }
 
+- (void)testAddMetadata {
+    [_action loadParameters];
+
+    NSError * __autoreleasing error;
+    XCTAssertTrue([_action addMetadataToDirectory:outDirectory error:&error]);
+
+    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"mimetype"].isRegularFileOnFileSystem);
+}
+
 @end
