@@ -132,7 +132,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
                 if (![manager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:error]) return nil;
             }
 
-            NSAssert(result.count > 0, @"Chapter has been recorded");
+            NSAssert(result.count > 0, @"Chapter has not been recorded");
 
             NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"images"] count] + 1, extensionForType(typeIdentifier)] relativeToURL:chapter[@"url"]];
             if (![manager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;

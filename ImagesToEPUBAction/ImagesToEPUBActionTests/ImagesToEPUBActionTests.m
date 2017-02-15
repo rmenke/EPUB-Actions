@@ -15,6 +15,13 @@
 #define XCTAssertEqualFileURLs(expression1, expression2, ...) \
     XCTAssertEqualObjects((expression1).URLByStandardizingPath.absoluteString, (expression2).URLByStandardizingPath.absoluteString, ## __VA_ARGS__);
 
+// TODO: Use XCT primitives to produce better diagnostics for this
+#define XCTAssertPredicate(OBJECT, FORMAT, ...) ({ \
+    __typeof__((OBJECT)) obj = (OBJECT); \
+    NSPredicate *pred = [NSPredicate predicateWithFormat:(FORMAT), ## __VA_ARGS__]; \
+    XCTAssertTrue([pred evaluateWithObject:obj], @"%@ did not satisfy \"%@\"", obj, pred); \
+})
+
 @implementation NSURL (FilePropertyAccess)
 
 - (BOOL)isDirectoryOnFileSystem {
@@ -45,6 +52,7 @@
 
 @property (strong, nonatomic) id action;
 @property (strong, nonatomic) NSArray<NSURL *> *images;
+@property (strong, nonatomic) NSArray<NSDictionary<NSString *, id> *> *messages;
 
 @end
 
@@ -66,6 +74,25 @@
     _action = [[AMBundleAction alloc] initWithContentsOfURL:actionURL error:&error];
     XCTAssertNotNil(_action, @"Error loading action: %@", error.localizedDescription);
 
+    NSMutableArray<NSDictionary<NSString *, id> *> *messages = [NSMutableArray array];
+
+    _messages = messages;
+
+    Class c = [_action class];
+    SEL s = @selector(logMessageWithLevel:format:);
+    Method m = class_getInstanceMethod(c, s);
+    IMP imp = imp_implementationWithBlock(^(id _self, AMLogLevel level, NSString *format, ...) {
+        va_list ap;
+
+        va_start(ap, format);
+        NSDictionary<NSString *, id> *message = @{@"level":@(level), @"message":[[NSString alloc] initWithFormat:format arguments:ap]};
+        va_end(ap);
+
+        [messages addObject:message];
+    });
+
+    class_replaceMethod(c, s, imp, method_getTypeEncoding(m));
+
     _images = @[
         [bundle URLForImageResource:@"image01"],
         [bundle URLForImageResource:@"image02"],
@@ -75,6 +102,13 @@
 }
 
 - (void)tearDown {
+    Class c = [_action class];
+    SEL s = @selector(logMessageWithLevel:format:);
+    Method m = class_getInstanceMethod(c, s);
+
+    class_replaceMethod(c, s, nil, method_getTypeEncoding(m));
+
+    _messages = nil;
     _action = nil;
 
     [super tearDown];
@@ -286,6 +320,9 @@
 
     NSArray<NSDictionary *> *result = [_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error];
 
+    // Verify a warning was created for the ignored file.
+    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file56.txt'");
+
     XCTAssertNotNil(result, @"%@", error);
     XCTAssertEqual(result.count, 1);
     XCTAssertEqualObjects([result.firstObject valueForKeyPath:@"images.@count"], @2);
@@ -345,6 +382,9 @@
     }
 
     NSArray<NSDictionary *> *result = [_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error];
+
+    // Verify a warning was created for the ignored file.
+    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
 
     XCTAssertNotNil(result, @"%@", error);
     XCTAssertEqual(result.count, 2);
@@ -482,6 +522,11 @@
 
     for (NSUInteger ix = 0; ix < 4; ++ix) {
         NSString *extension = @[@"png", @"jpeg", @"gif", @"tiff"][ix];
+
+        // Verify warnings were created for the incorrect file extensions
+        NSString *target = [NSString stringWithFormat:@"image%02lu.%@", (unsigned long)(ix + 1), extension];
+        XCTAssertPredicate(_messages, @"level[%d] == 2 AND message[%d] CONTAINS %@", ix, ix, target);
+
         XCTAssertFalse([fileManager removeItemAtURL:images[ix] error:NULL]);
         NSURL *newURL = [images[ix].URLByDeletingPathExtension URLByAppendingPathExtension:extension];
         XCTAssertTrue([fileManager removeItemAtURL:newURL error:&error], @"%@", error);
