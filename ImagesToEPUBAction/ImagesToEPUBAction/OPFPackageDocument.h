@@ -28,10 +28,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addManifest:(NSSet<NSString *> *)items;
 - (void)removeManifest:(NSSet<NSString *> *)items;
 
+- (nullable NSString *)propertiesForManifest:(NSString *)item;
+- (void)setProperties:(nullable NSString *)properties forManifest:(NSString *)item;
+
 - (NSUInteger)countOfSpine;
 - (NSString *)objectInSpineAtIndex:(NSUInteger)index;
 - (void)insertObject:(NSString *)item inSpineAtIndex:(NSUInteger)index;
 - (void)removeObjectFromSpineAtIndex:(NSUInteger)index;
+
+- (nullable NSString *)propertiesForSpineAtIndex:(NSUInteger)index;
+- (void)setProperties:(nullable NSString *)properties forSpineAtIndex:(NSUInteger)index;
 
 @end
 

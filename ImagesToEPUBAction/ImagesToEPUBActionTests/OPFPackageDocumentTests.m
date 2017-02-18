@@ -147,4 +147,57 @@
     XCTAssertEqual(spine.count, 2);
 }
 
+- (void)testProperties {
+    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    NSMutableSet<NSString *> *manifest = [package mutableSetValueForKey:@"manifest"];
+    NSMutableArray<NSString *> *spine  = [package mutableArrayValueForKey:@"spine"];
+
+    XCTAssertEqualObjects([package propertiesForManifest:@"nav.xhtml"], @"nav");
+    XCTAssertNil([package propertiesForManifest:@"contents.css"]);
+    XCTAssertNil([package propertiesForManifest:@"random.object"]);
+
+    [manifest addObject:@"ch0001/pg0001.xhtml"];
+
+    [package setProperties:@"first-page" forManifest:@"ch0001/pg0001.xhtml"];
+
+    NSError * __autoreleasing error;
+
+    NSArray *result = [package.document objectsForXQuery:@"string(//manifest/item[@href='ch0001/pg0001.xhtml']/@properties)" error:&error];
+    XCTAssertNotNil(result, @"%@", error);
+    XCTAssertEqualObjects(result, @[@"first-page"]);
+
+    // NOTE: not a mistake
+    [spine addObjectsFromArray:@[@"page1.xhtml", @"page2.xhtml", @"page2.xhtml"]];
+
+    [package setProperties:@"first-copy" forSpineAtIndex:1];
+    [package setProperties:@"second-copy" forSpineAtIndex:2];
+
+    result = [package.document objectsForXQuery:@"//spine/itemref" error:&error];
+    NSArray<NSArray<NSString *> *> *names = [result valueForKeyPath:@"attributes.name"];
+    XCTAssertEqual(names.count, 3);
+
+    XCTAssertFalse([names[0] containsObject:@"properties"]);
+    XCTAssertTrue([names[1] containsObject:@"properties"]);
+    XCTAssertTrue([names[2] containsObject:@"properties"]);
+
+    NSArray<NSArray<NSString *> *> *values = [result valueForKeyPath:@"attributes.stringValue"];
+    XCTAssertEqual(values.count, 3);
+
+    NSDictionary *dictionary;
+
+    dictionary = [NSDictionary dictionaryWithObjects:values[1] forKeys:names[1]];
+    XCTAssertEqual(dictionary[@"properties"], @"first-copy");
+
+    dictionary = [NSDictionary dictionaryWithObjects:values[2] forKeys:names[2]];
+    XCTAssertEqual(dictionary[@"properties"], @"second-copy");
+
+    result = [package.document objectsForXQuery:@"count(//manifest/item[@href='page1.xhtml']/@properties)" error:&error];
+    XCTAssertNotNil(result, @"%@", error);
+    XCTAssertEqualObjects(result, @[@0]);
+
+    result = [package.document objectsForXQuery:@"count(//manifest/item[@href='page2.xhtml']/@properties)" error:&error];
+    XCTAssertNotNil(result, @"%@", error);
+    XCTAssertEqualObjects(result, @[@0]);
+}
+
 @end

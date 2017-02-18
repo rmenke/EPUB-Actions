@@ -221,6 +221,35 @@ static inline NSString *mimeTypeForExtension(NSString *extension) {
     [self didChangeValueForKey:@"manifest" withSetMutation:NSKeyValueMinusSetMutation usingObjects:items];
 }
 
+- (nullable NSString *)propertiesForManifest:(NSString *)item {
+    NSError * __autoreleasing error;
+
+    NSArray<NSXMLNode *> *attributes = [self.manifestElement objectsForXQuery:@"item[@href=$href]/@properties" constants:@{@"href":item} error:&error];
+    NSAssert(attributes, @"xpath - %@", error);
+    NSAssert(attributes.count <= 1, @"duplicate manifest items");
+
+    return attributes.count ? attributes.firstObject.stringValue : nil;
+}
+
+- (void)setProperties:(nullable NSString *)properties forManifest:(NSString *)item {
+    NSError * __autoreleasing error;
+
+    NSArray<NSXMLElement *> *elements = [self.manifestElement objectsForXQuery:@"item[@href=$href]" constants:@{@"href":item} error:&error];
+    NSAssert(elements, @"xpath - %@", error);
+    NSAssert(elements.count <= 1, @"duplicate manifest items");
+
+    if (elements.count == 0) return;
+
+    NSXMLElement *element = elements.firstObject;
+
+    if (properties) {
+        [element addAttribute:[NSXMLNode attributeWithName:@"properties" stringValue:properties]];
+    }
+    else {
+        [element removeAttributeForName:@"properties"];
+    }
+}
+
 - (NSUInteger)countOfSpine {
     return self.spineElement.childCount;
 }
@@ -258,6 +287,34 @@ static inline NSString *mimeTypeForExtension(NSString *extension) {
     [self.spineElement removeChildAtIndex:index];
 
     [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:index] forKey:@"spine"];
+}
+
+- (nullable NSString *)propertiesForSpineAtIndex:(NSUInteger)index {
+    NSError * __autoreleasing error;
+
+    NSArray<NSXMLNode *> *attributes = [self.spineElement objectsForXQuery:@"itemref[$index]/@properties" constants:@{@"index":@(index)} error:&error];
+    NSAssert(attributes, @"xpath - %@", error);
+    NSAssert(attributes.count <= 1, @"duplicate manifest items");
+
+    return attributes.count ? attributes.firstObject.stringValue : nil;
+}
+
+- (void)setProperties:(nullable NSString *)properties forSpineAtIndex:(NSUInteger)index {
+    NSError * __autoreleasing error;
+
+    NSArray<NSXMLElement *> *elements = [self.spineElement objectsForXQuery:@"itemref[$index]" constants:@{@"index":@(index + 1)} error:&error];
+    NSAssert(elements, @"xpath - %@", error);
+
+    if (elements.count == 0) return;
+
+    NSXMLElement *element = elements.firstObject;
+
+    if (properties) {
+        [element addAttribute:[NSXMLNode attributeWithName:@"properties" stringValue:properties]];
+    }
+    else {
+        [element removeAttributeForName:@"properties"];
+    }
 }
 
 @end

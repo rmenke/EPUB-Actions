@@ -559,8 +559,6 @@
     NSUInteger itemsInManifest = values[0].unsignedIntegerValue;
     NSUInteger itemsWithMediaType = values[1].unsignedIntegerValue;
     XCTAssertEqual(itemsInManifest, itemsWithMediaType, @"items in manifest are missing the media-type attribute");
-
-    NSLog(@"%@", [package XMLStringWithOptions:NSXMLNodePrettyPrint]);
 }
 
 - (void)testAction {
