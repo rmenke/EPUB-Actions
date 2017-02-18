@@ -538,7 +538,10 @@
     [_action loadParameters];
 
     NSError * __autoreleasing error;
-    XCTAssertTrue(([_action addMetadataToDirectory:outDirectory manifestItems:@[@"img1.gif", @"img2.jpeg"] spineItems:@[@"pg01.xhtml"] error:&error]), @"%@", error);
+
+    NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"images":@[[NSURL fileURLWithPath:@"img1.gif"], [NSURL fileURLWithPath:@"img2.jpeg"]]}];
+
+    XCTAssertTrue(([_action addMetadataToDirectory:outDirectory chapters:chapters spineItems:@[@"pg01.xhtml"] error:&error]), @"%@", error);
 
     XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"mimetype"].isRegularFileOnFileSystem);
     XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"META-INF/"].isDirectoryOnFileSystem);

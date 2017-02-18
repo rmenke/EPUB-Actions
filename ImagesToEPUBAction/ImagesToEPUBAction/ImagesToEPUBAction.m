@@ -274,7 +274,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return result;
 }
 
-- (BOOL)addMetadataToDirectory:(NSURL *)directory manifestItems:(NSArray<NSString *> *)manifestItems spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
+- (BOOL)addMetadataToDirectory:(NSURL *)directory chapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
 
     NSURL *mimetypeURL = [NSURL fileURLWithPath:@"mimetype" isDirectory:NO relativeToURL:directory];
@@ -307,6 +307,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     packageDocument.title = _title;
     packageDocument.modified = [NSDate date];
 
+    NSArray<NSString *> *manifestItems = [chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"];
+
     [[packageDocument mutableSetValueForKey:@"manifest"] addObjectsFromArray:manifestItems];
     [[packageDocument mutableArrayValueForKey:@"spine"] addObjectsFromArray:spineItems];
 
@@ -317,6 +319,21 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     NSXMLDocument *navDocument = [[NSXMLDocument alloc] initWithContentsOfURL:navURL options:0 error:&internalError];
     NSAssert(navDocument, @"nav.xhtml resource is damaged - %@", internalError);
+
+    NSXMLElement *listElement = [navDocument nodesForXPath:@"//nav/ol" error:&internalError].firstObject;
+    NSAssert(listElement, @"nav.xhtml resource is damaged - %@", internalError);
+
+    for (id chapter in chapters) {
+        NSURL *url = [[chapter valueForKey:@"url"] URLByAppendingPathComponent:@"pg0001.xhtml"];
+        NSString *title = [chapter valueForKey:@"title"];
+
+        NSXMLNode *titleNode = [NSXMLNode textWithStringValue:title];
+        NSXMLNode *hrefAttribute = [NSXMLNode attributeWithName:@"href" stringValue:url.relativePath];
+        NSXMLElement *aElement = [NSXMLElement elementWithName:@"a" children:@[titleNode] attributes:@[hrefAttribute]];
+        NSXMLElement *liElement = [NSXMLElement elementWithName:@"li" children:@[aElement] attributes:nil];
+
+        [listElement addChild:liElement];
+    }
 
     if (![[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:navURL.lastPathComponent] options:0 error:error]) return NO;
 
@@ -352,10 +369,9 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     if (!pages) return nil;
 
     NSArray<NSString *> *pagePaths = [pages valueForKeyPath:@"relativePath"];
-    NSArray<NSString *> *imagePaths = [chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"];
 
     [progress becomeCurrentWithPendingUnitCount:1];
-    if (![self addMetadataToDirectory:workingURL manifestItems:imagePaths spineItems:pagePaths error:error]) return nil;
+    if (![self addMetadataToDirectory:workingURL chapters:chapters spineItems:pagePaths error:error]) return nil;
     [progress resignCurrent];
 
     NSURL *outputURL = [self finalizeWorkingDirectory:workingURL error:error];
