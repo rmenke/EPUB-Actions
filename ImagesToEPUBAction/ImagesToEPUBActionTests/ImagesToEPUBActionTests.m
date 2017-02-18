@@ -9,7 +9,7 @@
 #include "ImagesToEPUBAction.h"
 
 @import XCTest;
-@import Automator.AMBundleAction;
+@import Automator;
 @import ObjectiveC.runtime;
 
 #define XCTAssertEqualFileURLs(expression1, expression2, ...) \
@@ -328,6 +328,13 @@
 
     NSArray<NSDictionary *> *result = [_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error];
 
+    // Verify all URLs are relative to the Contents subdirectory
+    NSArray<NSURL *> *baseURLs = [result valueForKeyPath:@"@distinctUnionOfArrays.images.baseURL"];
+    XCTAssertEqual(baseURLs.count, 1, @"expected one base URL");
+    NSURL *expected = [outDirectory URLByAppendingPathComponent:@"Contents" isDirectory:YES].URLByStandardizingPath;
+    NSURL *actual   = baseURLs.firstObject.URLByStandardizingPath;
+    XCTAssertEqualObjects(actual, expected);
+
     // Verify a warning was created for the ignored file.
     XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file56.txt'");
 
@@ -384,6 +391,11 @@
 
     NSArray<NSDictionary *> *result = [_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error];
 
+    // Verify all URLs are relative to the Contents subdirectory
+    NSArray<NSURL *> *baseURLs = [result valueForKeyPath:@"@distinctUnionOfArrays.images.baseURL"];
+    XCTAssertEqual(baseURLs.count, 1, @"expected one base URL");
+    XCTAssertEqualObjects(baseURLs.firstObject.URLByStandardizingPath, [outDirectory URLByAppendingPathComponent:@"Contents" isDirectory:YES].URLByStandardizingPath);
+
     // Verify a warning was created for the ignored file.
     XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
 
@@ -422,8 +434,10 @@
 - (void)testCreatePages {
     [_action loadParameters];
 
-    NSURL *ch1 = [NSURL fileURLWithPath:@"ch0001" isDirectory:YES relativeToURL:outDirectory];
-    NSURL *ch2 = [NSURL fileURLWithPath:@"ch0002" isDirectory:YES relativeToURL:outDirectory];
+    NSURL *contentsURL = [outDirectory URLByAppendingPathComponent:@"Contents" isDirectory:YES];
+
+    NSURL *ch1 = [NSURL fileURLWithPath:@"ch0001" isDirectory:YES relativeToURL:contentsURL];
+    NSURL *ch2 = [NSURL fileURLWithPath:@"ch0002" isDirectory:YES relativeToURL:contentsURL];
 
     NSError * __autoreleasing error = nil;
 
@@ -436,22 +450,29 @@
     XCTAssertNotNil(result, @"%@", error);
     XCTAssertEqual(result.count, 3);
 
+    // Verify all URLs are relative to Contents subdirectory
+    NSArray<NSURL *> *baseURLs = [result valueForKeyPath:@"@distinctUnionOfObjects.baseURL"];
+    XCTAssertEqual(baseURLs.count, 1, @"expected exactly one base URL");
+    XCTAssertEqualObjects(baseURLs.firstObject.URLByStandardizingPath, contentsURL.URLByStandardizingPath);
+
     NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:outDirectory includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
     NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
         return [obj1.absoluteString compare:obj2.absoluteString];
     }];
 
-    XCTAssertEqual(items.count, 5);
+    XCTAssertEqual(items.count, 6);
     XCTAssertTrue(items[0].isDirectoryOnFileSystem);
-    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"ch0001"]);
-    XCTAssertTrue(items[1].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"ch0001/pg0001.xhtml"]);
-    XCTAssertTrue(items[2].isDirectoryOnFileSystem);
-    XCTAssertEqualFileURLs(items[2], [outDirectory URLByAppendingPathComponent:@"ch0002"]);
-    XCTAssertTrue(items[3].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[3], [outDirectory URLByAppendingPathComponent:@"ch0002/pg0001.xhtml"]);
+    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"Contents"]);
+    XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001"]);
+    XCTAssertTrue(items[2].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[2], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/pg0001.xhtml"]);
+    XCTAssertTrue(items[3].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[3], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002"]);
     XCTAssertTrue(items[4].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"ch0002/pg0002.xhtml"]);
+    XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/pg0001.xhtml"]);
+    XCTAssertTrue(items[5].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[5], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/pg0002.xhtml"]);
 }
 
 - (void)testCreatePagesNoScaling {
@@ -467,7 +488,7 @@
     XCTAssert([fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
     XCTAssert([fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
-    NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images": @[_images[0], _images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[_images[2], _images[3]], @"url":ch2}];
+    NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images":@[_images[0], _images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[_images[2], _images[3]], @"url":ch2}];
 
     NSArray *result = [_action createChapters:chapters error:&error];
     XCTAssertNotNil(result, @"%@", error);
@@ -517,9 +538,53 @@
     [_action loadParameters];
 
     NSError * __autoreleasing error;
-    XCTAssertTrue([_action addMetadataToDirectory:outDirectory error:&error]);
+    XCTAssertTrue(([_action addMetadataToDirectory:outDirectory manifestItems:@[@"img1.gif", @"img2.jpeg"] spineItems:@[@"pg01.xhtml"] error:&error]), @"%@", error);
 
     XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"mimetype"].isRegularFileOnFileSystem);
+    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"META-INF/"].isDirectoryOnFileSystem);
+    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"META-INF/container.xml"].isRegularFileOnFileSystem);
+    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"Contents/package.opf"].isRegularFileOnFileSystem);
+    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"Contents/contents.css"].isRegularFileOnFileSystem);
+
+    NSXMLDocument *package = [[NSXMLDocument alloc] initWithContentsOfURL:[outDirectory URLByAppendingPathComponent:@"Contents/package.opf"] options:0 error:&error];
+    XCTAssertNotNil(package, @"%@", error);
+
+    NSArray<NSXMLElement *> *elements = [package nodesForXPath:@"//*:identifier" error:&error];
+    XCTAssertNotNil(elements, @"%@", error);
+    XCTAssertEqual(elements.count, 1);
+    XCTAssertGreaterThan(elements[0].stringValue.length, 0);
+
+    NSArray<NSNumber *> *values = [package objectsForXQuery:@"count(//manifest/item), count(//manifest/item/@media-type)" error:&error];
+    XCTAssertNotNil(values, @"%@", error);
+    NSUInteger itemsInManifest = values[0].unsignedIntegerValue;
+    NSUInteger itemsWithMediaType = values[1].unsignedIntegerValue;
+    XCTAssertEqual(itemsInManifest, itemsWithMediaType, @"items in manifest are missing the media-type attribute");
+
+    NSLog(@"%@", [package XMLStringWithOptions:NSXMLNodePrettyPrint]);
+}
+
+- (void)testAction {
+    NSError * __autoreleasing error;
+
+    NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
+
+    parameters[@"outputFolder"] = outDirectory.URLByDeletingLastPathComponent.path;
+    parameters[@"title"] = outDirectory.lastPathComponent;
+    parameters[@"authors"] = @"Anonymous";
+    parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
+
+    XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
+    outDirectory = [outDirectory URLByAppendingPathExtension:@"epub"];
+
+    NSMutableArray<NSString *> *input = [NSMutableArray arrayWithCapacity:_images.count];
+
+    for (NSURL *image in _images) {
+        [input addObject:image.absoluteURL.path];
+    }
+
+    NSArray<NSString *> *result = [_action runWithInput:input error:&error];
+    XCTAssertNotNil(result, @"%@", error);
+    XCTAssertEqualObjects(result[0], outDirectory.path);
 }
 
 @end

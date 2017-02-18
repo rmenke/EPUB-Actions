@@ -12,14 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ImagesToEPUBAction : AMBundleAction
 
-@property (nonatomic) NSString *outputFolder;
-@property (nonatomic) NSString *title;
-@property (nonatomic) NSString *authors;
-@property (nonatomic) NSString *publicationID;
-@property (nonatomic) NSUInteger pageWidth, pageHeight, pageMargin;
-@property (nonatomic) BOOL disableUpscaling;
-@property (nonatomic) NSData *backgroundColor;
-@property (nonatomic) BOOL doPanelAnalysis;
+@property (nonatomic, readonly) NSString *outputFolder;
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSString *authors;
+@property (nonatomic, readonly) NSString *publicationID;
+@property (nonatomic, readonly) NSUInteger pageWidth, pageHeight, pageMargin;
+@property (nonatomic, readonly) BOOL disableUpscaling;
+@property (nonatomic, readonly) NSData *backgroundColor;
+@property (nonatomic, readonly) BOOL doPanelAnalysis;
 
 @property (nonatomic, readonly) NSString *pageColor;
 @property (nonatomic, readonly) NSURL *outputURL;
@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray<NSURL *> *)createChapters:(NSArray<NSDictionary<NSString *, id> *> *)chapters error:(NSError **)error;
 - (nullable NSURL *)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page number:(NSUInteger)number inDirectory:(NSURL *)directory error:(NSError **)error;
 
-- (BOOL)addMetadataToDirectory:(NSURL *)url error:(NSError **)error;
+- (BOOL)addMetadataToDirectory:(NSURL *)url manifestItems:(NSArray<NSString *> *)manifestItems spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 

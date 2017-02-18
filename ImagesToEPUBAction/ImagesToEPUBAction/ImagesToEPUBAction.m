@@ -7,6 +7,7 @@
 //
 
 #import "ImagesToEPUBAction.h"
+#import "OPFPackageDocument.h"
 
 @import AppKit.NSColor;
 @import AppKit.NSKeyValueBinding;
@@ -47,6 +48,19 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return [extensions[typeIdentifier] containsObject:extension];
 }
 
+@interface ImagesToEPUBAction ()
+
+@property (nonatomic) NSString *outputFolder;
+@property (nonatomic) NSString *title;
+@property (nonatomic) NSString *authors;
+@property (nonatomic) NSString *publicationID;
+@property (nonatomic) NSUInteger pageWidth, pageHeight, pageMargin;
+@property (nonatomic) BOOL disableUpscaling;
+@property (nonatomic) NSData *backgroundColor;
+@property (nonatomic) BOOL doPanelAnalysis;
+
+@end
+
 @implementation ImagesToEPUBAction
 
 - (void)dealloc {
@@ -54,7 +68,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 }
 
 - (void)loadParameters {
-    NSDictionary<NSString *, id> *parameters = self.parameters;
+    NSMutableDictionary<NSString *, id> *parameters = self.parameters;
 
     for (NSString *property in parameters) {
         if ([self respondsToSelector:NSSelectorFromString(property)]) {
@@ -62,7 +76,13 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         }
     }
 
-    if (_title.length == 0) _title = @"Untitled";
+    if (_title.length == 0) {
+        _title = parameters[@"title"] = @"Untitled";
+    }
+
+    if (_publicationID.length == 0) {
+        _publicationID = parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
+    }
 
     NSParameterAssert(_pageWidth  > 2 * _pageMargin);
     NSParameterAssert(_pageHeight > 2 * _pageMargin);
@@ -102,7 +122,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error {
     NSFileManager *manager = [NSFileManager defaultManager];
 
-    NSURL *contentURL = [NSURL fileURLWithPath:@"Contents" isDirectory:YES relativeToURL:directory];
+    NSURL *contentURL = [directory URLByAppendingPathComponent:@"Contents" isDirectory:YES];
 
     if (![manager createDirectoryAtURL:contentURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
 
@@ -134,7 +154,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
             NSAssert(result.count > 0, @"Chapter has not been recorded");
 
-            NSURL *outputURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"images"] count] + 1, extensionForType(typeIdentifier)] relativeToURL:chapter[@"url"]];
+            NSURL *outputURL = [chapter[@"url"] URLByAppendingPathComponent:[NSString stringWithFormat:@"im%04lu.%@", [chapter[@"images"] count] + 1, extensionForType(typeIdentifier)]];
             if (![manager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;
             [chapter[@"images"] addObject:outputURL];
         }
@@ -159,7 +179,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     NSXMLDocument *pageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:templateURL options:0 error:&loadError];
     if (!pageDocument) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:loadError}];
 
-    NSURL *pageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"pg%04lu.xhtml", pageNum] relativeToURL:directory];
+    NSURL *pageURL = [directory URLByAppendingPathComponent:[NSString stringWithFormat:@"pg%04lu.xhtml", pageNum]];
     return [[pageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:pageURL options:0 error:error] ? pageURL : nil;
 }
 
@@ -254,8 +274,51 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return result;
 }
 
-- (BOOL)addMetadataToDirectory:(NSURL *)directory error:(NSError **)error {
-    if (![@"application/epub+zip" writeToURL:[directory URLByAppendingPathComponent:@"mimetype"] atomically:NO encoding:NSASCIIStringEncoding error:error]) return NO;
+- (BOOL)addMetadataToDirectory:(NSURL *)directory manifestItems:(NSArray<NSString *> *)manifestItems spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
+    NSFileManager *manager = [NSFileManager defaultManager];
+
+    NSURL *mimetypeURL = [NSURL fileURLWithPath:@"mimetype" isDirectory:NO relativeToURL:directory];
+    NSURL *metainfoDirectory = [NSURL fileURLWithPath:@"META-INF" isDirectory:YES relativeToURL:directory];
+    NSURL *contentsDirectory = [NSURL fileURLWithPath:@"Contents" isDirectory:YES relativeToURL:directory];
+
+    if (![@"application/epub+zip" writeToURL:mimetypeURL atomically:NO encoding:NSASCIIStringEncoding error:error]) return NO;
+    if (![manager createDirectoryAtURL:metainfoDirectory withIntermediateDirectories:YES attributes:nil error:error]) return NO;
+    if (![manager createDirectoryAtURL:contentsDirectory withIntermediateDirectories:YES attributes:nil error:error]) return NO;
+
+    NSURL *containerURL = [self.bundle URLForResource:@"container" withExtension:@"xml"];
+    NSAssert(containerURL, @"container.xml resource is missing from action.");
+
+    if (![manager copyItemAtURL:containerURL toURL:[metainfoDirectory URLByAppendingPathComponent:containerURL.lastPathComponent] error:error]) return NO;
+
+    NSURL *stylesheetURL = [self.bundle URLForResource:@"contents" withExtension:@"css"];
+    NSAssert(stylesheetURL, @"contents.css resource is missing from action.");
+
+    if (![manager copyItemAtURL:stylesheetURL toURL:[contentsDirectory URLByAppendingPathComponent:stylesheetURL.lastPathComponent] error:error]) return NO;
+
+    NSError * __autoreleasing internalError;
+
+    NSURL *packageURL = [self.bundle URLForResource:@"package" withExtension:@"opf"];
+    NSAssert(packageURL, @"package.opf resource is missing from action.");
+
+    OPFPackageDocument *packageDocument = [OPFPackageDocument documentWithContentsOfURL:packageURL error:&internalError];
+    NSAssert(packageDocument, @"package.opf resource is damaged - %@", internalError);
+
+    packageDocument.identifier = _publicationID;
+    packageDocument.title = _title;
+    packageDocument.modified = [NSDate date];
+
+    [[packageDocument mutableSetValueForKey:@"manifest"] addObjectsFromArray:manifestItems];
+    [[packageDocument mutableArrayValueForKey:@"spine"] addObjectsFromArray:spineItems];
+
+    if (![[packageDocument.document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:packageURL.lastPathComponent] options:0 error:error]) return NO;
+
+    NSURL *navURL = [self.bundle URLForResource:@"nav" withExtension:@"xhtml"];
+    NSAssert(packageURL, @"nav.xhtml resource is missing from action.");
+
+    NSXMLDocument *navDocument = [[NSXMLDocument alloc] initWithContentsOfURL:navURL options:0 error:&internalError];
+    NSAssert(navDocument, @"nav.xhtml resource is damaged - %@", internalError);
+
+    if (![[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:navURL.lastPathComponent] options:0 error:error]) return NO;
 
     return YES;
 }
@@ -282,11 +345,18 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         return @[];
     }
 
-    [progress becomeCurrentWithPendingUnitCount:75];
+    [progress becomeCurrentWithPendingUnitCount:74];
     NSArray<NSURL *> *pages = [self createChapters:chapters error:error];
     [progress resignCurrent];
 
     if (!pages) return nil;
+
+    NSArray<NSString *> *pagePaths = [pages valueForKeyPath:@"relativePath"];
+    NSArray<NSString *> *imagePaths = [chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"];
+
+    [progress becomeCurrentWithPendingUnitCount:1];
+    if (![self addMetadataToDirectory:workingURL manifestItems:imagePaths spineItems:pagePaths error:error]) return nil;
+    [progress resignCurrent];
 
     NSURL *outputURL = [self finalizeWorkingDirectory:workingURL error:error];
     return outputURL ? @[outputURL.path] : nil;
