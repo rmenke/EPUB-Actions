@@ -212,7 +212,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
         CGRect r = CGRectApplyAffineTransform(CGRectMake(x, y, width, height), pixelToPercent);
 
-        NSString *style = [NSString stringWithFormat:@"left:%0.4f%%;top:%0.4f%%;width:%0.4f%%;height:%0.4f%%;", r.origin.x, r.origin.y, r.size.width, r.size.height];
+        NSString *style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", r.origin.x, r.origin.y, r.size.width, r.size.height];
 
         NSXMLNode *srcAttr = [NSXMLNode attributeWithName:@"src" stringValue:url.lastPathComponent];
         NSXMLNode *altAttr = [NSXMLNode attributeWithName:@"alt" stringValue:@""];
@@ -236,7 +236,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             CGFloat originalWidth = CGImageGetWidth((CGImageRef)image);
             CGFloat originalHeight = CGImageGetHeight((CGImageRef)image);
 
-            CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
+            __unused CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
             localToGlobal = CGAffineTransformScale(localToGlobal, width / originalWidth, height / originalHeight);
 
             // TODO: Implement panel analysis
@@ -382,7 +382,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     if (![[packageDocument.document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:packageURL.lastPathComponent] options:0 error:error]) return NO;
 
     NSURL *navURL = [self.bundle URLForResource:@"nav" withExtension:@"xhtml"];
-    NSAssert(packageURL, @"nav.xhtml resource is missing from action.");
+    NSAssert(navURL, @"nav.xhtml resource is missing from action.");
 
     NSXMLDocument *navDocument = [[NSXMLDocument alloc] initWithContentsOfURL:navURL options:0 error:&internalError];
     NSAssert(navDocument, @"nav.xhtml resource is damaged - %@", internalError);

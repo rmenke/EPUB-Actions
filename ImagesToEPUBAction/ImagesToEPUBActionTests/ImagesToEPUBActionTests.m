@@ -549,7 +549,7 @@
     XCTAssertEqual(result.count, 3);
 
     for (NSUInteger ix = 0; ix < 4; ++ix) {
-        NSString *extension = @[@"png", @"jpeg", @"gif", @"tiff"][ix];
+        NSString *extension = @[@"png", @"jpeg", @"gif", @"png"][ix];
 
         // Verify warnings were created for the incorrect file extensions
         NSString *target = [NSString stringWithFormat:@"image%02lu.%@", (unsigned long)(ix + 1), extension];
