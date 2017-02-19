@@ -4,7 +4,7 @@
 }
 
 body {
-    counter-reset: region;
+    counter-reset: group panel;
     position: relative;
 }
 
@@ -13,17 +13,30 @@ img {
 }
 
 div.panel-group::before {
-    counter-increment: region;
-    content: counter(region);
-    font-size: 72pt;
+    counter-increment: group;
+    content: counter(group, upper-roman);
+    font-size: 24pt;
 }
 
 div.panel-group {
+    counter-reset: panel;
     position: absolute;
     z-index: 1;
-    background-color:
-    rgba(255,0,0,0.25);
+    background-color: rgba(0,0,255,0.25);
+    color: rgba(0,0,0,0.5);
+    outline: 1px dotted blue;
+}
+
+div.panel::before {
+    counter-increment: panel;
+    content: counter(group, upper-roman) "." counter(panel, upper-latin);
+    font-size: 24pt;
+}
+
+div.panel {
+    position: absolute;
+    z-index: 2;
+    background-color: rgba(255,0,0,0.25);
     color: rgba(0,0,0,0.5);
     outline: 1px dotted red;
-    text-align: center;
 }

@@ -171,13 +171,80 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (nullable NSURL *)createPage:(NSArray<NSDictionary<NSString *, id> *> *)page number:(NSUInteger)pageNum inDirectory:(NSURL *)directory error:(NSError **)error {
     NSParameterAssert(page.count > 0);
 
+    const CGFloat contentWidth  = _pageWidth  - 2 * _pageMargin;
+    const CGFloat contentHeight = _pageHeight - 2 * _pageMargin;
+
+    const CGFloat usedHeight = [[page valueForKeyPath:@"@sum.height"] doubleValue];
+
+    const CGFloat vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count - 1);
+
+    CGFloat y = _pageMargin;
+
+    if (page.count == 1) y += (contentHeight - usedHeight) / 2.0;
+
+    CGAffineTransform pixelToPercent = CGAffineTransformMakeScale(100.0 / _pageWidth, 100.0 / _pageHeight);
+
     NSURL * _Nonnull templateURL = [self.bundle URLForResource:@"page" withExtension:@"xhtml"];
     if (!templateURL) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml resource missing" userInfo:nil];
 
-    NSError * __autoreleasing loadError;
+    NSError * __autoreleasing underlyingError;
 
-    NSXMLDocument *pageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:templateURL options:0 error:&loadError];
-    if (!pageDocument) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:loadError}];
+    NSXMLDocument *pageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:templateURL options:0 error:&underlyingError];
+    if (!pageDocument) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
+
+    NSXMLElement *bodyElement = [pageDocument nodesForXPath:@"/html/body" error:&underlyingError].firstObject;
+    if (!bodyElement) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
+
+    [bodyElement addAttribute:[NSXMLNode attributeWithName:@"style" stringValue:[NSString stringWithFormat:@"width:%lupx; height:%lupx", (unsigned long)(_pageWidth), (unsigned long)(_pageHeight)]]];
+
+    NSXMLNode *viewportNode = [pageDocument nodesForXPath:@"/html/head/meta[@name='viewport']/@content" error:&underlyingError].firstObject;
+    if (!viewportNode) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
+
+    viewportNode.stringValue = [NSString stringWithFormat:@"width=%lu, height=%lu", (unsigned long)(_pageWidth), (unsigned long)(_pageHeight)];
+
+    for (NSDictionary<NSString *, id> *frame in page) {
+        NSURL *url = [frame valueForKey:@"url"];
+
+        CGFloat width = [[frame valueForKey:@"width"] doubleValue];
+        CGFloat height = [[frame valueForKey:@"height"] doubleValue];
+
+        CGFloat x = (contentWidth - width) / 2.0 + _pageMargin;
+
+        CGRect r = CGRectApplyAffineTransform(CGRectMake(x, y, width, height), pixelToPercent);
+
+        NSString *style = [NSString stringWithFormat:@"left:%0.4f%%;top:%0.4f%%;width:%0.4f%%;height:%0.4f%%;", r.origin.x, r.origin.y, r.size.width, r.size.height];
+
+        NSXMLNode *srcAttr = [NSXMLNode attributeWithName:@"src" stringValue:url.lastPathComponent];
+        NSXMLNode *altAttr = [NSXMLNode attributeWithName:@"alt" stringValue:@""];
+        NSXMLNode *widthAttr = [NSXMLNode attributeWithName:@"width" stringValue:[NSString stringWithFormat:@"%0.0f", r.size.width]];
+        NSXMLNode *heightAttr = [NSXMLNode attributeWithName:@"width" stringValue:[NSString stringWithFormat:@"%0.0f", r.size.height]];
+        NSXMLNode *styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
+
+        NSXMLElement *imgElement = [NSXMLElement elementWithName:@"img" children:nil attributes:@[srcAttr, altAttr, widthAttr, heightAttr, styleAttr]];
+
+        [bodyElement addChild:imgElement];
+
+        NSXMLNode *classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel-group"];
+
+        NSXMLElement *divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr.copy]];
+
+        [bodyElement addChild:divElement];
+
+        if (_doPanelAnalysis) {
+            id image = [frame valueForKey:@"image"];
+
+            CGFloat originalWidth = CGImageGetWidth((CGImageRef)image);
+            CGFloat originalHeight = CGImageGetHeight((CGImageRef)image);
+
+            CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
+            localToGlobal = CGAffineTransformScale(localToGlobal, width / originalWidth, height / originalHeight);
+
+            // TODO: Implement panel analysis
+        }
+
+        y += height;
+        y += vSpace;
+    }
 
     NSURL *pageURL = [directory URLByAppendingPathComponent:[NSString stringWithFormat:@"pg%04lu.xhtml", pageNum]];
     return [[pageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:pageURL options:0 error:error] ? pageURL : nil;
@@ -247,7 +314,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             NSAssert(w * scale <= contentWidth, @"width: %f, scale: %f, scaled width: %f, max: %f", w, scale, w * scale, contentWidth);
             NSAssert(h * scale <= contentHeight, @"height: %f, scale: %f, scaled height: %f, max: %f", h, scale, h * scale, contentHeight);
 
-            NSDictionary<NSString *, id> *frame = @{@"image":image, @"url":correctedURL, @"scale": @(scale)};
+            NSDictionary<NSString *, id> *frame = @{@"image":image, @"url":correctedURL, @"width": @(w * scale), @"height": @(h * scale)};
 
             if (currentHeight + h * scale > contentHeight) {
                 NSURL *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapterURL error:error];

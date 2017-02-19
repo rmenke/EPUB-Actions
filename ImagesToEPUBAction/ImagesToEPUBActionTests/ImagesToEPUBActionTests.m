@@ -444,7 +444,7 @@
     XCTAssert([fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
     XCTAssert([fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:&error], @"%@", error);
 
-    NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images": @[_images[0], _images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[_images[2], _images[3]], @"url":ch2}];
+    NSArray<NSDictionary<NSString *, id> *> *chapters = @[@{@"title":@"alpha", @"images":@[_images[0], _images[1]], @"url":ch1}, @{@"title":@"beta", @"images":@[_images[2], _images[3]], @"url":ch2}];
 
     NSArray *result = [_action createChapters:chapters error:&error];
     XCTAssertNotNil(result, @"%@", error);
@@ -473,6 +473,33 @@
     XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/pg0001.xhtml"]);
     XCTAssertTrue(items[5].isRegularFileOnFileSystem);
     XCTAssertEqualFileURLs(items[5], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/pg0002.xhtml"]);
+
+    NSXMLDocument *document;
+    NSArray<NSXMLNode *> *nodes;
+
+    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[2] options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    nodes = [document nodesForXPath:@"//img/@src" error:&error];
+    XCTAssertNotNil(nodes, @"%@", error);
+    XCTAssertEqual(nodes.count, 2);
+    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[_images[0].lastPathComponent, _images[1].lastPathComponent]));
+
+    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[4] options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    nodes = [document nodesForXPath:@"//img/@src" error:&error];
+    XCTAssertNotNil(nodes, @"%@", error);
+    XCTAssertEqual(nodes.count, 1);
+    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[_images[2].lastPathComponent]));
+
+    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[5] options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    nodes = [document nodesForXPath:@"//img/@src" error:&error];
+    XCTAssertNotNil(nodes, @"%@", error);
+    XCTAssertEqual(nodes.count, 1);
+    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[_images[3].lastPathComponent]));
 }
 
 - (void)testCreatePagesNoScaling {
@@ -573,7 +600,8 @@
     parameters[@"title"] = outDirectory.lastPathComponent;
     parameters[@"authors"] = @"Anonymous";
     parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
-
+    parameters[@"doPanelAnalysis"] = @YES;
+    
     XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
     outDirectory = [outDirectory URLByAppendingPathExtension:@"epub"];
 
