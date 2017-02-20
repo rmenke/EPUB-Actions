@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ConvertMarkupToEPUBNavigationAction : AMBundleAction
 
+- (nullable NSArray<NSXMLElement *> *)processXHTML:(NSURL *)url error:(NSError **)error;
+- (BOOL)processEPUBFolder:(NSURL *)url error:(NSError **)error;
+
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 
 @end

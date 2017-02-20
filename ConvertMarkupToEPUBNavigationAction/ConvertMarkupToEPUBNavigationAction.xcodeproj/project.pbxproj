@@ -11,6 +11,9 @@
 		E121616A1E1DD09B002C6F1F /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E12161681E1DD09B002C6F1F /* main.xib */; };
 		E12161921E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E12161911E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests.m */; };
 		E12161971E1DFEBF002C6F1F /* Convert Markup to EPUB Navigation.action in Resources */ = {isa = PBXBuildFile; fileRef = E12161621E1DD09B002C6F1F /* Convert Markup to EPUB Navigation.action */; };
+		E1FE372F1E59407100E4F561 /* Sample.epub in Resources */ = {isa = PBXBuildFile; fileRef = E1FE372D1E59404800E4F561 /* Sample.epub */; };
+		E1FE37371E5972CC00E4F561 /* contents.css in Resources */ = {isa = PBXBuildFile; fileRef = E1FE37361E5972CB00E4F561 /* contents.css */; };
+		E1FE37391E5972DE00E4F561 /* data-nav.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E1FE37381E5972DE00E4F561 /* data-nav.xhtml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +35,9 @@
 		E121618F1E1DFDAB002C6F1F /* Convert Markup to EPUB Navigation Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Convert Markup to EPUB Navigation Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12161911E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConvertMarkupToEPUBNavigationActionTests.m; sourceTree = "<group>"; };
 		E12161931E1DFDAB002C6F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1FE372D1E59404800E4F561 /* Sample.epub */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sample.epub; sourceTree = "<group>"; };
+		E1FE37361E5972CB00E4F561 /* contents.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = contents.css; sourceTree = "<group>"; };
+		E1FE37381E5972DE00E4F561 /* data-nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "data-nav.xhtml"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +81,7 @@
 			children = (
 				E12161651E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.h */,
 				E12161661E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction.m */,
+				E1FE373A1E5972E600E4F561 /* Templates */,
 				E12161681E1DD09B002C6F1F /* main.xib */,
 				E121616B1E1DD09B002C6F1F /* Info.plist */,
 			);
@@ -85,9 +92,19 @@
 			isa = PBXGroup;
 			children = (
 				E12161911E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests.m */,
+				E1FE372D1E59404800E4F561 /* Sample.epub */,
 				E12161931E1DFDAB002C6F1F /* Info.plist */,
 			);
 			path = ConvertMarkupToEPUBNavigationActionTests;
+			sourceTree = "<group>";
+		};
+		E1FE373A1E5972E600E4F561 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				E1FE37361E5972CB00E4F561 /* contents.css */,
+				E1FE37381E5972DE00E4F561 /* data-nav.xhtml */,
+			);
+			path = Templates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,7 +189,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1FE37391E5972DE00E4F561 /* data-nav.xhtml in Resources */,
 				E121616A1E1DD09B002C6F1F /* main.xib in Resources */,
+				E1FE37371E5972CC00E4F561 /* contents.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12161971E1DFEBF002C6F1F /* Convert Markup to EPUB Navigation.action in Resources */,
+				E1FE372F1E59407100E4F561 /* Sample.epub in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +419,7 @@
 				E12161731E1DD09B002C6F1F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E12161941E1DFDAB002C6F1F /* Build configuration list for PBXNativeTarget "Convert Markup to EPUB Navigation Tests" */ = {
 			isa = XCConfigurationList;
@@ -407,6 +428,7 @@
 				E12161961E1DFDAB002C6F1F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

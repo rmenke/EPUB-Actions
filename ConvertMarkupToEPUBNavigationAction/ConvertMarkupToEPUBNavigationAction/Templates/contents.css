@@ -1,0 +1,13 @@
+* {
+    margin: 0;
+    border: 0;
+}
+
+body {
+    counter-reset: group panel;
+    position: relative;
+}
+
+img {
+    position: absolute;
+}
