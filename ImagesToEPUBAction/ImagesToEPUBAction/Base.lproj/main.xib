@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
@@ -58,6 +58,10 @@
                             <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.title" id="ecJ-hX-X8B"/>
                         </connections>
                     </amTokenFieldCell>
+                    <connections>
+                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.title" id="Tfz-P1-ndt"/>
+                        <outlet property="nextKeyView" destination="lzL-Rx-Ym8" id="n8L-f0-rYF"/>
+                    </connections>
                 </amTokenField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YaE-PA-wlb">
                     <rect key="frame" x="47" y="123" width="49" height="14"/>
@@ -76,6 +80,7 @@
                     </amTokenFieldCell>
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.authors" id="lDB-xV-g4i"/>
+                        <outlet property="nextKeyView" destination="H5F-h2-H5b" id="MgN-G1-Clo"/>
                     </connections>
                 </amTokenField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tQ2-n8-8Xt">
@@ -95,6 +100,7 @@
                     </amTokenFieldCell>
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.publicationID" id="dnb-7T-5ve"/>
+                        <outlet property="nextKeyView" destination="kk4-KG-gs9" id="vDU-ju-cOD"/>
                     </connections>
                 </amTokenField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wPh-Ko-ncI">
@@ -117,6 +123,7 @@
                     </amTokenFieldCell>
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageWidth" id="CoA-7p-eMy"/>
+                        <outlet property="nextKeyView" destination="F28-fM-N7N" id="KrS-q3-44V"/>
                     </connections>
                 </amTokenField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8cM-qP-ZKU">
@@ -136,6 +143,7 @@
                     </amTokenFieldCell>
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageHeight" id="Z0E-Gh-HKv"/>
+                        <outlet property="nextKeyView" destination="jmT-9I-8hS" id="kBO-fW-J96"/>
                     </connections>
                 </amTokenField>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="BSf-2w-OeA">
