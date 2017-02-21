@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString * const AMProgressValueBinding = @"progressValue";
+static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
     static NSSet<NSString *> *imageTypes;
@@ -64,7 +64,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 @implementation ImagesToEPUBAction
 
 - (void)dealloc {
-    [self unbind:AMProgressValueBinding];
+    [self unbind:AMFractionCompletedBinding];
 }
 
 - (void)loadParameters {
@@ -78,10 +78,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     if (_title.length == 0) {
         _title = parameters[@"title"] = @"Untitled";
+        [self logMessageWithLevel:AMLogLevelWarn format:@"Title unset; setting to 'Untitled'"];
     }
 
     if (_publicationID.length == 0) {
         _publicationID = parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
+        [self logMessageWithLevel:AMLogLevelWarn format:@"Publication ID unset; setting to '%@'", _publicationID];
     }
 
     NSParameterAssert(_pageWidth  > 2 * _pageMargin);
@@ -413,11 +415,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     [self loadParameters];
 
     NSURL *workingURL = [self createWorkingDirectory:error];
-
     if (!workingURL) return nil;
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
-    [self bind:AMProgressValueBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+    [self bind:AMFractionCompletedBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
 
     [progress becomeCurrentWithPendingUnitCount:25];
     NSArray<NSDictionary<NSString *, id> *> *chapters = [self copyItemsFromPaths:input toDirectory:workingURL error:error];
@@ -429,7 +430,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         return @[];
     }
 
-    [progress becomeCurrentWithPendingUnitCount:74];
+    [progress becomeCurrentWithPendingUnitCount:73];
     NSArray<NSURL *> *pages = [self createChapters:chapters error:error];
     [progress resignCurrent];
 
@@ -441,8 +442,21 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     if (![self addMetadataToDirectory:workingURL chapters:chapters spineItems:pagePaths error:error]) return nil;
     [progress resignCurrent];
 
+    [progress becomeCurrentWithPendingUnitCount:1];
     NSURL *outputURL = [self finalizeWorkingDirectory:workingURL error:error];
+    [progress resignCurrent];
+
     return outputURL ? @[outputURL.path] : nil;
+}
+
+- (CGFloat)fractionCompleted {
+    return self.progressValue;
+}
+
+- (void)setFractionCompleted:(CGFloat)fractionCompleted {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressValue = fractionCompleted;
+    });
 }
 
 @end

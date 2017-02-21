@@ -292,27 +292,6 @@
     XCTAssertTrue([fileManager removeItemAtURL:outputURL error:&error], @"%@", error);
 }
 
-/*!
- * This is not a proper test, but more of an exploration into binding progress objects to AMBundleAction instances.
- * Consider it a spike, as it demonstrates the approach used within @c runWithInput:error: in the action.
- */
-- (void)testProgressMonitor {
-    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
-
-    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.00)];
-    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.25)];
-    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(0.50)];
-    [self keyValueObservingExpectationForObject:_action keyPath:@"progressValue" expectedValue:@(1.00)];
-
-    [_action bind:@"progressValue" toObject:progress withKeyPath:@"fractionCompleted" options:nil];
-
-    progress.completedUnitCount += 25;
-    progress.completedUnitCount += 25;
-    progress.completedUnitCount += 50;
-
-    [self waitForExpectationsWithTimeout:0.0 handler:NULL];
-}
-
 - (void)testCopyItems {
     NSError * __autoreleasing error = nil;
 
@@ -523,6 +502,8 @@
 }
 
 - (void)testCreatePagesFixImageExtensions {
+    [_action parameters][@"publicationID"] = @"urn:uuid:48E1C7E3-B9D7-43C4-BFBC-FF78E9E50EC4";
+
     [_action loadParameters];
 
     NSError * __autoreleasing error = nil;

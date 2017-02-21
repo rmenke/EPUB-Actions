@@ -12,26 +12,28 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString * const AMProgressValueBinding = @"progressValue";
+static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
 @implementation ConvertMarkupToEPUBNavigationAction
 
-- (nullable NSArray<NSXMLElement *> *)processXHTML:(NSURL *)url error:(NSError **)error {
+- (void)dealloc {
+    [self unbind:AMFractionCompletedBinding];
+}
+
+- (BOOL)processPage:(NSURL *)url updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError ** _Nullable)error {
     NSError * __autoreleasing internalError;
 
     NSString *page = url.lastPathComponent;
     NSString *chapter = url.URLByDeletingLastPathComponent.lastPathComponent;
 
     NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:error];
-    if (!document) return nil;
+    if (!document) return NO;
 
     NSArray<NSXMLElement *> *divElements = [document nodesForXPath:@"//div[@class='panel' or @class='panel-group']" error:&internalError];
     NSAssert(divElements, @"xpath - %@", internalError);
 
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\w+)\\s*:\\s*(\\d+\\.\\d+)%" options:0 error:&internalError];
     NSAssert(regex, @"regex - %@", internalError);
-
-    NSMutableArray<NSXMLElement *> *listItemElements = [NSMutableArray array];
 
     for (NSXMLElement* element in divElements) {
         [element detach];
@@ -55,20 +57,60 @@ static NSString * const AMProgressValueBinding = @"progressValue";
             NSXMLElement *aElement = [NSXMLElement elementWithName:@"a" children:nil attributes:@[[NSXMLNode attributeWithName:@"href" stringValue:path]]];
             NSXMLElement *olElement = [NSXMLElement elementWithName:@"ol"];
 
-            [listItemElements addObject:[NSXMLElement elementWithName:@"li" children:@[aElement, olElement] attributes:@[typeAttr]]];
+            [regions addObject:[NSXMLElement elementWithName:@"li" children:@[aElement, olElement] attributes:@[typeAttr]]];
         }
         else {
             NSXMLElement *aElement = [NSXMLElement elementWithName:@"a" children:nil attributes:@[[NSXMLNode attributeWithName:@"href" stringValue:path]]];
-            NSXMLElement *currentSubregionList = [listItemElements.lastObject elementsForName:@"ol"].lastObject;
+            NSXMLElement *currentSubregionList = [regions.lastObject elementsForName:@"ol"].lastObject;
 
             [currentSubregionList addChild:[NSXMLElement elementWithName:@"li" children:@[aElement] attributes:@[typeAttr]]];
         }
     }
 
-    if (![[document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:url options:0 error:error]) return nil;
+    return [[document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:url options:0 error:error];
+}
 
-    for (NSXMLElement *liElement in listItemElements) {
-        NSArray<NSXMLElement *> *emptyListElements = [liElement nodesForXPath:@"ol[not(*)]" error:&internalError];
+- (BOOL)processChapter:(NSURL *)url updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSArray<NSString *> *pages = [[[fileManager contentsOfDirectoryAtPath:url.path error:error] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES 'pg[0-9]+.xhtml'"]] sortedArrayUsingSelector:@selector(compare:)];
+    if (!pages) return NO;
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:pages.count];
+
+    for (NSString *page in pages) {
+        [progress becomeCurrentWithPendingUnitCount:1];
+        if (![self processPage:[url URLByAppendingPathComponent:page] updating:regions error:error]) return NO;
+        [progress resignCurrent];
+    }
+
+    return YES;
+}
+
+- (BOOL)processFolder:(NSURL *)baseURL error:(NSError **)error {
+    NSError * __autoreleasing internalError;
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSURL *contentsURL = [baseURL URLByAppendingPathComponent:@"Contents" isDirectory:YES];
+
+    NSArray<NSString *> *chapters = [[[fileManager contentsOfDirectoryAtPath:contentsURL.path error:error] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES 'ch[0-9]+'"]] sortedArrayUsingSelector:@selector(compare:)];
+    if (!chapters) return NO;
+
+    NSAssert(chapters.count > 0, @"No chapters found");
+
+    NSMutableArray<NSXMLElement *> *regions = [NSMutableArray array];
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:chapters.count];
+
+    for (NSString *chapter in chapters) {
+        [progress becomeCurrentWithPendingUnitCount:1];
+        if (![self processChapter:[contentsURL URLByAppendingPathComponent:chapter] updating:regions error:error]) return NO;
+        [progress resignCurrent];
+    }
+
+    for (NSXMLElement *element in regions) {
+        NSArray<NSXMLElement *> *emptyListElements = [element nodesForXPath:@"ol[not(*)]" error:&internalError];
         NSAssert(emptyListElements, @"xpath - %@", internalError);
 
         for (NSXMLElement *element in emptyListElements) {
@@ -76,34 +118,7 @@ static NSString * const AMProgressValueBinding = @"progressValue";
         }
     }
 
-    return listItemElements;
-}
-
-- (BOOL)processEPUBFolder:(NSURL *)baseURL error:(NSError **)error {
-    NSError * __autoreleasing internalError;
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSURL *contentsDirectory = [baseURL URLByAppendingPathComponent:@"Contents" isDirectory:YES];
-
-    NSDirectoryEnumerator<NSURL *> *directoryEnumerator = [fileManager enumeratorAtURL:contentsDirectory includingPropertiesForKeys:@[NSURLTypeIdentifierKey] options:0 errorHandler:nil];
-
-    NSMutableArray<NSXMLElement *> *allRegions = [NSMutableArray array];
-
-    for (NSURL *url in directoryEnumerator) {
-        if (directoryEnumerator.level != 2) continue;
-
-        NSString * __autoreleasing typeIdentifier;
-        if (![url getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return NO;
-        if (![typeIdentifier isEqualToString:@"public.xhtml"]) continue;
-
-        NSArray<NSXMLElement *> *regions = [self processXHTML:url error:error];
-        if (!regions) return NO;
-
-        [allRegions addObjectsFromArray:regions];
-    }
-
-    NSURL *originalStylesheetURL = [contentsDirectory URLByAppendingPathComponent:@"contents.css"];
+    NSURL *originalStylesheetURL = [contentsURL URLByAppendingPathComponent:@"contents.css"];
     NSURL *replacementStylesheetURL = [self.bundle URLForResource:@"contents" withExtension:@"css"];
     NSAssert(replacementStylesheetURL, @"contents.css resource is missing from action.");
 
@@ -119,11 +134,11 @@ static NSString * const AMProgressValueBinding = @"progressValue";
     NSXMLElement *listElement = [navDocument nodesForXPath:@"//nav/ol" error:&internalError].firstObject;
     NSAssert(listElement, @"data-nav.xhtml resource is damaged - %@", internalError);
 
-    listElement.children = allRegions;
+    listElement.children = regions;
 
-    if (![[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:navURL.lastPathComponent] options:0 error:error]) return NO;
+    if (![[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsURL URLByAppendingPathComponent:navURL.lastPathComponent] options:0 error:error]) return NO;
 
-    NSURL *packageURL = [contentsDirectory URLByAppendingPathComponent:@"package.opf"];
+    NSURL *packageURL = [contentsURL URLByAppendingPathComponent:@"package.opf"];
     NSXMLDocument *packageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:packageURL options:0 error:error];
     if (!packageDocument) return NO;
 
@@ -148,10 +163,8 @@ static NSString * const AMProgressValueBinding = @"progressValue";
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     if (!input || input.count == 0) return @[];
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:input.count];
-    [self bind:AMProgressValueBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+    [self bind:AMFractionCompletedBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
 
     for (NSString *path in input) {
         NSURL *url = [NSURL fileURLWithPath:path];
@@ -164,18 +177,7 @@ static NSString * const AMProgressValueBinding = @"progressValue";
         [progress becomeCurrentWithPendingUnitCount:1];
 
         if (UTTypeConformsTo((__bridge CFStringRef _Nonnull)(typeIdentifier), CFSTR("org.idpf.epub-folder"))) {
-            NSURL *workingURL = [fileManager URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:url create:YES error:error];
-            if (!workingURL) return nil;
-
-            workingURL = [workingURL URLByAppendingPathComponent:url.lastPathComponent];
-
-            if (![fileManager copyItemAtURL:url toURL:workingURL error:error]) return nil;
-
-            if (![self processEPUBFolder:workingURL error:error]) return nil;
-
-            if (![fileManager replaceItemAtURL:url withItemAtURL:workingURL backupItemName:nil options:0 resultingItemURL:&url error:error]) return nil;
-
-            [fileManager removeItemAtURL:workingURL.URLByDeletingLastPathComponent error:NULL];
+            if (![self processFolder:url error:error]) return nil;
         }
         else if (UTTypeConformsTo((__bridge CFStringRef _Nonnull)(typeIdentifier), CFSTR("org.idpf.epub-container"))) {
             // TODO: Uncompress and replace container with folder
@@ -190,6 +192,16 @@ static NSString * const AMProgressValueBinding = @"progressValue";
     }
 
     return input;
+}
+
+- (CGFloat)fractionCompleted {
+    return self.progressValue;
+}
+
+- (void)setFractionCompleted:(CGFloat)fractionCompleted {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressValue = fractionCompleted;
+    });
 }
 
 @end
