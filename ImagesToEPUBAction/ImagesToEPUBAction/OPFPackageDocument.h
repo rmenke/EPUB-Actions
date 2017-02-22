@@ -39,6 +39,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)propertiesForSpineAtIndex:(NSUInteger)index;
 - (void)setProperties:(nullable NSString *)properties forSpineAtIndex:(NSUInteger)index;
 
+- (NSUInteger)countOfAuthors;
+- (NSString *)objectInAuthorsAtIndex:(NSUInteger)index;
+- (void)insertObject:(NSString *)author inAuthorsAtIndex:(NSUInteger)index;
+- (void)removeObjectFromAuthorsAtIndex:(NSUInteger)index;
+
+- (NSString *)roleForAuthorAtIndex:(NSUInteger)index;
+- (void)setRole:(nullable NSString *)role forAuthorAtIndex:(NSUInteger)index;
+
 @end
 
 NS_ASSUME_NONNULL_END

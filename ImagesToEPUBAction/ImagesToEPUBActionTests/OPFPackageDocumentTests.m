@@ -145,6 +145,8 @@
 
     XCTAssertEqual(manifest.count, 6);
     XCTAssertEqual(spine.count, 2);
+
+    XCTAssertThrows(spine[999]);
 }
 
 - (void)testProperties {
@@ -200,4 +202,56 @@
     XCTAssertEqualObjects(result, @[@0]);
 }
 
+- (void)testAuthors {
+    NSError * __autoreleasing error;
+
+    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    NSMutableArray<NSString *> *authors = [package mutableArrayValueForKey:@"authors"];
+
+    XCTAssertNotNil(authors);
+    XCTAssertEqual(authors.count, 0);
+
+    NSData *data = [@"<elements xmlns:dc='http://purl.org/dc/elements/1.1/'><dc:creator id='creator-2'>Jack Brown</dc:creator><meta refines='#creator-2' property='role' scheme='marc:relators'>ill</meta><meta refines='#creator-2' property='display-seq'>2</meta><dc:creator id='creator-3'>Jack Brown</dc:creator><meta refines='#creator-3' property='display-seq'>3</meta><dc:creator id='creator-1'>Bob Smith</dc:creator><meta refines='#creator-1' property='role' scheme='marc:relators'>aut</meta><meta refines='#creator-1' property='display-seq'>1</meta></elements>" dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSXMLDocument *fragment = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
+    XCTAssertNotNil(fragment, @"xml - %@", error);
+
+    NSXMLElement *metadataElement = [package.document.rootElement elementsForName:@"metadata"].firstObject;
+
+    for (NSXMLElement *element in fragment.rootElement.children) {
+        [element detach];
+        [metadataElement addChild:element];
+    }
+
+    XCTAssertEqual(authors.count, 3);
+    XCTAssertEqualObjects(authors[0], @"Bob Smith");
+    XCTAssertEqualObjects(authors[1], @"Jack Brown");
+    XCTAssertEqualObjects(authors[2], @"Jack Brown");
+
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:0], @"aut");
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:1], @"ill");
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:2], nil);
+
+    authors[0] = @"John Doe";
+
+    XCTAssertEqualObjects(authors[0], @"John Doe");
+    XCTAssertEqualObjects(authors[1], @"Jack Brown");
+    XCTAssertEqualObjects(authors[2], @"Jack Brown");
+
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:0], nil);
+    [package setRole:@"ann" forAuthorAtIndex:0];
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:0], @"ann");
+    [package setRole:@"aut" forAuthorAtIndex:0];
+    XCTAssertEqualObjects([package roleForAuthorAtIndex:0], @"aut");
+
+    XCTAssertEqual(authors.count, 3);
+
+    [authors removeObject:@"Jack Brown"];
+
+    XCTAssertEqual(authors.count, 1);
+
+    XCTAssertThrows(authors[5]);
+}
+
 @end
+

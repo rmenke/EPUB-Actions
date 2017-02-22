@@ -543,6 +543,8 @@
 }
 
 - (void)testAddMetadata {
+    [_action parameters][@"authors"] = @"Bob  Smith (aut) ;; ; Jack Brown  (ill);Bill Jones ";
+
     [_action loadParameters];
 
     NSError * __autoreleasing error;
@@ -570,6 +572,11 @@
     NSUInteger itemsInManifest = values[0].unsignedIntegerValue;
     NSUInteger itemsWithMediaType = values[1].unsignedIntegerValue;
     XCTAssertEqual(itemsInManifest, itemsWithMediaType, @"items in manifest are missing the media-type attribute");
+
+    elements = [package objectsForXQuery:@"for $creator in /package/metadata/*:creator let $display-seq := number(/package/metadata/meta[@refines = concat('#', $creator/@id) and @property = 'display-seq']) order by $display-seq return $creator" error:&error];
+    XCTAssertNotNil(elements, @"%@", error);
+
+    XCTAssertEqualObjects(([elements valueForKey:@"stringValue"]), (@[@"Bob Smith", @"Jack Brown", @"Bill Jones"]));
 }
 
 - (void)testAction {

@@ -376,6 +376,38 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     packageDocument.title = _title;
     packageDocument.modified = [NSDate date];
 
+    NSMutableArray<NSString *> *authors = [packageDocument mutableArrayValueForKey:@"authors"];
+
+    for (NSString *component in [_authors componentsSeparatedByString:@";"]) {
+        NSMutableArray<NSString *> *components = [component componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].mutableCopy;
+
+        for (NSUInteger index = 0; index < components.count; ++index) {
+            if (components[index].length == 0) {
+                [components removeObjectAtIndex:(index--)];
+            }
+        }
+
+        if (components.count == 0) continue;
+
+        NSString *role = components.lastObject;
+
+        if ([role hasPrefix:@"("] && [role hasSuffix:@")"]) {
+            role = [role substringWithRange:NSMakeRange(1, role.length - 2)];
+            [components removeLastObject];
+        }
+        else {
+            role = nil;
+        }
+
+        NSString *author = [components componentsJoinedByString:@" "];
+
+        [authors addObject:author];
+
+        if (role) {
+            [packageDocument setRole:role forAuthorAtIndex:(authors.count - 1)];
+        }
+    }
+
     NSArray<NSString *> *manifestItems = [chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"];
 
     [[packageDocument mutableSetValueForKey:@"manifest"] addObjectsFromArray:manifestItems];
