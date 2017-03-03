@@ -7,8 +7,13 @@
 //
 
 @import XCTest;
+@import ObjectiveC.runtime;
 
 #import "OPFPackageDocument.h"
+
+@class OPFPackageDocument;
+
+#define CLS(X) objc_getClass(#X)
 
 @interface OPFPackageDocumentTests : XCTestCase
 
@@ -22,6 +27,8 @@
 - (void)setUp {
     [super setUp];
 
+    NSError * __autoreleasing error;
+
     fileManager  = [NSFileManager defaultManager];
 
     NSBundle *bundle = [NSBundle bundleForClass:self.class];
@@ -31,6 +38,8 @@
 
     NSBundle *actionBundle = [NSBundle bundleWithURL:actionURL];
     XCTAssertNotNil(actionBundle);
+
+    XCTAssert([actionBundle loadAndReturnError:&error], @"%@", error);
 
     packageURL = [actionBundle URLForResource:@"package" withExtension:@"opf"];
     XCTAssertNotNil(packageURL);
@@ -42,13 +51,13 @@
 
 - (void)testInit {
     NSError * __autoreleasing error;
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:&error];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:&error];
 
     XCTAssertNotNil(package, "%@", error);
 }
 
 - (void)testIdentifier {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
 
     XCTAssertEqualObjects(package.identifier, @"");
 
@@ -61,7 +70,7 @@
 }
 
 - (void)testTitle {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
 
     XCTAssertEqualObjects(package.title, @"");
 
@@ -74,7 +83,7 @@
 }
 
 - (void)testModified {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
 
     XCTAssertNil(package.modified);
 
@@ -86,7 +95,7 @@
 }
 
 - (void)testManifest {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
     NSMutableSet<NSString *> *manifest = [package mutableSetValueForKey:@"manifest"];
 
     [manifest addObjectsFromArray:@[@"ch0001/pg0001.xhtml", @"ch0001/pg0001.xhtml", @"ch0001/pg0002.xhtml", @"ch0002/pg0001.xhtml"]];
@@ -102,7 +111,7 @@
 }
 
 - (void)testSpine {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
     NSMutableSet<NSString *> *manifest = [package mutableSetValueForKey:@"manifest"];
     NSMutableArray<NSString *> *spine  = [package mutableArrayValueForKey:@"spine"];
 
@@ -150,7 +159,7 @@
 }
 
 - (void)testProperties {
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
     NSMutableSet<NSString *> *manifest = [package mutableSetValueForKey:@"manifest"];
     NSMutableArray<NSString *> *spine  = [package mutableArrayValueForKey:@"spine"];
 
@@ -205,7 +214,7 @@
 - (void)testAuthors {
     NSError * __autoreleasing error;
 
-    OPFPackageDocument *package = [[OPFPackageDocument alloc] initWithContentsOfURL:packageURL error:NULL];
+    OPFPackageDocument *package = [[CLS(OPFPackageDocument) alloc] initWithContentsOfURL:packageURL error:NULL];
     NSMutableArray<NSString *> *authors = [package mutableArrayValueForKey:@"authors"];
 
     XCTAssertNotNil(authors);

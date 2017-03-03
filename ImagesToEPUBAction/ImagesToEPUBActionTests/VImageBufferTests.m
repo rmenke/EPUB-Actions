@@ -10,7 +10,10 @@
 
 @import XCTest;
 @import Accelerate.vImage;
+@import ObjectiveC.runtime;
 @import simd;
+
+#define CLS(X) objc_getClass(#X)
 
 @interface VImageBufferTests : XCTestCase
 
@@ -24,6 +27,16 @@
     [super setUp];
 
     NSBundle *bundle = [NSBundle bundleForClass:self.class];
+
+    NSError * __autoreleasing error;
+
+    NSURL *actionURL = [bundle URLForResource:@"Images to EPUB" withExtension:@"action"];
+    XCTAssertNotNil(actionURL, @"Error loading action: resource not found");
+
+    NSBundle *actionBundle = [NSBundle bundleWithURL:actionURL];
+    XCTAssertNotNil(actionBundle);
+
+    XCTAssert([actionBundle loadAndReturnError:&error], @"%@", error);
 
     NSMutableArray<NSImage *> *foundImages = [NSMutableArray array];
 
@@ -48,7 +61,7 @@
 
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertEqual(buffer.width, 680);
@@ -59,7 +72,7 @@
     NSError * __autoreleasing error = nil;
 
     NSLog(@"Ignore the following mach_vm_map error; it is expected.");
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:~0 height:~0 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:~0 height:~0 error:&error];
     XCTAssertNil(buffer);
     XCTAssertEqual(error.code, kvImageMemoryAllocationError);
     XCTAssertEqualObjects(error.localizedDescription, @"Memory allocation error");
@@ -81,7 +94,7 @@
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
     };
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:10 height:10 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:10 height:10 error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     for (NSUInteger y = 0; y < 10; ++y) {
@@ -120,7 +133,7 @@
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
     };
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:10 height:10 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:10 height:10 error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     for (NSUInteger y = 0; y < 10; ++y) {
@@ -159,7 +172,7 @@
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     };
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:10 height:10 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:10 height:10 error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     for (NSUInteger y = 0; y < 10; ++y) {
@@ -198,7 +211,7 @@
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     };
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:10 height:10 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:10 height:10 error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     for (NSUInteger y = 0; y < 10; ++y) {
@@ -227,7 +240,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     __block BOOL success;
@@ -245,7 +258,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     __block BOOL success;
@@ -263,7 +276,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     __block BOOL success;
@@ -281,7 +294,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     __block BOOL success;
@@ -299,7 +312,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     __block BOOL success;
@@ -327,7 +340,7 @@
         { 0, 0, 0, 1, 0, 0, 0, 0, 1, 0 },
     };
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:10 height:10 error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:10 height:10 error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     for (NSUInteger y = 0; y < 10; ++y) {
@@ -346,7 +359,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
@@ -366,7 +379,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
@@ -386,7 +399,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
@@ -406,7 +419,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
@@ -426,7 +439,7 @@
 
     __block NSError *error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
@@ -454,7 +467,7 @@
 
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:cols height:rows error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
@@ -491,7 +504,7 @@
 
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[VImageBuffer alloc] initWithWidth:cols height:rows error:&error];
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));

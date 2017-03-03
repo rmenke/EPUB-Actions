@@ -11,10 +11,8 @@
 		E121618A1E1DFD7A002C6F1F /* Images to EPUB.action in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */; };
 		E143DC7A1E56527B00086B78 /* OPFPackageDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E143DC791E56527B00086B78 /* OPFPackageDocument.m */; };
 		E1476FF51E56585600D14A3A /* OPFPackageDocumentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1476FF41E56585600D14A3A /* OPFPackageDocumentTests.m */; };
-		E1476FF71E565D5500D14A3A /* OPFPackageDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E143DC791E56527B00086B78 /* OPFPackageDocument.m */; };
 		E14D30F51E5E461E0029ECA6 /* VImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */; };
 		E14D30F91E5E531F0029ECA6 /* VImageBufferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E14D30F81E5E531F0029ECA6 /* VImageBufferTests.m */; };
-		E14D30FA1E5E54AF0029ECA6 /* VImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */; };
 		E1B5F5071E3EF8C70025D97B /* image01.png in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5031E3EF8C70025D97B /* image01.png */; };
 		E1B5F5081E3EF8C70025D97B /* image02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5041E3EF8C70025D97B /* image02.jpg */; };
 		E1B5F5091E3EF8C70025D97B /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5051E3EF8C70025D97B /* image03.gif */; };
@@ -276,8 +274,6 @@
 				E12161831E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m in Sources */,
 				E1476FF51E56585600D14A3A /* OPFPackageDocumentTests.m in Sources */,
 				E14D30F91E5E531F0029ECA6 /* VImageBufferTests.m in Sources */,
-				E1476FF71E565D5500D14A3A /* OPFPackageDocument.m in Sources */,
-				E14D30FA1E5E54AF0029ECA6 /* VImageBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
