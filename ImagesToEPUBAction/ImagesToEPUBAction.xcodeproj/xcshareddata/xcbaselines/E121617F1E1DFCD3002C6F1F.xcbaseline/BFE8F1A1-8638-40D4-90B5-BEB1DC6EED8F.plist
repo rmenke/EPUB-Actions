@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>classNames</key>
+	<dict>
+		<key>VImageBufferTests</key>
+		<dict>
+			<key>testEdgeDetectionWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0026772</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testEdgeDetectionWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0025573</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testEdgeDetectionWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0020377</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testEdgeDetectionWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0015344</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testEdgeDetectionWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0022488</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testHoughWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.25867</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testHoughWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.26416</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testHoughWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.14864</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testHoughWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.08522200000000001</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+			<key>testHoughWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.094067</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 2, 2017, 4:36:48 PM</string>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

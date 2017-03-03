@@ -106,7 +106,8 @@
         [bundle URLForImageResource:@"image01"],
         [bundle URLForImageResource:@"image02"],
         [bundle URLForImageResource:@"image03"],
-        [bundle URLForImageResource:@"image04"]
+        [bundle URLForImageResource:@"image04"],
+        [bundle URLForImageResource:@"image05"]
     ];
 }
 
@@ -508,10 +509,11 @@
 
     NSError * __autoreleasing error = nil;
 
-    XCTAssertEqual(_images.count, 4);
-    NSMutableArray<NSURL *> *images = [NSMutableArray arrayWithCapacity:_images.count];
+    XCTAssertGreaterThanOrEqual(_images.count, 4);
+    NSMutableArray<NSURL *> *images = [NSMutableArray arrayWithCapacity:4];
 
-    for (NSURL *url in _images) {
+    for (NSUInteger index = 0; index < 4; ++index) {
+        NSURL *url = _images[index];
         NSURL *newURL = [[NSURL fileURLWithPath:url.lastPathComponent relativeToURL:inDirectory].URLByDeletingPathExtension URLByAppendingPathExtension:@"bmp"];
         XCTAssert([fileManager copyItemAtURL:url toURL:newURL error:&error], @"%@", error);
         [images addObject:newURL];
@@ -589,7 +591,7 @@
     parameters[@"authors"] = @"Anonymous";
     parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
     parameters[@"doPanelAnalysis"] = @YES;
-    
+
     XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
     outDirectory = [outDirectory URLByAppendingPathExtension:@"epub"];
 
