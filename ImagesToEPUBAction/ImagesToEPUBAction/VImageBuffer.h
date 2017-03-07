@@ -31,6 +31,21 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 - (BOOL)detectEdgesWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
 - (nullable VImageBuffer *)houghTransformWithMargin:(NSUInteger)margin error:(NSError **)error;
 
+/*!
+ * Find the maxima in a Hough buffer which correspond to the lines in the original image.
+ */
+- (nullable NSSet<NSValue *> *)findLinesWithThreshold:(NSUInteger)threshold kernelSize:(NSUInteger)kernelSize error:(NSError **)error;
+- (NSArray<NSDictionary<NSString *, NSValue *> *> *)findSegmentsWithLines:(NSSet<NSValue *> *)lines margin:(NSUInteger)margin minLength:(NSUInteger)minLength;
+
+/*!
+ * Attempt to join segments into polylines.
+ */
++ (NSArray<NSArray<NSValue *> *> *)convertSegmentsToPolylines:(NSArray<NSDictionary<NSString *, NSValue *> *> *)segments;
+/*!
+ * Find the bounds of a set of polylines.
+ */
++ (NSArray<NSValue *> *)convertPolylinesToRegions:(NSArray<NSArray<NSValue *> *> *)polylines;
+
 - (nullable VImageBuffer *)normalizeContrast:(NSError **)error;
 - (nullable CGImageRef)copyCGImage:(NSError **)error;
 

@@ -8,6 +8,7 @@
 
 #import "ImagesToEPUBAction.h"
 #import "OPFPackageDocument.h"
+#import "VImageBuffer.h"
 
 @import AppKit.NSColor;
 @import AppKit.NSKeyValueBinding;
@@ -232,16 +233,52 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
         [bodyElement addChild:divElement];
 
+        classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
+
         if (_doPanelAnalysis) {
             id image = [frame valueForKey:@"image"];
 
             CGFloat originalWidth = CGImageGetWidth((CGImageRef)image);
             CGFloat originalHeight = CGImageGetHeight((CGImageRef)image);
 
-            __unused CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
+            CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
             localToGlobal = CGAffineTransformScale(localToGlobal, width / originalWidth, height / originalHeight);
 
-            // TODO: Implement panel analysis
+            NSColor *backgroundColor = _backgroundColor ? [NSUnarchiver unarchiveObjectWithData:_backgroundColor] : nil;
+
+            VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithImage:(__bridge CGImageRef)(image) backgroundColor:backgroundColor error:error];
+            if (!imageBuffer) return nil;
+
+            const NSUInteger kEdgeDetectionKernelSize = 3;      // TODO: Make this a parameter
+            const NSUInteger kHoughTransformMargin = 8;         // TODO: Make this a parameter
+            const NSUInteger kHoughTransformThreshold = 50;     // TODO: Make this a parameter
+            const NSUInteger kHoughTransformKernelSize = 3;     // TODO: Make this a parameter
+            const NSUInteger kLineSegmentMinimumLength = 50;    // TODO: Make this a parameter
+
+            if (![imageBuffer detectEdgesWithKernelSize:kEdgeDetectionKernelSize error:error]) return nil;
+            
+            NSSet<NSValue *> *lines = [[imageBuffer houghTransformWithMargin:kHoughTransformMargin error:error] findLinesWithThreshold:kHoughTransformThreshold kernelSize:kHoughTransformKernelSize error:error];
+            if (!lines) return nil;
+
+            NSArray *segments = [imageBuffer findSegmentsWithLines:lines margin:kHoughTransformMargin minLength:kLineSegmentMinimumLength];
+            if (!segments) return nil;
+
+            NSArray<NSValue *> *regions = [VImageBuffer convertPolylinesToRegions:[VImageBuffer convertSegmentsToPolylines:segments]];
+
+            for (NSValue *value in regions) {
+                CGRect region = NSRectToCGRect(value.rectValue);
+
+                region = CGRectApplyAffineTransform(region, localToGlobal);
+                region = CGRectApplyAffineTransform(region, pixelToPercent);
+
+                style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", region.origin.x, region.origin.y, region.size.width, region.size.height];
+
+                styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
+
+                divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr.copy, styleAttr]];
+
+                [bodyElement addChild:divElement];
+            }
         }
 
         y += height;

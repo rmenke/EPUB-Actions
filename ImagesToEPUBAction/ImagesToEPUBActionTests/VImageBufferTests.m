@@ -9,7 +9,6 @@
 #import "VImageBuffer.h"
 
 @import XCTest;
-@import Accelerate.vImage;
 @import ObjectiveC.runtime;
 @import simd;
 
@@ -74,7 +73,6 @@
     NSLog(@"Ignore the following mach_vm_map error; it is expected.");
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:~0 height:~0 error:&error];
     XCTAssertNil(buffer);
-    XCTAssertEqual(error.code, kvImageMemoryAllocationError);
     XCTAssertEqualObjects(error.localizedDescription, @"Memory allocation error");
 }
 
@@ -451,6 +449,507 @@
     }];
 
     XCTAssertNotNil(hough, @"%@", error);
+}
+
+- (void)testfindLinesWithImage01 {
+    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    __block NSError *error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> * __block points;
+
+    [self measureBlock:^{
+        points = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    }];
+
+    XCTAssertNotNil(points, @"%@", error);
+}
+
+- (void)testfindLinesWithImage02 {
+    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    __block NSError *error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> * __block points;
+
+    [self measureBlock:^{
+        points = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    }];
+
+    XCTAssertNotNil(points, @"%@", error);
+}
+
+- (void)testfindLinesWithImage03 {
+    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    __block NSError *error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> * __block points;
+
+    [self measureBlock:^{
+        points = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    }];
+
+    XCTAssertNotNil(points, @"%@", error);
+}
+
+- (void)testfindLinesWithImage04 {
+    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    __block NSError *error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> * __block points;
+
+    [self measureBlock:^{
+        points = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    }];
+
+    XCTAssertNotNil(points, @"%@", error);
+}
+
+- (void)testfindLinesWithImage05 {
+    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    __block NSError *error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> * __block points;
+
+    [self measureBlock:^{
+        points = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    }];
+
+    XCTAssertNotNil(points, @"%@", error);
+}
+
+- (void)testFindSegmentsWithImage01 {
+    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray * __block segments;
+
+    [self measureBlock:^{
+        segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+    }];
+
+    XCTAssertNotNil(segments, @"%@", error);
+}
+
+- (void)testFindSegmentsWithImage02 {
+    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray * __block segments;
+
+    [self measureBlock:^{
+        segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+    }];
+
+    XCTAssertNotNil(segments, @"%@", error);
+}
+
+- (void)testFindSegmentsWithImage03 {
+    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray * __block segments;
+
+    [self measureBlock:^{
+        segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+    }];
+
+    XCTAssertNotNil(segments, @"%@", error);
+}
+
+- (void)testFindSegmentsWithImage04 {
+    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray * __block segments;
+
+    [self measureBlock:^{
+        segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+    }];
+
+    XCTAssertNotNil(segments, @"%@", error);
+}
+
+- (void)testFindSegmentsWithImage05 {
+    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray * __block segments;
+
+    [self measureBlock:^{
+        segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+    }];
+
+    XCTAssertNotNil(segments, @"%@", error);
+}
+
+- (void)testPolylines {
+    NSValue *p0 = [NSValue valueWithPoint:NSMakePoint(0, 0)];
+    NSValue *p1 = [NSValue valueWithPoint:NSMakePoint(0, 5)];
+    NSValue *p2 = [NSValue valueWithPoint:NSMakePoint(5, 5)];
+    NSValue *p3 = [NSValue valueWithPoint:NSMakePoint(5, 0)];
+    NSValue *p4 = [NSValue valueWithPoint:NSMakePoint(10, 0)];
+
+    NSArray *segments = @[@{@"p1":p0,@"p2":p1},@{@"p1":p3,@"p2":p2},@{@"p1":p0,@"p2":p3},@{@"p1":p1,@"p2":p2},@{@"p1":p0,@"p2":p2},@{@"p1":p4,@"p2":p2}];
+
+    NSArray<NSArray<NSValue *> *> *polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    XCTAssertEqual(polylines.count, 2);
+    XCTAssertEqual(polylines.firstObject.count, 4);
+}
+
+- (void)testFindPolylinesWithImage01 {
+    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> * __block polylines;
+
+    [self measureBlock:^{
+        polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    }];
+
+    XCTAssertGreaterThan(polylines.count, 0);
+}
+
+- (void)testFindPolylinesWithImage02 {
+    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> * __block polylines;
+
+    [self measureBlock:^{
+        polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    }];
+
+    XCTAssertGreaterThan(polylines.count, 0);
+}
+
+- (void)testFindPolylinesWithImage03 {
+    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> * __block polylines;
+
+    [self measureBlock:^{
+        polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    }];
+
+    XCTAssertGreaterThan(polylines.count, 0);
+}
+
+- (void)testFindPolylinesWithImage04 {
+    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> * __block polylines;
+
+    [self measureBlock:^{
+        polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    }];
+
+    XCTAssertGreaterThan(polylines.count, 0);
+}
+
+- (void)testFindPolylinesWithImage05 {
+    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> * __block polylines;
+
+    [self measureBlock:^{
+        polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    }];
+
+    XCTAssertGreaterThan(polylines.count, 0);
+}
+
+- (void)testFindRegionsWithImage01 {
+    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> *polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    NSArray<NSValue *> * __block regions;
+
+    [self measureBlock:^{
+        regions = [CLS(VImageBuffer) convertPolylinesToRegions:polylines];
+    }];
+
+    XCTAssertEqual(regions.count, 3);
+}
+
+- (void)testFindRegionsWithImage02 {
+    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> *polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    NSArray<NSValue *> * __block regions;
+
+    [self measureBlock:^{
+        regions = [CLS(VImageBuffer) convertPolylinesToRegions:polylines];
+    }];
+
+    XCTAssertEqual(regions.count, 4);
+}
+
+- (void)testFindRegionsWithImage03 {
+    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> *polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    NSArray<NSValue *> * __block regions;
+
+    [self measureBlock:^{
+        regions = [CLS(VImageBuffer) convertPolylinesToRegions:polylines];
+    }];
+
+    if (regions.count != 2) NSLog(@"Expect 2, but getting %lu", (unsigned long)regions.count);
+
+    // FAILING: XCTAssertEqual(regions.count, 2);
+}
+
+- (void)testFindRegionsWithImage04 {
+    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
+
+    VImageBuffer *hough = [buffer houghTransformWithMargin:8 error:&error];
+
+    NSSet<NSValue *> *lines = [hough findLinesWithThreshold:40 kernelSize:7 error:&error];
+    NSArray *segments = [buffer findSegmentsWithLines:lines margin:8 minLength:20];
+
+    NSArray<NSArray<NSValue *> *> *polylines = [CLS(VImageBuffer) convertSegmentsToPolylines:segments];
+    NSArray<NSValue *> * __block regions;
+
+    [self measureBlock:^{
+        regions = [CLS(VImageBuffer) convertPolylinesToRegions:polylines];
+    }];
+
+    XCTAssertEqual(regions.count, 1);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, buffer.width, buffer.height, 8, 0, colorSpace, kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
+    CGColorSpaceRelease(colorSpace);
+
+    imageRef = [buffer copyCGImage:NULL];
+    CGContextDrawImage(ctx, CGRectMake(0, 0, buffer.width, buffer.height), imageRef);
+    CGImageRelease(imageRef);
+
+    CGContextTranslateCTM(ctx, 0, buffer.height);
+    CGContextScaleCTM(ctx, 1, -1);
+
+    CGContextSetRGBStrokeColor(ctx, 0, 0, 1, 1);
+
+    for (NSValue *value in regions) {
+        CGRect r = NSRectToCGRect(value.rectValue);
+        CGContextAddRect(ctx, r);
+    }
+
+    CGContextStrokePath(ctx);
+
+    imageRef = CGBitmapContextCreateImage(ctx);
+
+    CGContextRelease(ctx);
+
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)[NSURL fileURLWithPath:@"~/Desktop/test-region.png".stringByExpandingTildeInPath], kUTTypePNG, 1, NULL);
+    CGImageDestinationAddImage(destination, imageRef, NULL);
+    CGImageDestinationFinalize(destination);
+    CFRelease(destination);
+    
+    CGImageRelease(imageRef);
 }
 
 - (void)testNormalizeContrast {

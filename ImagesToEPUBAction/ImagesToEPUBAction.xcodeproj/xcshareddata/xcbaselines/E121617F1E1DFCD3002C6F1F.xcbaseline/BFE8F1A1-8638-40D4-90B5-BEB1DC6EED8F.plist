@@ -11,9 +11,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0026772</real>
+					<real>0.0043143</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testEdgeDetectionWithImage02</key>
@@ -21,9 +21,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0025573</real>
+					<real>0.0028411</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testEdgeDetectionWithImage03</key>
@@ -31,9 +31,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0020377</real>
+					<real>0.0034855</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testEdgeDetectionWithImage04</key>
@@ -41,9 +41,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0015344</real>
+					<real>0.0022802</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testEdgeDetectionWithImage05</key>
@@ -51,9 +51,199 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0022488</real>
+					<real>0.0040404</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
+				</dict>
+			</dict>
+			<key>testFindMaximaWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.042286</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindMaximaWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.03934</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindMaximaWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.02822</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindMaximaWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.022654</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindMaximaWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.027273</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindPolylinesWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0018438</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindPolylinesWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0035904</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindPolylinesWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.00082485</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindPolylinesWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.00068377</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindPolylinesWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0012548</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindRegionsWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>4.3378e-05</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindRegionsWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>5.3187e-05</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindRegionsWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>3.026e-05</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindRegionsWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>1.5265e-05</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testFindSegmentsWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0032369</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindSegmentsWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0090141</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindSegmentsWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0016479</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindSegmentsWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0014151</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
+				</dict>
+			</dict>
+			<key>testFindSegmentsWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0019539</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 3, 2017, 9:08:01 PM</string>
 				</dict>
 			</dict>
 			<key>testHoughWithImage01</key>
@@ -61,9 +251,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.25867</real>
+					<real>0.25928</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:17:49 PM</string>
 				</dict>
 			</dict>
 			<key>testHoughWithImage02</key>
@@ -71,9 +261,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.26416</real>
+					<real>0.28522</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testHoughWithImage03</key>
@@ -81,9 +271,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.14864</real>
+					<real>0.16604</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testHoughWithImage04</key>
@@ -91,9 +281,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.08522200000000001</real>
+					<real>0.1013</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
 				</dict>
 			</dict>
 			<key>testHoughWithImage05</key>
@@ -101,9 +291,59 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.094067</real>
+					<real>0.10949</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 2, 2017, 4:36:48 PM</string>
+					<string>Mar 3, 2017, 9:07:56 PM</string>
+				</dict>
+			</dict>
+			<key>testfindLinesWithImage01</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.045296</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testfindLinesWithImage02</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.04581</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testfindLinesWithImage03</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.03111</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testfindLinesWithImage04</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.024656</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
+				</dict>
+			</dict>
+			<key>testfindLinesWithImage05</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.036766</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 4, 2017, 10:07:51 PM</string>
 				</dict>
 			</dict>
 		</dict>
