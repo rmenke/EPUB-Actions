@@ -32,6 +32,26 @@ _Static_assert(sizeof(vector_cgfloat2) == sizeof(NSPoint), "Incorrect sizing");
 
 NS_ASSUME_NONNULL_BEGIN
 
+/*!
+ * @abstract Calculate the cosine of the angle formed by three points.
+ *
+ * @discussion Use the law of cosines:
+ * <code>cos(∠abc) = (|ab|²+|bc|²-|ac|²) / (2|ab||bc|)</code>
+ *
+ * @param a The first point of the angle
+ * @param b The vertex of the angle
+ * @param c The third point of the angle
+ * @return The cosine of the angle formed by the three points
+ */
+FOUNDATION_STATIC_INLINE
+CGFloat cosineOfAngle(vector_cgfloat2 a, vector_cgfloat2 b, vector_cgfloat2 c) {
+    CGFloat ab2 = vector_distance_squared(a, b);
+    CGFloat bc2 = vector_distance_squared(b, c);
+    CGFloat ac2 = vector_distance_squared(a, c);
+
+    return (ab2 + bc2 - ac2) / (2.0 * sqrt(ab2) * sqrt(bc2));
+}
+
 NSString * const VImageErrorDomain = @"VImageErrorDomain";
 
 #define TRY(...) \
@@ -492,14 +512,9 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
                 prepend = @YES;
             }
 
-            // Law of Cosines: cos(∠abc) = (|ab|²+|bc|²-|ac|²) / (2|ab||bc|)
-            CGFloat ab2 = vector_distance_squared(a, b);
-            CGFloat bc2 = vector_distance_squared(b, c);
-            CGFloat ac2 = vector_distance_squared(a, c);
+            CGFloat cosine = cosineOfAngle(a, b, c);
 
-            CGFloat cosine = (ab2 + bc2 - ac2) / (2.0 * sqrt(ab2) * sqrt(bc2));
-
-            NSDictionary *nominee = @{@"newPoint":[NSValue value:&a withObjCType:@encode(NSPoint)], @"endPoint":[NSValue value:&b withObjCType:@encode(NSPoint)], @"prepend":prepend, @"cosine":@(fabs(cosine)), @"distance":@(dmin), @"closing":@(closing), @"length":@(ab2), @"index":@(j)};
+            NSDictionary *nominee = @{@"newPoint":[NSValue value:&a withObjCType:@encode(NSPoint)], @"endPoint":[NSValue value:&b withObjCType:@encode(NSPoint)], @"prepend":prepend, @"cosine":@(fabs(cosine)), @"distance":@(dmin), @"closing":@(closing), @"length":@(vector_distance_squared(a, b)), @"index":@(j)};
 
             NSComparisonResult result = candidate == nil ? NSOrderedDescending : NSOrderedSame;
             if (result == NSOrderedSame) result = [usingCosine compareObject:candidate toObject:nominee];
