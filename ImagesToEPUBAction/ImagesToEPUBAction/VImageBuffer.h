@@ -47,7 +47,7 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 + (NSArray<NSValue *> *)convertPolylinesToRegions:(NSArray<NSArray<NSValue *> *> *)polylines;
 
 - (nullable VImageBuffer *)normalizeContrast:(NSError **)error;
-- (nullable CGImageRef)copyCGImage:(NSError **)error;
+- (nullable CGImageRef)copyCGImage:(NSError **)error CF_RETURNS_RETAINED;
 
 @end
 

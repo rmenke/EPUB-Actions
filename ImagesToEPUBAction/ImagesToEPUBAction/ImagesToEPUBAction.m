@@ -177,13 +177,31 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     const CGFloat contentWidth  = _pageWidth  - 2 * _pageMargin;
     const CGFloat contentHeight = _pageHeight - 2 * _pageMargin;
 
-    const CGFloat usedHeight = [[page valueForKeyPath:@"@sum.height"] doubleValue];
+    CGFloat usedHeight = [[page valueForKeyPath:@"@sum.height"] doubleValue];
 
-    const CGFloat vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count - 1);
+    CGFloat vSpace, y;
 
-    CGFloat y = _pageMargin;
+    switch (self.layoutStyle) {
+        case minimizeInternalSpace:
+            vSpace = 0.0;
+            y = _pageMargin + (contentHeight - usedHeight) / 2.0;
+            break;
 
-    if (page.count == 1) y += (contentHeight - usedHeight) / 2.0;
+        case maximizeInternalSpace:
+            if (page.count > 1) {
+                vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count - 1);
+                y = _pageMargin;
+                break;
+            }
+
+        case distributeInternalSpace: // or maximizeInternalSpace with a single image
+            vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count + 1);
+            y = _pageMargin + vSpace;
+            break;
+
+        default:
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unknown layout style %lu", (unsigned long)(self.layoutStyle)] userInfo:nil];
+    }
 
     CGAffineTransform pixelToPercent = CGAffineTransformMakeScale(100.0 / _pageWidth, 100.0 / _pageHeight);
 

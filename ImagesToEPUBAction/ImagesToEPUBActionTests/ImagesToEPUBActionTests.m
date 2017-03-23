@@ -48,6 +48,27 @@
 
 @end
 
+@implementation NSString (NSHTMLGeometryExtension)
+
+static NSRegularExpression *expr = NULL;
+
+- (NSDictionary<NSString *, NSString *> *)htmlStyle {
+    if (!expr) expr = [NSRegularExpression regularExpressionWithPattern:@"(\\w+)\\s*:\\s*([^;]*[^;\\s])" options:0 error:NULL];
+
+    NSMutableDictionary<NSString *, NSString *> *dictionary = [NSMutableDictionary dictionary];
+
+    [expr enumerateMatchesInString:self options:0 range:NSMakeRange(0, self.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        NSString *name  = [self substringWithRange:[result rangeAtIndex:1]];
+        NSString *value = [[self substringWithRange:[result rangeAtIndex:2]] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+        dictionary[name] = value;
+    }];
+
+    return dictionary;
+}
+
+@end
+
 @interface ImagesToEPUBActionTests : XCTestCase
 
 @property (strong, nonatomic) id action;
@@ -483,7 +504,7 @@
 }
 
 - (void)testCreatePagesNoScaling {
-    [[_action parameters] setObject:@YES forKey:@"disableUpscaling"];
+    [_action parameters][@"disableUpscaling"] = @YES;
 
     [_action loadParameters];
 
@@ -579,6 +600,116 @@
     XCTAssertNotNil(elements, @"%@", error);
 
     XCTAssertEqualObjects(([elements valueForKey:@"stringValue"]), (@[@"Bob Smith", @"Jack Brown", @"Bill Jones"]));
+}
+
+- (void)testLayoutDistribute {
+    NSError * __autoreleasing error;
+
+    [_action loadParameters];
+
+    XCTAssertEqual([_action layoutStyle], distributeInternalSpace);
+
+    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+
+    for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
+        NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
+        NSUInteger height = imageRep.pixelsHigh;
+        NSUInteger width = imageRep.pixelsWide;
+
+        NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
+        [page addObject:dictionary];
+    }
+
+    NSURL *url = [_action createPage:page number:1 inDirectory:outDirectory error:&error];
+    XCTAssertNotNil(url, @"%@", error);
+
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+
+    double top = [result[0][@"top"] doubleValue];
+    double middleTop = top + [result[0][@"height"] doubleValue];
+    double middleBottom = [result[1][@"top"] doubleValue];
+    double bottom = middleBottom + [result[1][@"height"] doubleValue];
+
+    XCTAssertGreaterThan(top, 0.0);
+    XCTAssertLessThan(middleTop, middleBottom);
+    XCTAssertLessThan(bottom, 100.0);
+}
+
+- (void)testLayoutMinimize {
+    NSError * __autoreleasing error;
+
+    [_action parameters][@"layoutStyle"] = @(minimizeInternalSpace);
+    [_action loadParameters];
+
+    XCTAssertEqual([_action layoutStyle], minimizeInternalSpace);
+
+    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+
+    for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
+        NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
+        NSUInteger height = imageRep.pixelsHigh;
+        NSUInteger width = imageRep.pixelsWide;
+
+        NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
+        [page addObject:dictionary];
+    }
+
+    NSURL *url = [_action createPage:page number:1 inDirectory:outDirectory error:&error];
+    XCTAssertNotNil(url, @"%@", error);
+
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+
+    double top = [result[0][@"top"] doubleValue];
+    double middleTop = top + [result[0][@"height"] doubleValue];
+    double middleBottom = [result[1][@"top"] doubleValue];
+    double bottom = middleBottom + [result[1][@"height"] doubleValue];
+
+    XCTAssertGreaterThan(top, 0.0);
+    XCTAssertEqualWithAccuracy(middleTop, middleBottom, 0.001);
+    XCTAssertLessThan(bottom, 100.0);
+}
+
+- (void)testLayoutMaximize {
+    NSError * __autoreleasing error;
+
+    [_action parameters][@"layoutStyle"] = @(maximizeInternalSpace);
+    [_action loadParameters];
+
+    XCTAssertEqual([_action layoutStyle], maximizeInternalSpace);
+
+    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+
+    for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
+        NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
+        NSUInteger height = imageRep.pixelsHigh;
+        NSUInteger width = imageRep.pixelsWide;
+
+        NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
+        [page addObject:dictionary];
+    }
+
+    NSURL *url = [_action createPage:page number:1 inDirectory:outDirectory error:&error];
+    XCTAssertNotNil(url, @"%@", error);
+
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+    XCTAssertNotNil(document, @"%@", error);
+
+    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+
+    double top = [result[0][@"top"] doubleValue];
+    double middleTop = top + [result[0][@"height"] doubleValue];
+    double middleBottom = [result[1][@"top"] doubleValue];
+    double bottom = middleBottom + [result[1][@"height"] doubleValue];
+
+    XCTAssertEqualWithAccuracy(top, 0.0, 0.001);
+    XCTAssertLessThan(middleTop, middleBottom);
+    XCTAssertEqualWithAccuracy(bottom, 100.0, 0.001);
 }
 
 - (void)testAction {
