@@ -113,7 +113,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     _outputURL         = [NSURL fileURLWithPath:filename isDirectory:YES relativeToURL:folderURL];
 }
 
-- (nullable NSURL *)createWorkingDirectory:(NSError **)error {
+- (nullable NSURL *)createWorkingDirectoryAndReturnError:(NSError **)error {
     return [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:_outputURL create:YES error:error];
 }
 
@@ -501,7 +501,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     [self loadParameters];
 
-    NSURL *workingURL = [self createWorkingDirectory:error];
+    NSURL *workingURL = [self createWorkingDirectoryAndReturnError:error];
     if (!workingURL) return nil;
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];

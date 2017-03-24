@@ -254,7 +254,7 @@ static NSRegularExpression *expr = NULL;
     [fileManager removeItemAtURL:outputURL error:NULL];
 
     NSError * __autoreleasing error;
-    NSURL *workingURL = [_action createWorkingDirectory:&error];
+    NSURL *workingURL = [_action createWorkingDirectoryAndReturnError:&error];
 
     XCTAssertNotNil(workingURL, @"failed to create working directory: %@", error);
 
@@ -276,7 +276,7 @@ static NSRegularExpression *expr = NULL;
 
     NSError * __autoreleasing error;
 
-    NSURL *workingURL = [_action createWorkingDirectory:&error];
+    NSURL *workingURL = [_action createWorkingDirectoryAndReturnError:&error];
     XCTAssertNotNil(workingURL, @"failed to create working directory: %@", error);
 
     NSURL *finalURL = [_action finalizeWorkingDirectory:workingURL error:&error];
@@ -303,7 +303,7 @@ static NSRegularExpression *expr = NULL;
 
     NSError * __autoreleasing error;
 
-    NSURL *workingURL = [_action createWorkingDirectory:&error];
+    NSURL *workingURL = [_action createWorkingDirectoryAndReturnError:&error];
     XCTAssertNotNil(workingURL, @"failed to create working directory: %@", error);
 
     NSURL *finalURL = [_action finalizeWorkingDirectory:workingURL error:&error];

@@ -924,7 +924,7 @@
     CGContextRef ctx = CGBitmapContextCreate(NULL, buffer.width, buffer.height, 8, 0, colorSpace, kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
     CGColorSpaceRelease(colorSpace);
 
-    imageRef = [buffer copyCGImage:NULL];
+    imageRef = [buffer copyCGImageAndReturnError:NULL];
     CGContextDrawImage(ctx, CGRectMake(0, 0, buffer.width, buffer.height), imageRef);
     CGImageRelease(imageRef);
 
@@ -975,7 +975,7 @@
         memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
     }
 
-    buffer = [buffer normalizeContrast:&error];
+    buffer = [buffer normalizeContrastAndReturnError:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertEqual(buffer.width, cols);
@@ -1012,7 +1012,7 @@
         memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
     }
 
-    CGImageRef image = [buffer copyCGImage:&error];
+    CGImageRef image = [buffer copyCGImageAndReturnError:&error];
     buffer = nil;
 
     XCTAssertNotEqual(image, NULL, @"returns valid CGImage");

@@ -60,7 +60,7 @@ NSString * const VImageErrorDomain = @"VImageErrorDomain";
         if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:code userInfo:nil]; \
         return NO; \
     } \
-    return YES;
+    return YES
 
 FOUNDATION_STATIC_INLINE
 BOOL InitBuffer(vImage_Buffer *buf, NSUInteger height, NSUInteger width, NSError **error) {
@@ -121,7 +121,7 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
                 case kvImageNoError:
                     return @"No error";
                 case kvImageRoiLargerThanInputBuffer:
-                    return @"Roi larger than input buffer";
+                    return @"ROI larger than input buffer";
                 case kvImageInvalidKernelSize:
                     return @"Invalid kernel size";
                 case kvImageInvalidEdgeStyle:
@@ -620,7 +620,7 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
     return regions;
 }
 
-- (nullable VImageBuffer *)normalizeContrast:(NSError **)error {
+- (nullable VImageBuffer *)normalizeContrastAndReturnError:(NSError **)error {
     VImageBuffer *result = [[VImageBuffer alloc] initWithWidth:buffer.width height:buffer.height error:error];
     if (!result) return nil;
 
@@ -629,7 +629,7 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
     return result;
 }
 
-- (nullable CGImageRef)copyCGImage:(NSError **)error {
+- (nullable CGImageRef)copyCGImageAndReturnError:(NSError **)error {
     NS_VALID_UNTIL_END_OF_SCOPE NSColorSpace *grayColorSpace = [NSColorSpace genericGrayColorSpace];
 
     vImage_CGImageFormat format = {

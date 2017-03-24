@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 
 - (void)loadParameters;
 
-- (nullable NSURL *)createWorkingDirectory:(NSError **)error;
+- (nullable NSURL *)createWorkingDirectoryAndReturnError:(NSError **)error;
 - (nullable NSURL *)finalizeWorkingDirectory:(NSURL *)url error:(NSError **)error;
 
 - (nullable NSArray<NSDictionary<NSString *, id> *> *)copyItemsFromPaths:(NSArray<NSString *> *)paths toDirectory:(NSURL *)directory error:(NSError **)error;
