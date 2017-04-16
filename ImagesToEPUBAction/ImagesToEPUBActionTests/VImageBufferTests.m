@@ -919,37 +919,6 @@
     }];
 
     XCTAssertEqual(regions.count, 1);
-
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef ctx = CGBitmapContextCreate(NULL, buffer.width, buffer.height, 8, 0, colorSpace, kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
-    CGColorSpaceRelease(colorSpace);
-
-    imageRef = [buffer copyCGImageAndReturnError:NULL];
-    CGContextDrawImage(ctx, CGRectMake(0, 0, buffer.width, buffer.height), imageRef);
-    CGImageRelease(imageRef);
-
-    CGContextTranslateCTM(ctx, 0, buffer.height);
-    CGContextScaleCTM(ctx, 1, -1);
-
-    CGContextSetRGBStrokeColor(ctx, 0, 0, 1, 1);
-
-    for (NSValue *value in regions) {
-        CGRect r = NSRectToCGRect(value.rectValue);
-        CGContextAddRect(ctx, r);
-    }
-
-    CGContextStrokePath(ctx);
-
-    imageRef = CGBitmapContextCreateImage(ctx);
-
-    CGContextRelease(ctx);
-
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)[NSURL fileURLWithPath:@"~/Desktop/test-region.png".stringByExpandingTildeInPath], kUTTypePNG, 1, NULL);
-    CGImageDestinationAddImage(destination, imageRef, NULL);
-    CGImageDestinationFinalize(destination);
-    CFRelease(destination);
-    
-    CGImageRelease(imageRef);
 }
 
 - (void)testNormalizeContrast {
