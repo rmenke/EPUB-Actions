@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 FOUNDATION_EXTERN NSString * const VImageErrorDomain;
 FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 
-@interface VImageBuffer : NSObject
+@interface VImageBuffer : NSObject<NSCopying>
 
 @property (readonly, nonatomic) void *data NS_RETURNS_INNER_POINTER;
 @property (readonly, nonatomic) NSUInteger width, height, bytesPerRow;
@@ -29,22 +29,9 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 - (nullable VImageBuffer *)minimizeWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
 
 - (BOOL)detectEdgesWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
-- (nullable VImageBuffer *)houghTransformWithMargin:(NSUInteger)margin error:(NSError **)error;
 
-/*!
- * Find the maxima in a Hough buffer which correspond to the lines in the original image.
- */
-- (nullable NSSet<NSValue *> *)findLinesWithThreshold:(NSUInteger)threshold kernelSize:(NSUInteger)kernelSize error:(NSError **)error;
-- (NSArray<NSDictionary<NSString *, NSValue *> *> *)findSegmentsWithLines:(NSSet<NSValue *> *)lines margin:(NSUInteger)margin minLength:(NSUInteger)minLength;
-
-/*!
- * Attempt to join segments into polylines.
- */
-+ (NSArray<NSArray<NSValue *> *> *)convertSegmentsToPolylines:(NSArray<NSDictionary<NSString *, NSValue *> *> *)segments;
-/*!
- * Find the bounds of a set of polylines.
- */
-+ (NSArray<NSValue *> *)convertPolylinesToRegions:(NSArray<NSArray<NSValue *> *> *)polylines;
+- (nullable NSArray<NSValue *> *)findSegmentsAndReturnError:(NSError **)error;
+- (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error;
 
 - (nullable VImageBuffer *)normalizeContrastAndReturnError:(NSError **)error;
 - (nullable CGImageRef)copyCGImageAndReturnError:(NSError **)error CF_RETURNS_RETAINED;

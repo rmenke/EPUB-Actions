@@ -251,8 +251,6 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
         [bodyElement addChild:divElement];
 
-        classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
-
         if (_doPanelAnalysis) {
             id image = [frame valueForKey:@"image"];
 
@@ -267,21 +265,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithImage:(__bridge CGImageRef)(image) backgroundColor:backgroundColor error:error];
             if (!imageBuffer) return nil;
 
-            const NSUInteger kEdgeDetectionKernelSize = 3;      // TODO: Make this a parameter
-            const NSUInteger kHoughTransformMargin = 8;         // TODO: Make this a parameter
-            const NSUInteger kHoughTransformThreshold = 50;     // TODO: Make this a parameter
-            const NSUInteger kHoughTransformKernelSize = 3;     // TODO: Make this a parameter
-            const NSUInteger kLineSegmentMinimumLength = 50;    // TODO: Make this a parameter
-
-            if (![imageBuffer detectEdgesWithKernelSize:kEdgeDetectionKernelSize error:error]) return nil;
-            
-            NSSet<NSValue *> *lines = [[imageBuffer houghTransformWithMargin:kHoughTransformMargin error:error] findLinesWithThreshold:kHoughTransformThreshold kernelSize:kHoughTransformKernelSize error:error];
-            if (!lines) return nil;
-
-            NSArray *segments = [imageBuffer findSegmentsWithLines:lines margin:kHoughTransformMargin minLength:kLineSegmentMinimumLength];
-            if (!segments) return nil;
-
-            NSArray<NSValue *> *regions = [VImageBuffer convertPolylinesToRegions:[VImageBuffer convertSegmentsToPolylines:segments]];
+            NSArray<NSValue *> *regions = [imageBuffer findRegionsAndReturnError:error];
+            if (!regions) return nil;
 
             for (NSValue *value in regions) {
                 CGRect region = NSRectToCGRect(value.rectValue);
@@ -291,9 +276,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
                 style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", region.origin.x, region.origin.y, region.size.width, region.size.height];
 
+                classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
                 styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
 
-                divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr.copy, styleAttr]];
+                divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr]];
 
                 [bodyElement addChild:divElement];
             }

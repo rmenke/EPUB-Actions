@@ -732,9 +732,17 @@ static NSRegularExpression *expr = NULL;
         [input addObject:image.absoluteURL.path];
     }
 
-    NSArray<NSString *> *result = [_action runWithInput:input error:&error];
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqualObjects(result[0], outDirectory.path);
+    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error = nil;
+        
+        [self startMeasuring];
+        NSArray<NSString *> *result = [_action runWithInput:input error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqualObjects(result[0], outDirectory.path);
+    }];
+
 }
 
 @end
