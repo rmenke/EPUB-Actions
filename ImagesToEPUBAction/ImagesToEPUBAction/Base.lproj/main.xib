@@ -106,7 +106,7 @@
                         <menu key="menu" title="OtherViews" id="UW6-4L-1oQ"/>
                     </amVariablePopUpButtonCell>
                     <connections>
-                        <binding destination="aFj-Nx-tzi" name="selectedIndex" keyPath="selection.outputFolder" id="e2l-wv-Y6x"/>
+                        <binding destination="aFj-Nx-tzi" name="path" keyPath="selection.outputFolder" id="e2l-wv-Y6x"/>
                     </connections>
                 </amPathPopUpButton>
                 <amTokenField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5rl-I6-Wad" userLabel="Title Field">
