@@ -51,14 +51,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @interface ImagesToEPUBAction ()
 
-@property (nonatomic) NSString *outputFolder;
-@property (nonatomic) NSString *title;
-@property (nonatomic) NSString *authors;
-@property (nonatomic) NSString *publicationID;
-@property (nonatomic) NSUInteger pageWidth, pageHeight, pageMargin;
-@property (nonatomic) BOOL disableUpscaling;
-@property (nonatomic) NSData *backgroundColor;
-@property (nonatomic) BOOL doPanelAnalysis;
+@property (nonatomic, nullable) NSURL *coverImage;
 
 @end
 
@@ -136,6 +129,19 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     NSMutableArray<NSDictionary<NSString *, id> *> *result = [NSMutableArray arrayWithCapacity:count];
 
     NSDictionary<NSString *, id> *chapter = @{@"title": @""};
+
+    if (_firstIsCover) {
+        NSURL *inputURL = [NSURL fileURLWithPath:paths.firstObject];
+        paths = [paths subarrayWithRange:NSMakeRange(1, paths.count - 1)];
+
+        NSString * _Nonnull typeIdentifier;
+
+        if (![inputURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return nil;
+        if (![manager createDirectoryAtURL:contentURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+
+        _coverImage = [NSURL fileURLWithPath:[NSString stringWithFormat:@"cover.%@", extensionForType(typeIdentifier)] relativeToURL:contentURL];
+        if (![manager copyItemAtURL:inputURL toURL:_coverImage error:error]) return nil;
+    }
 
     for (NSString *path in paths) {
         NSURL *inputURL = [NSURL fileURLWithPath:path];
@@ -449,9 +455,17 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         }
     }
 
-    NSArray<NSString *> *manifestItems = [chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"];
+    NSMutableSet<NSString *> *manifest = [packageDocument mutableSetValueForKey:@"manifest"];
 
-    [[packageDocument mutableSetValueForKey:@"manifest"] addObjectsFromArray:manifestItems];
+    [manifest addObjectsFromArray:[chapters valueForKeyPath:@"@unionOfArrays.images.relativePath"]];
+
+    if (_coverImage) {
+        NSString *manifestItem = _coverImage.relativePath;
+
+        [manifest addObject:manifestItem];
+        [packageDocument setProperties:@"cover-image" forManifest:manifestItem];
+    }
+
     [[packageDocument mutableArrayValueForKey:@"spine"] addObjectsFromArray:spineItems];
 
     if (![[packageDocument.document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsDirectory URLByAppendingPathComponent:packageURL.lastPathComponent] options:0 error:error]) return NO;

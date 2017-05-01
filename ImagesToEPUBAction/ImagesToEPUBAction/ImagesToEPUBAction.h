@@ -25,6 +25,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 @property (nonatomic, readonly) NSData *backgroundColor;
 @property (nonatomic, readonly) enum PageLayoutStyle layoutStyle;
 @property (nonatomic, readonly) BOOL doPanelAnalysis;
+@property (nonatomic, readonly) BOOL firstIsCover;
 
 @property (nonatomic, readonly) NSString *pageColor;
 @property (nonatomic, readonly) NSURL *outputURL;

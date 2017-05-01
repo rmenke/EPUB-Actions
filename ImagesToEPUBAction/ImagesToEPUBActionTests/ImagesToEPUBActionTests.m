@@ -432,6 +432,76 @@ static NSRegularExpression *expr = NULL;
     }
 }
 
+- (void)testCopyItemsCoverImage {
+    NSError * __autoreleasing error = nil;
+
+    NSString *title1 = @"alpha";
+    NSString *title2 = @"beta";
+
+    NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
+    NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
+
+    NSArray<NSURL *> *chapters = @[ch1, ch2];
+
+    for (NSURL *url in chapters) {
+        [fileManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
+    }
+
+    NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+    NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+    NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
+    NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
+
+    NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
+
+    for (NSString *path in paths) {
+        XCTAssert([[NSData data] writeToFile:path options:NSDataWritingAtomic error:&error], @"%@", error);
+    }
+
+    [_action setValue:@YES forKey:@"firstIsCover"];
+
+    NSArray<NSDictionary *> *result = [_action copyItemsFromPaths:paths toDirectory:outDirectory error:&error];
+
+    // Verify all URLs are relative to the Contents subdirectory
+    NSArray<NSURL *> *baseURLs = [result valueForKeyPath:@"@distinctUnionOfArrays.images.baseURL"];
+    XCTAssertEqual(baseURLs.count, 1, @"expected one base URL");
+    XCTAssertEqualObjects(baseURLs.firstObject.URLByStandardizingPath, [outDirectory URLByAppendingPathComponent:@"Contents" isDirectory:YES].URLByStandardizingPath);
+
+    // Verify a warning was created for the ignored file.
+    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
+
+    XCTAssertNotNil(result, @"%@", error);
+    XCTAssertEqual(result.count, 2);
+    XCTAssertEqualObjects(([result valueForKeyPath:@"title"]), (@[title1, title2]));
+    XCTAssertEqualObjects(([result[0] valueForKeyPath:@"images.@count"]), @1);
+    XCTAssertEqualObjects(([result[0] valueForKeyPath:@"images.lastPathComponent"]), (@[@"im0001.jpeg"]));
+    XCTAssertEqualObjects(([result[1] valueForKeyPath:@"images.@count"]), @1);
+    XCTAssertEqualObjects(([result[1] valueForKeyPath:@"images.lastPathComponent"]), (@[@"im0001.jpeg"]));
+
+    NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:outDirectory includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
+        return [obj1.absoluteString compare:obj2.absoluteString];
+    }];
+
+    XCTAssertEqual(items.count, 6);
+    XCTAssertTrue(items[0].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"Contents"]);
+    XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001"]);
+    XCTAssertTrue(items[2].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[2], [outDirectory URLByAppendingPathComponent:@"Contents/ch0001/im0001.jpeg"]);
+    XCTAssertTrue(items[3].isDirectoryOnFileSystem);
+    XCTAssertEqualFileURLs(items[3], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002"]);
+    XCTAssertTrue(items[4].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"Contents/ch0002/im0001.jpeg"]);
+    XCTAssertTrue(items[5].isRegularFileOnFileSystem);
+    XCTAssertEqualFileURLs(items[5], [outDirectory URLByAppendingPathComponent:@"Contents/cover.png"]);
+
+    for (NSURL *url in chapters) {
+        XCTAssert([fileManager removeItemAtURL:url error:&error], @"%@", error);
+    }
+}
+
 - (void)testCreatePages {
     [_action loadParameters];
 
@@ -721,7 +791,8 @@ static NSRegularExpression *expr = NULL;
     parameters[@"title"] = outDirectory.lastPathComponent;
     parameters[@"authors"] = @"Anonymous";
     parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
-    parameters[@"doPanelAnalysis"] = @YES;
+    parameters[@"doPanelAnalysis"] = @NO;
+    parameters[@"firstIsCover"] = @NO;
 
     XCTAssert([fileManager removeItemAtURL:outDirectory error:&error], @"%@", error);
     outDirectory = [outDirectory URLByAppendingPathExtension:@"epub"];
@@ -742,7 +813,6 @@ static NSRegularExpression *expr = NULL;
         XCTAssertNotNil(result, @"%@", error);
         XCTAssertEqualObjects(result[0], outDirectory.path);
     }];
-
 }
 
 @end

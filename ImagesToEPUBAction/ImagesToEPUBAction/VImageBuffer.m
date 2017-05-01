@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @return The cosine of the angle formed by the three points
  */
 FOUNDATION_STATIC_INLINE
-CGFloat cosineOfAngle(vector_cgfloat2 a, vector_cgfloat2 b, vector_cgfloat2 c) {
+__unused CGFloat cosineOfAngle(vector_cgfloat2 a, vector_cgfloat2 b, vector_cgfloat2 c) {
     CGFloat ab2 = vector_distance_squared(a, b);
     CGFloat bc2 = vector_distance_squared(b, c);
     CGFloat ac2 = vector_distance_squared(a, c);
