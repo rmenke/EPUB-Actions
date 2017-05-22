@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1421" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
@@ -148,24 +148,25 @@
                     </amTokenFieldCell>
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.publicationID" id="dnb-7T-5ve"/>
-                        <outlet property="nextKeyView" destination="kk4-KG-gs9" id="vDU-ju-cOD"/>
+                        <outlet property="nextKeyView" destination="1bB-d1-Di8" id="D2B-ug-kcQ"/>
                     </connections>
                 </amTokenField>
-                <amTokenField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kk4-KG-gs9" userLabel="Width Field">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1bB-d1-Di8" userLabel="Width Field">
                     <rect key="frame" x="102" y="91" width="60" height="19"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="60" id="KAS-zp-RJw"/>
+                        <constraint firstAttribute="width" constant="60" id="2In-lZ-ekM"/>
                     </constraints>
-                    <amTokenFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" allowsEditingTextAttributes="YES" id="WdG-TG-seC">
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="sPW-59-AWI">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </amTokenFieldCell>
+                    </textFieldCell>
                     <connections>
-                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageWidth" id="CoA-7p-eMy"/>
-                        <outlet property="nextKeyView" destination="F28-fM-N7N" id="KrS-q3-44V"/>
+                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageWidth" id="Usy-8m-A7d"/>
+                        <outlet property="formatter" destination="gxI-GR-Pf7" id="RTB-aC-PU8"/>
+                        <outlet property="nextKeyView" destination="RRV-Eh-s8h" id="1Gw-jH-S0f"/>
                     </connections>
-                </amTokenField>
+                </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8cM-qP-ZKU">
                     <rect key="frame" x="168" y="94" width="43" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Height:" id="YtM-UT-Nkd">
@@ -174,18 +175,22 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <amTokenField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F28-fM-N7N" userLabel="Height Field">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RRV-Eh-s8h" userLabel="Height Field">
                     <rect key="frame" x="217" y="91" width="60" height="19"/>
-                    <amTokenFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" allowsEditingTextAttributes="YES" id="Cie-lB-TsO">
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="shL-zJ-u0l"/>
+                    </constraints>
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="exf-OK-Sj9">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </amTokenFieldCell>
+                    </textFieldCell>
                     <connections>
-                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageHeight" id="Z0E-Gh-HKv"/>
-                        <outlet property="nextKeyView" destination="jmT-9I-8hS" id="kBO-fW-J96"/>
+                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageHeight" id="SCh-A7-SRR"/>
+                        <outlet property="formatter" destination="gxI-GR-Pf7" id="WMA-Dd-z0c"/>
+                        <outlet property="nextKeyView" destination="wu9-mx-h8r" id="61L-n5-UoK"/>
                     </connections>
-                </amTokenField>
+                </textField>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="BSf-2w-OeA">
                     <rect key="frame" x="282" y="92" width="145" height="18"/>
                     <buttonCell key="cell" type="check" title="Do not scale up images" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="k9D-nv-qM8">
@@ -196,17 +201,21 @@
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.disableUpscaling" id="CwS-cO-Ys2"/>
                     </connections>
                 </button>
-                <amTokenField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jmT-9I-8hS" userLabel="Margin Field">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wu9-mx-h8r" userLabel="Margin Field">
                     <rect key="frame" x="102" y="64" width="60" height="19"/>
-                    <amTokenFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" allowsEditingTextAttributes="YES" id="SKc-iY-rGv">
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="fsR-ES-38m"/>
+                    </constraints>
+                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ol2-yX-c8S">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </amTokenFieldCell>
+                    </textFieldCell>
                     <connections>
-                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageMargin" id="TKY-A9-Gmh"/>
+                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageMargin" id="SaW-QT-Um1"/>
+                        <outlet property="formatter" destination="gxI-GR-Pf7" id="AQE-n4-QHv"/>
                     </connections>
-                </amTokenField>
+                </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m7Y-vE-eLd">
                     <rect key="frame" x="168" y="67" width="36" height="14"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color:" id="Ga7-I7-D35">
@@ -286,47 +295,42 @@
             <constraints>
                 <constraint firstItem="m7Y-vE-eLd" firstAttribute="baseline" secondItem="rsu-FU-il8" secondAttribute="baseline" id="0ih-2G-bsP"/>
                 <constraint firstItem="dFl-vd-tll" firstAttribute="baseline" secondItem="m7Y-vE-eLd" secondAttribute="baseline" id="25h-wa-Cyw"/>
-                <constraint firstItem="jmT-9I-8hS" firstAttribute="baseline" secondItem="rsu-FU-il8" secondAttribute="baseline" id="4j4-AE-hcp"/>
-                <constraint firstItem="BSf-2w-OeA" firstAttribute="baseline" secondItem="F28-fM-N7N" secondAttribute="baseline" id="4rv-aX-y1I"/>
-                <constraint firstItem="kk4-KG-gs9" firstAttribute="top" secondItem="H5F-h2-H5b" secondAttribute="bottom" constant="8" symbolic="YES" id="4xk-Mt-d98"/>
+                <constraint firstItem="BSf-2w-OeA" firstAttribute="leading" secondItem="RRV-Eh-s8h" secondAttribute="trailing" constant="8" symbolic="YES" id="33G-3O-6E4"/>
+                <constraint firstItem="wu9-mx-h8r" firstAttribute="top" secondItem="1bB-d1-Di8" secondAttribute="bottom" constant="8" symbolic="YES" id="4Tb-pw-5Np"/>
                 <constraint firstItem="A5k-bm-eYQ" firstAttribute="top" secondItem="47Y-Ci-255" secondAttribute="top" constant="10" id="51w-Lz-B4U"/>
-                <constraint firstItem="kk4-KG-gs9" firstAttribute="leading" secondItem="H5F-h2-H5b" secondAttribute="leading" id="642-jA-nAP"/>
+                <constraint firstItem="RaF-Y6-esE" firstAttribute="trailing" secondItem="RRV-Eh-s8h" secondAttribute="trailing" id="6gC-hc-tkh"/>
                 <constraint firstItem="lzL-Rx-Ym8" firstAttribute="leading" secondItem="5rl-I6-Wad" secondAttribute="leading" id="7Gv-yG-OuF"/>
                 <constraint firstItem="A5k-bm-eYQ" firstAttribute="leading" secondItem="HRN-ol-zlT" secondAttribute="trailing" constant="8" id="7ax-Tk-P9Y"/>
-                <constraint firstItem="RaF-Y6-esE" firstAttribute="trailing" secondItem="F28-fM-N7N" secondAttribute="trailing" id="B9S-AQ-KpR"/>
+                <constraint firstItem="1bB-d1-Di8" firstAttribute="leading" secondItem="H5F-h2-H5b" secondAttribute="leading" id="BtP-f2-DJt"/>
+                <constraint firstItem="RRV-Eh-s8h" firstAttribute="leading" secondItem="8cM-qP-ZKU" secondAttribute="trailing" constant="8" symbolic="YES" id="DnY-bP-zIy"/>
+                <constraint firstItem="RRV-Eh-s8h" firstAttribute="baseline" secondItem="8cM-qP-ZKU" secondAttribute="baseline" id="ExY-mH-ou8"/>
+                <constraint firstItem="1bB-d1-Di8" firstAttribute="baseline" secondItem="wPh-Ko-ncI" secondAttribute="baseline" id="FGp-hs-V2l"/>
+                <constraint firstItem="BSf-2w-OeA" firstAttribute="baseline" secondItem="RRV-Eh-s8h" secondAttribute="baseline" id="H34-7g-RpM"/>
                 <constraint firstItem="H5F-h2-H5b" firstAttribute="leading" secondItem="lzL-Rx-Ym8" secondAttribute="leading" id="IA5-g6-SIF"/>
-                <constraint firstItem="F28-fM-N7N" firstAttribute="leading" secondItem="8cM-qP-ZKU" secondAttribute="trailing" constant="8" symbolic="YES" id="KkJ-Ct-4rq"/>
                 <constraint firstItem="dFl-vd-tll" firstAttribute="leading" secondItem="RaF-Y6-esE" secondAttribute="trailing" constant="8" id="NiW-ae-2Y2"/>
+                <constraint firstItem="wu9-mx-h8r" firstAttribute="leading" secondItem="1bB-d1-Di8" secondAttribute="leading" id="PVi-gr-rYH"/>
                 <constraint firstItem="4jO-hF-yv4" firstAttribute="leading" secondItem="HRN-ol-zlT" secondAttribute="trailing" constant="8" symbolic="YES" id="Qpy-Uc-Q2E"/>
                 <constraint firstItem="z3N-d0-UFo" firstAttribute="leading" secondItem="47Y-Ci-255" secondAttribute="leading" constant="10" id="Sit-3W-Ejy"/>
-                <constraint firstItem="F28-fM-N7N" firstAttribute="trailing" secondItem="H5F-h2-H5b" secondAttribute="trailing" id="V7k-tC-Ac7"/>
                 <constraint firstAttribute="trailing" secondItem="rLZ-hx-3QZ" secondAttribute="trailing" constant="10" id="WFp-Ro-3Qg"/>
                 <constraint firstItem="lzL-Rx-Ym8" firstAttribute="trailing" secondItem="5rl-I6-Wad" secondAttribute="trailing" id="Xk3-Xc-kD9"/>
+                <constraint firstItem="8cM-qP-ZKU" firstAttribute="leading" secondItem="1bB-d1-Di8" secondAttribute="trailing" constant="8" symbolic="YES" id="Y8i-tt-ncd"/>
                 <constraint firstItem="lzL-Rx-Ym8" firstAttribute="baseline" secondItem="YaE-PA-wlb" secondAttribute="baseline" id="ZCX-df-GGb"/>
                 <constraint firstItem="A5k-bm-eYQ" firstAttribute="trailing" secondItem="5rl-I6-Wad" secondAttribute="trailing" id="abC-8P-0jd"/>
-                <constraint firstItem="jmT-9I-8hS" firstAttribute="trailing" secondItem="kk4-KG-gs9" secondAttribute="trailing" id="adV-wI-Owy"/>
                 <constraint firstItem="4jO-hF-yv4" firstAttribute="baseline" secondItem="ktt-aD-vbA" secondAttribute="baseline" constant="5" id="bO5-V7-Xyp"/>
                 <constraint firstItem="HRN-ol-zlT" firstAttribute="leading" secondItem="47Y-Ci-255" secondAttribute="leading" constant="10" id="bQR-bc-TWU"/>
                 <constraint firstItem="m7Y-vE-eLd" firstAttribute="leading" secondItem="8cM-qP-ZKU" secondAttribute="leading" id="bf4-b1-CQ5"/>
-                <constraint firstItem="RaF-Y6-esE" firstAttribute="bottom" secondItem="jmT-9I-8hS" secondAttribute="bottom" id="bgW-9k-5XK"/>
                 <constraint firstItem="H5F-h2-H5b" firstAttribute="trailing" secondItem="lzL-Rx-Ym8" secondAttribute="trailing" id="dMU-JF-h4X"/>
+                <constraint firstItem="RaF-Y6-esE" firstAttribute="bottom" secondItem="wu9-mx-h8r" secondAttribute="bottom" id="dwH-Ws-csI"/>
                 <constraint firstItem="5rl-I6-Wad" firstAttribute="leading" secondItem="A5k-bm-eYQ" secondAttribute="leading" id="fKK-7l-sJ6"/>
-                <constraint firstItem="BSf-2w-OeA" firstAttribute="leading" secondItem="F28-fM-N7N" secondAttribute="trailing" constant="8" id="hrb-8M-SSr"/>
-                <constraint firstItem="kk4-KG-gs9" firstAttribute="baseline" secondItem="wPh-Ko-ncI" secondAttribute="baseline" id="jLy-tW-pUJ"/>
-                <constraint firstItem="8cM-qP-ZKU" firstAttribute="leading" secondItem="kk4-KG-gs9" secondAttribute="trailing" constant="8" id="m8L-qc-yOX"/>
-                <constraint firstItem="jmT-9I-8hS" firstAttribute="top" secondItem="kk4-KG-gs9" secondAttribute="bottom" constant="8" id="nuf-IG-qNJ"/>
                 <constraint firstItem="8cM-qP-ZKU" firstAttribute="baseline" secondItem="wPh-Ko-ncI" secondAttribute="baseline" id="p4i-Va-Shb"/>
-                <constraint firstItem="F28-fM-N7N" firstAttribute="baseline" secondItem="kk4-KG-gs9" secondAttribute="baseline" id="qbq-aB-7Sa"/>
-                <constraint firstItem="RaF-Y6-esE" firstAttribute="leading" secondItem="F28-fM-N7N" secondAttribute="leading" id="qf4-yN-DWs"/>
                 <constraint firstItem="rLZ-hx-3QZ" firstAttribute="top" secondItem="4jO-hF-yv4" secondAttribute="bottom" constant="8" symbolic="YES" id="rFJ-sc-LyC"/>
-                <constraint firstItem="RaF-Y6-esE" firstAttribute="top" secondItem="jmT-9I-8hS" secondAttribute="top" id="rzz-e9-axI"/>
                 <constraint firstItem="pth-tE-yX9" firstAttribute="baseline" secondItem="A5k-bm-eYQ" secondAttribute="baseline" id="sJZ-dK-4qF"/>
                 <constraint firstItem="z3N-d0-UFo" firstAttribute="top" secondItem="rLZ-hx-3QZ" secondAttribute="bottom" constant="8" symbolic="YES" id="tKj-L1-dW0"/>
                 <constraint firstItem="H5F-h2-H5b" firstAttribute="baseline" secondItem="tQ2-n8-8Xt" secondAttribute="baseline" id="ta7-W3-Fsb"/>
-                <constraint firstItem="F28-fM-N7N" firstAttribute="width" secondItem="kk4-KG-gs9" secondAttribute="width" id="u8O-fT-dpp"/>
-                <constraint firstItem="jmT-9I-8hS" firstAttribute="leading" secondItem="H5F-h2-H5b" secondAttribute="leading" id="wP0-p2-Shf"/>
+                <constraint firstItem="RaF-Y6-esE" firstAttribute="leading" secondItem="RRV-Eh-s8h" secondAttribute="leading" id="uPf-eS-fIi"/>
                 <constraint firstItem="rLZ-hx-3QZ" firstAttribute="leading" secondItem="47Y-Ci-255" secondAttribute="leading" constant="10" id="y0N-Xw-MYz"/>
                 <constraint firstItem="5rl-I6-Wad" firstAttribute="baseline" secondItem="8bp-Tn-uRS" secondAttribute="baseline" id="yFs-i4-w66"/>
+                <constraint firstItem="RaF-Y6-esE" firstAttribute="top" secondItem="wu9-mx-h8r" secondAttribute="top" id="yUT-kw-11c"/>
             </constraints>
             <point key="canvasLocation" x="166.5" y="294"/>
         </customView>
@@ -335,5 +339,8 @@
                 <binding destination="-2" name="contentObject" keyPath="parameters" id="3tH-Nj-Jac"/>
             </connections>
         </objectController>
+        <numberFormatter formatterBehavior="default10_4" numberStyle="decimal" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="gxI-GR-Pf7">
+            <real key="minimum" value="0.0"/>
+        </numberFormatter>
     </objects>
 </document>
