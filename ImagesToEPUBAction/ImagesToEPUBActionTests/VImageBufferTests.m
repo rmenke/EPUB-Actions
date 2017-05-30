@@ -21,7 +21,7 @@
     url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%s%s.png", sel_getName(_cmd), (#__VA_ARGS__)] isDirectory:NO relativeToURL:url]; \
     CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)(url), kUTTypePNG, 1, NULL); \
     if (destination == NULL) @throw [NSException exceptionWithName:NSGenericException reason:@"CGImageDestinationCreateWithURL() failed" userInfo:nil]; \
-    CGImageDestinationAddImage(destination, image, NULL); \
+    CGImageDestinationAddImage(destination, (IMAGE), (CFDictionaryRef)@{(NSString *)(kCGImagePropertyHasAlpha):@YES}); \
     CGImageDestinationFinalize(destination); \
     CFRelease(destination); \
 } while (0)
