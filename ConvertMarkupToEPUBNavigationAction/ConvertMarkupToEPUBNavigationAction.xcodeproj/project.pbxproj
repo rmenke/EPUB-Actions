@@ -35,6 +35,7 @@
 		E121618F1E1DFDAB002C6F1F /* Convert Markup to EPUB Navigation Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Convert Markup to EPUB Navigation Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12161911E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConvertMarkupToEPUBNavigationActionTests.m; sourceTree = "<group>"; };
 		E12161931E1DFDAB002C6F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1A724AB1EE76664000284A2 /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
 		E1FE372D1E59404800E4F561 /* Sample.epub */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sample.epub; sourceTree = "<group>"; };
 		E1FE37361E5972CB00E4F561 /* contents.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = contents.css; sourceTree = "<group>"; };
 		E1FE37381E5972DE00E4F561 /* data-nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "data-nav.xhtml"; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		E12161581E1DD09B002C6F1F = {
 			isa = PBXGroup;
 			children = (
+				E1A724AB1EE76664000284A2 /* EPUB Actions.xcconfig */,
 				E12161641E1DD09B002C6F1F /* ConvertMarkupToEPUBNavigationAction */,
 				E12161901E1DFDAB002C6F1F /* ConvertMarkupToEPUBNavigationActionTests */,
 				E12161631E1DD09B002C6F1F /* Products */,
@@ -264,6 +266,7 @@
 /* Begin XCBuildConfiguration section */
 		E121616F1E1DD09B002C6F1F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A724AB1EE76664000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -311,6 +314,7 @@
 		};
 		E12161701E1DD09B002C6F1F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A724AB1EE76664000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -353,7 +357,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
 				INFOPLIST_FILE = ConvertMarkupToEPUBNavigationAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
@@ -368,7 +371,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
 				INFOPLIST_FILE = ConvertMarkupToEPUBNavigationAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";

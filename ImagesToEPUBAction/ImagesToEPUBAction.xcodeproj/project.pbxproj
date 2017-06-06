@@ -47,6 +47,7 @@
 		E14D30F31E5E461E0029ECA6 /* VImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VImageBuffer.h; sourceTree = "<group>"; };
 		E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VImageBuffer.m; sourceTree = "<group>"; };
 		E14D30F81E5E531F0029ECA6 /* VImageBufferTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VImageBufferTests.m; sourceTree = "<group>"; };
+		E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
 		E1B5F5031E3EF8C70025D97B /* image01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image01.png; sourceTree = "<group>"; };
 		E1B5F5041E3EF8C70025D97B /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image02.jpg; sourceTree = "<group>"; };
 		E1B5F5051E3EF8C70025D97B /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image03.gif; sourceTree = "<group>"; };
@@ -113,6 +114,7 @@
 		E1FB9A931E1DCA0600DEAE0F = {
 			isa = PBXGroup;
 			children = (
+				E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */,
 				E1FB9A9F1E1DCA0600DEAE0F /* ImagesToEPUBAction */,
 				E12161811E1DFCD3002C6F1F /* ImagesToEPUBActionTests */,
 				E1FB9A9E1E1DCA0600DEAE0F /* Products */,
@@ -334,6 +336,7 @@
 		};
 		E1FB9AAA1E1DCA0700DEAE0F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -381,6 +384,7 @@
 		};
 		E1FB9AAB1E1DCA0700DEAE0F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
