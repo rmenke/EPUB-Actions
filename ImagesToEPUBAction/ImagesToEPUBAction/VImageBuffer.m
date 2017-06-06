@@ -190,7 +190,7 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
         backgroundColor = [backgroundColor colorUsingColorSpace:imageColorSpace];
         if (!backgroundColor) backgroundColor = [[NSColor whiteColor] colorUsingColorSpace:imageColorSpace];
 
-        CGFloat backgroundPixels[backgroundColor.numberOfComponents];        
+        CGFloat backgroundPixels[backgroundColor.numberOfComponents];
         [backgroundColor getComponents:backgroundPixels];
 
         vImage_CGImageFormat format = {

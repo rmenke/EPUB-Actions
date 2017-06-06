@@ -49,11 +49,11 @@
     _messages = messages;
 
     class_replaceMethod(c, s, imp, method_getTypeEncoding(m));
-    
+
     NSURL *epubURL = [bundle URLForResource:nil withExtension:@"epub"];
     NSURL *tmpDirectory = [NSURL fileURLWithPath:NSTemporaryDirectory()];
 
-    _epubURL = [tmpDirectory URLByAppendingPathComponent:epubURL.lastPathComponent];
+    _epubURL = [tmpDirectory URLByAppendingPathComponent:[NSUUID.UUID.UUIDString stringByAppendingPathExtension:@"epub"]];
 
     XCTAssert(([[NSFileManager defaultManager] copyItemAtURL:epubURL toURL:_epubURL error:&error]), @"Error copying EPUB: %@", error);
 

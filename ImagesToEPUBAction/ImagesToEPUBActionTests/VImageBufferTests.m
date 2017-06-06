@@ -416,8 +416,6 @@
     }];
 
     XCTAssertTrue(success, @"%@", error);
-
-    VImageBufferWriteDebug(edges);
 }
 
 - (void)testEdgeDetectionWithImage02 {
@@ -441,8 +439,6 @@
     }];
 
     XCTAssertTrue(success, @"%@", error);
-
-    VImageBufferWriteDebug(edges);
 }
 
 - (void)testEdgeDetectionWithImage03 {
@@ -466,8 +462,6 @@
     }];
 
     XCTAssertTrue(success, @"%@", error);
-
-    VImageBufferWriteDebug(edges);
 }
 
 - (void)testEdgeDetectionWithImage04 {
@@ -491,8 +485,6 @@
     }];
 
     XCTAssertTrue(success, @"%@", error);
-
-    VImageBufferWriteDebug(edges);
 }
 
 - (void)testEdgeDetectionWithImage05 {
@@ -516,8 +508,6 @@
     }];
 
     XCTAssertTrue(success, @"%@", error);
-
-    VImageBufferWriteDebug(edges);
 }
 
 - (void)testHough {

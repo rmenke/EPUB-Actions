@@ -13,6 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
+static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMarkupToEPUBNavigationErrorDomain";
 
 @implementation ConvertMarkupToEPUBNavigationAction
 
@@ -20,20 +21,19 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
     [self unbind:AMFractionCompletedBinding];
 }
 
-- (BOOL)processPage:(NSURL *)url updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError ** _Nullable)error {
+- (nullable NSData *)processPage:(NSFileWrapper *)wrapper chapter:(NSString *)chapter updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error {
     NSError * __autoreleasing internalError;
 
-    NSString *page = url.lastPathComponent;
-    NSString *chapter = url.URLByDeletingLastPathComponent.lastPathComponent;
+    NSString *page = wrapper.preferredFilename;
 
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:error];
-    if (!document) return NO;
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:wrapper.regularFileContents options:0 error:error];
+    if (!document) return nil;
 
-    NSArray<NSXMLElement *> *divElements = [document nodesForXPath:@"//div[@class='panel' or @class='panel-group']" error:&internalError];
-    NSAssert(divElements, @"xpath - %@", internalError);
+    NSArray<NSXMLElement *> *divElements = [document nodesForXPath:@"//div[@class='panel' or @class='panel-group']" error:error];
+    if (!divElements) return nil;
 
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\w+)\\s*:\\s*(\\d+\\.\\d+)%" options:0 error:&internalError];
-    NSAssert(regex, @"regex - %@", internalError);
+    if (!regex) return nil;
 
     for (NSXMLElement* element in divElements) {
         [element detach];
@@ -67,45 +67,57 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
         }
     }
 
-    return [[document XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:url options:0 error:error];
+    return [document XMLDataWithOptions:NSXMLNodePrettyPrint];
 }
 
-- (BOOL)processChapter:(NSURL *)url updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
+- (BOOL)processChapter:(NSFileWrapper *)wrapper updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error {
+    NSString *chapter = wrapper.preferredFilename;
+    NSDictionary<NSString *, NSFileWrapper *> *fileWrappers = wrapper.fileWrappers;
 
-    NSArray<NSString *> *pages = [[[fileManager contentsOfDirectoryAtPath:url.path error:error] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES 'pg[0-9]+.xhtml'"]] sortedArrayUsingSelector:@selector(compare:)];
-    if (!pages) return NO;
+    NSArray<NSString *> *keys = [[fileWrappers.allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES 'pg[0-9]+\\.xhtml'"]] sortedArrayUsingSelector:@selector(compare:)];
 
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:pages.count];
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:keys.count];
 
-    for (NSString *page in pages) {
+    for (NSString *key in keys) {
         [progress becomeCurrentWithPendingUnitCount:1];
-        if (![self processPage:[url URLByAppendingPathComponent:page] updating:regions error:error]) return NO;
+
+        NSFileWrapper *original = fileWrappers[key];
+
+        NSData *replacementContent = [self processPage:original chapter:chapter updating:regions error:error];
+        if (!replacementContent) return NO;
+
+        [wrapper removeFileWrapper:original];
+        [wrapper addRegularFileWithContents:replacementContent preferredFilename:key];
+
         [progress resignCurrent];
     }
 
     return YES;
 }
 
-- (BOOL)processFolder:(NSURL *)baseURL error:(NSError **)error {
+- (BOOL)processFolder:(NSURL *)epubURL error:(NSError **)error {
     NSError * __autoreleasing internalError;
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSFileWrapper *directory = [[NSFileWrapper alloc] initWithURL:epubURL options:0 error:error];
+    if (!directory) return NO;
 
-    NSURL *contentsURL = [baseURL URLByAppendingPathComponent:@"Contents" isDirectory:YES];
+    NSFileWrapper *contentsDirectory = directory.fileWrappers[@"Contents"];
+    if (!contentsDirectory) {
+        if (error) *error = [NSError errorWithDomain:ConvertMarkupToEPUBNavigationErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey:@"The folder is not a valid ePub.", NSLocalizedFailureReasonErrorKey:@"The directory does not contain a 'Contents' subdirectory."}];
+        return NO;
+    }
 
-    NSArray<NSString *> *chapters = [[[fileManager contentsOfDirectoryAtPath:contentsURL.path error:error] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES 'ch[0-9]+'"]] sortedArrayUsingSelector:@selector(compare:)];
-    if (!chapters) return NO;
+    NSDictionary<NSString *, NSFileWrapper *> *chapterWrappers = contentsDirectory.fileWrappers;
 
-    NSAssert(chapters.count > 0, @"No chapters found");
+    NSArray<NSString *> *chapterKeys = [[contentsDirectory.fileWrappers.allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF MATCHES '[0-9]+\\..*'"]] sortedArrayUsingSelector:@selector(compare:)];
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:chapterKeys.count];
 
     NSMutableArray<NSXMLElement *> *regions = [NSMutableArray array];
 
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:chapters.count];
-
-    for (NSString *chapter in chapters) {
+    for (NSString *chapterName in chapterKeys) {
         [progress becomeCurrentWithPendingUnitCount:1];
-        if (![self processChapter:[contentsURL URLByAppendingPathComponent:chapter] updating:regions error:error]) return NO;
+        if (![self processChapter:chapterWrappers[chapterName] updating:regions error:error]) return NO;
         [progress resignCurrent];
     }
 
@@ -118,12 +130,14 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
         }
     }
 
-    NSURL *originalStylesheetURL = [contentsURL URLByAppendingPathComponent:@"contents.css"];
-    NSURL *replacementStylesheetURL = [self.bundle URLForResource:@"contents" withExtension:@"css"];
-    NSAssert(replacementStylesheetURL, @"contents.css resource is missing from action.");
+    NSURL *cssURL = [self.bundle URLForResource:@"contents" withExtension:@"css"];
+    NSAssert(cssURL, @"contents.css resource is missing from action.");
 
-    if (![fileManager removeItemAtURL:originalStylesheetURL error:error]) return NO;
-    if (![fileManager copyItemAtURL:replacementStylesheetURL toURL:originalStylesheetURL error:error]) return NO;
+    NSFileWrapper *contentsCSSWrapper = [[NSFileWrapper alloc] initWithURL:cssURL options:0 error:error];
+    if (!contentsCSSWrapper) return NO;
+
+    [contentsDirectory removeFileWrapper:contentsDirectory.fileWrappers[@"contents.css"]];
+    [contentsDirectory addFileWrapper:contentsCSSWrapper];
 
     NSURL *navURL = [self.bundle URLForResource:@"data-nav" withExtension:@"xhtml"];
     NSAssert(navURL, @"data-nav.xhtml resource is missing from action.");
@@ -136,28 +150,32 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
     listElement.children = regions;
 
-    if (![[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:[contentsURL URLByAppendingPathComponent:navURL.lastPathComponent] options:0 error:error]) return NO;
+    NSString *dataNavPath = [contentsDirectory addRegularFileWithContents:[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"data-nav.xhtml"];
 
-    NSURL *packageURL = [contentsURL URLByAppendingPathComponent:@"package.opf"];
-    NSXMLDocument *packageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:packageURL options:0 error:error];
+    NSFileWrapper *packageFile = contentsDirectory.fileWrappers[@"package.opf"];
+    NSXMLDocument *packageDocument = [[NSXMLDocument alloc] initWithData:packageFile.regularFileContents options:0 error:error];
     if (!packageDocument) return NO;
 
     NSArray<NSXMLElement *> *elements = [packageDocument nodesForXPath:@"//manifest" error:&internalError];
     NSAssert(elements, @"xpath - %@", internalError);
 
     if (elements.count != 1) {
-        if (error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSURLErrorKey:packageURL, NSLocalizedDescriptionKey:@"There should be exactly one 'manifest' element in a package document."}];
+        if (error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:@{NSLocalizedDescriptionKey:@"There should be exactly one 'manifest' element in a package document."}];
         return NO;
     }
 
+
     NSXMLNode *idAttr = [NSXMLNode attributeWithName:@"id" stringValue:@"data-nav"];
-    NSXMLNode *hrefAttr = [NSXMLNode attributeWithName:@"href" stringValue:@"data-nav.xhtml"];
+    NSXMLNode *hrefAttr = [NSXMLNode attributeWithName:@"href" stringValue:dataNavPath];
     NSXMLNode *propertiesAttr = [NSXMLNode attributeWithName:@"properties" stringValue:@"data-nav"];
     NSXMLNode *mediaTypeAttr = [NSXMLNode attributeWithName:@"media-type" stringValue:@"application/xhtml+xml"];
 
     [elements.firstObject addChild:[NSXMLElement elementWithName:@"item" children:nil attributes:@[idAttr, hrefAttr, propertiesAttr, mediaTypeAttr]]];
 
-    return [[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] writeToURL:packageURL options:0 error:error];
+    [contentsDirectory removeFileWrapper:packageFile];
+    [contentsDirectory addRegularFileWithContents:[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"package.opf"];
+
+    return [directory writeToURL:epubURL options:NSFileWrapperWritingAtomic|NSFileWrapperWritingWithNameUpdating originalContentsURL:epubURL error:error];
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
@@ -171,7 +189,7 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
         NSDictionary<NSURLResourceKey, id> *resourceInformation = [url resourceValuesForKeys:@[NSURLTypeIdentifierKey] error:error];
         if (!resourceInformation) return nil;
-        
+
         NSString *typeIdentifier = resourceInformation[NSURLTypeIdentifierKey];
 
         [progress becomeCurrentWithPendingUnitCount:1];

@@ -10,13 +10,13 @@
     <manifest>
         <item id="contents-css" href="contents.css" media-type="text/css"></item>
         <item id="nav" href="nav.xhtml" properties="nav" media-type="application/xhtml+xml"></item>
-        <item id="g00702944068991435734" href="ch0001/im0001.png" media-type="image/png"></item>
-        <item id="g05254422912559128889" href="ch0001/im0002.jpeg" media-type="image/jpeg"></item>
-        <item id="g00704087595073451209" href="ch0001/im0003.gif" media-type="image/gif"></item>
-        <item id="g05842277588353006654" href="ch0001/im0004.png" media-type="image/png"></item>
-        <item id="g03155678192004644033" href="ch0001/pg0001.xhtml" media-type="application/xhtml+xml"></item>
-        <item id="g06648684277900329666" href="ch0001/pg0002.xhtml" media-type="application/xhtml+xml"></item>
-        <item id="g10141690363796015299" href="ch0001/pg0003.xhtml" media-type="application/xhtml+xml"></item>
+        <item id="g00702944068991435734" href="01.resources/im0001.png" media-type="image/png"></item>
+        <item id="g05254422912559128889" href="01.resources/im0002.jpeg" media-type="image/jpeg"></item>
+        <item id="g00704087595073451209" href="01.resources/im0003.gif" media-type="image/gif"></item>
+        <item id="g05842277588353006654" href="01.resources/im0004.png" media-type="image/png"></item>
+        <item id="g03155678192004644033" href="01.resources/pg0001.xhtml" media-type="application/xhtml+xml"></item>
+        <item id="g06648684277900329666" href="01.resources/pg0002.xhtml" media-type="application/xhtml+xml"></item>
+        <item id="g10141690363796015299" href="01.resources/pg0003.xhtml" media-type="application/xhtml+xml"></item>
     </manifest>
     <spine>
         <itemref idref="g03155678192004644033"></itemref>
