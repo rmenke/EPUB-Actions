@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ConvertMarkupToEPUBNavigationAction : AMBundleAction
 
 /*!
- * @abstract Process an individual page of an ePub folder.
+ * @abstract Process an individual page of an EPUB folder.
  *
  * @param page A file wrapper holding an individual page.
  * @param chapter The name of the chapter to which this page belongs.
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSData *)processPage:(NSFileWrapper *)page chapter:(NSString *)chapter updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error;
 
 /*!
- * @abstract Process a chapter of an ePub folder.
+ * @abstract Process a chapter of an EPUB folder.
  *
  * @param chapter A file wrapper holding an individual chapter.
  * @param regions A mutable array to collect the region links for the
@@ -41,10 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)processChapter:(NSFileWrapper *)chapter updating:(NSMutableArray<NSXMLElement *> *)regions error:(NSError **)error;
 
 /*!
- * @abstract Process an ePub folder.
+ * @abstract Process an EPUB folder.
  *
- * @param url The URL of the ePub folder.
- * @param error If there is an error processing the ePub, upon return
+ * @param url The URL of the EPUB folder.
+ * @param error If there is an error processing the EPUB, upon return
  *   contains an @c NSError object that describes the problem.
  *
  * @return @c YES on success; @c NO if an error occurred.

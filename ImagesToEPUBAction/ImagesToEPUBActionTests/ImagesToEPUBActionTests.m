@@ -205,7 +205,7 @@ static NSRegularExpression *expr = NULL;
     XCTAssertEqualObjects([[_action valueForKey:@"outputURL"] path], @"/foo/bar/baz.epub");
 }
 
-- (void)testEPubOddTitle {
+- (void)testEPUBOddTitle {
     NSMutableDictionary<NSString *, id> *parameters = [_action parameters];
 
     parameters[@"outputFolder"] = NSTemporaryDirectory();

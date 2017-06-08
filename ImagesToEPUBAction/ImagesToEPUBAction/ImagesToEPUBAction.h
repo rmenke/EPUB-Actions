@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
  * @discussion This method assumes that each chapter wrapper contains
  *   the images used for page layout. If during analysis, it is found
  *   that an image does not match its path extension, the path
- *   extension will be renamed. (This keeps certain ePub validators
+ *   extension will be renamed. (This keeps certain EPUB validators
  *   happy, even though the type of the image is formally specified in
  *   the container file.)
  *
@@ -85,7 +85,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 - (nullable NSString *)createPage:(NSArray<Frame *> *)page number:(NSUInteger)number inDirectory:(NSFileWrapper *)directory error:(NSError **)error;
 
 /*!
- * @abstract Create the metadata files in the ePub wrapper.
+ * @abstract Create the metadata files in the EPUB wrapper.
  *
  * @discussion Aside from the title, authors, and other identifiers,
  *   the main component of the package file is the manifest, which

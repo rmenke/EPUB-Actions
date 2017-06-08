@@ -103,7 +103,7 @@ static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMark
 
     NSFileWrapper *contentsDirectory = directory.fileWrappers[@"Contents"];
     if (!contentsDirectory) {
-        if (error) *error = [NSError errorWithDomain:ConvertMarkupToEPUBNavigationErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey:@"The folder is not a valid ePub.", NSLocalizedFailureReasonErrorKey:@"The directory does not contain a 'Contents' subdirectory."}];
+        if (error) *error = [NSError errorWithDomain:ConvertMarkupToEPUBNavigationErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey:@"The folder is not a valid EPUB.", NSLocalizedFailureReasonErrorKey:@"The directory does not contain a 'Contents' subdirectory."}];
         return NO;
     }
 
@@ -199,7 +199,7 @@ static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMark
         }
         else if (UTTypeConformsTo((__bridge CFStringRef _Nonnull)(typeIdentifier), CFSTR("org.idpf.epub-container"))) {
             // TODO: Uncompress and replace container with folder
-            [self logMessageWithLevel:AMLogLevelWarn format:@"%@ ignored; this action cannot handle compressed ePub documents", url.lastPathComponent];
+            [self logMessageWithLevel:AMLogLevelWarn format:@"%@ ignored; this action cannot handle compressed EPUB documents", url.lastPathComponent];
         }
         else {
             NSString *typeDescription = CFBridgingRelease(UTTypeCopyDescription((__bridge CFStringRef _Nonnull)(typeIdentifier)));
