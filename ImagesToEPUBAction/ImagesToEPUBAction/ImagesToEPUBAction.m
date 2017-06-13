@@ -7,7 +7,7 @@
 //
 
 #import "ImagesToEPUBAction.h"
-#import "OPFPackageDocument.h"
+#import "NSXMLDocument+OPFDocumentExtensions.h"
 #import "VImageBuffer.h"
 
 @import AppKit.NSColorSpace;
@@ -16,6 +16,14 @@
 @import simd;
 
 NS_ASSUME_NONNULL_BEGIN
+
+#if DEBUG
+    #define BEGIN_TIMING(TIMER) NSDate *TIMER = [NSDate date]
+    #define END_TIMING(TIMER)   [self logMessageWithLevel:AMLogLevelDebug format:@#TIMER " = %f s", [[NSDate date] timeIntervalSinceDate:TIMER]]
+#else
+    #define BEGIN_TIMING(TIMER) do {} while (0)
+    #define END_TIMING(TIMER)   do {} while (0)
+#endif
 
 static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
@@ -515,14 +523,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     NSError * __autoreleasing internalError;
 
-    OPFPackageDocument *packageDocument = [OPFPackageDocument documentWithContentsOfURL:packageURL error:&internalError];
+    NSXMLDocument *packageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:packageURL options:0 error:&internalError];
     NSAssert(packageDocument, @"package.opf resource is damaged - %@", internalError);
 
     packageDocument.identifier = self.publicationID;
     packageDocument.title = self.title;
     packageDocument.modified = [NSDate date];
-
-    NSMutableArray<NSString *> *authors = [packageDocument mutableArrayValueForKey:@"authors"];
 
     for (NSString *component in [self.authors componentsSeparatedByString:@";"]) {
         NSMutableArray<NSString *> *components = [component componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].mutableCopy;
@@ -545,34 +551,27 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             role = nil;
         }
 
-        NSString *author = [components componentsJoinedByString:@" "];
-
-        [authors addObject:author];
-
-        if (role) {
-            [packageDocument setRole:role forAuthorAtIndex:(authors.count - 1)];
-        }
+        [packageDocument addAuthor:[components componentsJoinedByString:@" "] role:role];
     }
-
-    NSMutableSet<NSString *> *manifest = [packageDocument mutableSetValueForKey:@"manifest"];
 
     for (NSFileWrapper *chapter in chapters) {
         NSString *path = chapter.preferredFilename;
 
-        for (NSString *subpath in chapter.fileWrappers.allKeys) {
-            [manifest addObject:[path stringByAppendingPathComponent:subpath]];
+        for (NSString *subpath in [chapter.fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+            [packageDocument addManifestItem:[path stringByAppendingPathComponent:subpath] properties:nil];
         }
     }
 
     if (self.coverImage) {
         NSString *filename = [contentsDirectory addFileWrapper:self.coverImage];
-        [manifest addObject:filename];
-        [packageDocument setProperties:@"cover-image" forManifest:filename];
+        [packageDocument addManifestItem:filename properties:@"cover-image"];
     }
 
-    [[packageDocument mutableArrayValueForKey:@"spine"] addObjectsFromArray:spineItems];
+    for (NSString *spineItem in spineItems) {
+        [packageDocument addSpineItem:spineItem properties:nil];
+    }
 
-    [contentsDirectory addRegularFileWithContents:[packageDocument.document XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"package.opf"];
+    [contentsDirectory addRegularFileWithContents:[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"package.opf"];
 
     NSXMLDocument *navDocument = [[NSXMLDocument alloc] initWithContentsOfURL:navURL options:0 error:&internalError];
     NSAssert(navDocument, @"nav.xhtml resource is damaged - %@", internalError);
@@ -609,9 +608,11 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     NSFileWrapper *epubDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"mimetype":mimetypeFile, @"META-INF":metainfoDirectory, @"Contents":contentsDirectory}];
 
+    BEGIN_TIMING(load);
     [progress becomeCurrentWithPendingUnitCount:10];
     NSArray<NSFileWrapper *> *chapters = [self createChaptersFromPaths:input error:error];
     [progress resignCurrent];
+    END_TIMING(load);
 
     if (!chapters) return nil;
 
@@ -622,19 +623,25 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     // This will happen if there are no supported image files in the input
     if (chapters.count == 0) return @[];
 
+    BEGIN_TIMING(paginate);
     [progress becomeCurrentWithPendingUnitCount:85];
     NSArray<NSString *> *pages = [self createPagesForChapters:chapters error:error];
     [progress resignCurrent];
+    END_TIMING(paginate);
 
     if (!pages) return nil;
 
+    BEGIN_TIMING(metadata);
     [progress becomeCurrentWithPendingUnitCount:4];
     if (![self addMetadataToDirectory:epubDirectory chapters:chapters spineItems:pages error:error]) return nil;
     [progress resignCurrent];
+    END_TIMING(metadata);
 
+    BEGIN_TIMING(write);
     [progress becomeCurrentWithPendingUnitCount:1];
     BOOL success = [epubDirectory writeToURL:self.outputURL options:NSFileWrapperWritingAtomic|NSFileWrapperWritingWithNameUpdating originalContentsURL:self.outputURL error:error];
     [progress resignCurrent];
+    END_TIMING(write);
 
     if (!success) return nil;
 

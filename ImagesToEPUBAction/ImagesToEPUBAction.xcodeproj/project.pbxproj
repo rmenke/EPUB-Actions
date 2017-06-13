@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		E12161831E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */; };
 		E121618A1E1DFD7A002C6F1F /* Images to EPUB.action in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */; };
-		E143DC7A1E56527B00086B78 /* OPFPackageDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E143DC791E56527B00086B78 /* OPFPackageDocument.m */; };
-		E1476FF51E56585600D14A3A /* OPFPackageDocumentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1476FF41E56585600D14A3A /* OPFPackageDocumentTests.m */; };
+		E197427E1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */; };
+		E19742801EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */; };
 		E14D30F51E5E461E0029ECA6 /* VImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */; };
 		E14D30F91E5E531F0029ECA6 /* VImageBufferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E14D30F81E5E531F0029ECA6 /* VImageBufferTests.m */; };
 		E1B5F5071E3EF8C70025D97B /* image01.png in Resources */ = {isa = PBXBuildFile; fileRef = E1B5F5031E3EF8C70025D97B /* image01.png */; };
@@ -41,9 +41,9 @@
 		E12161801E1DFCD3002C6F1F /* Images to EPUB Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Images to EPUB Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesToEPUBActionTests.m; sourceTree = "<group>"; };
 		E12161841E1DFCD3002C6F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E143DC781E56527B00086B78 /* OPFPackageDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPFPackageDocument.h; sourceTree = "<group>"; };
-		E143DC791E56527B00086B78 /* OPFPackageDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPFPackageDocument.m; sourceTree = "<group>"; };
-		E1476FF41E56585600D14A3A /* OPFPackageDocumentTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPFPackageDocumentTests.m; sourceTree = "<group>"; };
+		E197427C1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLDocument+OPFDocumentExtensions.h"; sourceTree = "<group>"; };
+		E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLDocument+OPFDocumentExtensions.m"; sourceTree = "<group>"; };
+		E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPFDocumentExtensionsTests.m; sourceTree = "<group>"; };
 		E14D30F31E5E461E0029ECA6 /* VImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VImageBuffer.h; sourceTree = "<group>"; };
 		E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VImageBuffer.m; sourceTree = "<group>"; };
 		E14D30F81E5E531F0029ECA6 /* VImageBufferTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VImageBufferTests.m; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */,
-				E1476FF41E56585600D14A3A /* OPFPackageDocumentTests.m */,
+				E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */,
 				E14D30F81E5E531F0029ECA6 /* VImageBufferTests.m */,
 				E1B5F5031E3EF8C70025D97B /* image01.png */,
 				E1B5F5041E3EF8C70025D97B /* image02.jpg */,
@@ -135,8 +135,8 @@
 			children = (
 				E1FB9AA01E1DCA0600DEAE0F /* ImagesToEPUBAction.h */,
 				E1FB9AA11E1DCA0600DEAE0F /* ImagesToEPUBAction.m */,
-				E143DC781E56527B00086B78 /* OPFPackageDocument.h */,
-				E143DC791E56527B00086B78 /* OPFPackageDocument.m */,
+				E197427C1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.h */,
+				E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */,
 				E14D30F31E5E461E0029ECA6 /* VImageBuffer.h */,
 				E14D30F41E5E461E0029ECA6 /* VImageBuffer.m */,
 				E1FB9AA31E1DCA0700DEAE0F /* main.xib */,
@@ -275,7 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12161831E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m in Sources */,
-				E1476FF51E56585600D14A3A /* OPFPackageDocumentTests.m in Sources */,
+				E19742801EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m in Sources */,
 				E14D30F91E5E531F0029ECA6 /* VImageBufferTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,7 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1FB9AA21E1DCA0600DEAE0F /* ImagesToEPUBAction.m in Sources */,
-				E143DC7A1E56527B00086B78 /* OPFPackageDocument.m in Sources */,
+				E197427E1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m in Sources */,
 				E14D30F51E5E461E0029ECA6 /* VImageBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
