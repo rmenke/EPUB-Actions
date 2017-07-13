@@ -85,6 +85,37 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
     [[self objectsForXQuery:Q("/package/metadata/dc:title")].firstObject setStringValue:title];
 }
 
+- (nullable NSString *)subject {
+    return [[self objectsForXQuery:Q("/package/metadata/dc:subject")].firstObject stringValue];
+}
+
+- (void)setSubject:(nullable NSString *)subject {
+    NSXMLElement *metadataElement = [self objectsForXQuery:Q("/package/metadata")].firstObject;
+    NSAssert(metadataElement, @"Document is missing elements.");
+
+    NSXMLElement *element = [metadataElement elementsForLocalName:@"subject" URI:NS_DC].firstObject;
+
+    if (element) {
+        if (subject) {
+            element.stringValue = subject;
+        }
+        else {
+            [element detach];
+        }
+    }
+    else {
+        if (subject) {
+            NSXMLElement *titleElement = [metadataElement elementsForLocalName:@"title" URI:NS_DC].firstObject;
+            NSAssert(titleElement, @"Document is missing elements.");
+
+            element = [NSXMLElement elementWithName:@"dc:subject" URI:NS_DC];
+            element.stringValue = subject;
+
+            [metadataElement insertChild:element atIndex:(titleElement.index + 1)];
+        }
+    }
+}
+
 - (nullable NSDate *)modified {
     NSXMLElement *element = [self objectsForXQuery:Q("/package/metadata/meta[@property='dcterms:modified']")].firstObject;
     return [DateFormatter dateFromString:element.stringValue];

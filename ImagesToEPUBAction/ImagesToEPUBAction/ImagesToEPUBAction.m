@@ -528,6 +528,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     packageDocument.identifier = self.publicationID;
     packageDocument.title = self.title;
+    packageDocument.subject = @"Comic Book";
     packageDocument.modified = [NSDate date];
 
     for (NSString *component in [self.authors componentsSeparatedByString:@";"]) {

@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSString *title;
+@property (nonatomic, nullable) NSString *subject;
 @property (nonatomic, nullable) NSDate *modified;
 
 - (void)addAuthor:(NSString *)author role:(nullable NSString *)role;

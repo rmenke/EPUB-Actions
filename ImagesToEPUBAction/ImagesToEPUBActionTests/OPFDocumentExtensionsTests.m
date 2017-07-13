@@ -76,9 +76,40 @@
 
     XCTAssertEqualObjects(packageDocument.title, @"My Great Comic Book");
 
-    NSString *identifier = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:title)") constants:nil error:&error].firstObject;
-    XCTAssertNotNil(identifier, @"xquery - %@", error);
-    XCTAssertEqualObjects(identifier, @"My Great Comic Book");
+    NSString *title = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:title)") constants:nil error:&error].firstObject;
+    XCTAssertNotNil(title, @"xquery - %@", error);
+    XCTAssertEqualObjects(title, @"My Great Comic Book");
+}
+
+- (void)testSubject {
+    NSError * __autoreleasing error;
+
+    XCTAssertNil(packageDocument.subject);
+
+    NSArray<NSString *> *subjects = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:subject)") constants:nil error:&error];
+    XCTAssertNotNil(subjects, @"xquery - %@", error);
+    XCTAssertEqualObjects(subjects, @[]);
+
+    packageDocument.subject = @"Test EPUB";
+    XCTAssertEqualObjects(packageDocument.subject, @"Test EPUB");
+
+    subjects = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:subject)") constants:nil error:&error];
+    XCTAssertNotNil(subjects, @"xquery - %@", error);
+    XCTAssertEqualObjects(subjects, @[@"Test EPUB"]);
+
+    packageDocument.subject = @"Test EPUB 2";
+    XCTAssertEqualObjects(packageDocument.subject, @"Test EPUB 2");
+
+    subjects = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:subject)") constants:nil error:&error];
+    XCTAssertNotNil(subjects, @"xquery - %@", error);
+    XCTAssertEqualObjects(subjects, @[@"Test EPUB 2"]);
+
+    packageDocument.subject = nil;
+    XCTAssertNil(packageDocument.subject);
+
+    subjects = [packageDocument objectsForXQuery:Q("data(/package/metadata/dc:subject)") constants:nil error:&error];
+    XCTAssertNotNil(subjects, @"xquery - %@", error);
+    XCTAssertEqualObjects(subjects, @[]);
 }
 
 - (void)testDate {
