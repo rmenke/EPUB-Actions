@@ -30,7 +30,7 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 
 - (BOOL)detectEdgesWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
 
-- (nullable NSArray<NSValue *> *)findSegmentsAndReturnError:(NSError **)error;
+- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithSignificance:(double)significance error:(NSError **)error;
 - (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error;
 
 - (nullable VImageBuffer *)normalizeContrastAndReturnError:(NSError **)error;

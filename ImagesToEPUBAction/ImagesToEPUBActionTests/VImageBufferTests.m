@@ -14,17 +14,21 @@
 
 #define CLS(X) objc_getClass(#X)
 
-#define CGImageWriteDebug(IMAGE, ...) do { \
-    NSError * __autoreleasing error; \
-    NSURL *url = [[NSFileManager defaultManager] URLForDirectory:NSDesktopDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error]; \
-    if (url == nil) @throw [NSException exceptionWithName:NSGenericException reason:error.localizedDescription userInfo:nil]; \
-    url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%s%s.png", sel_getName(_cmd), (#__VA_ARGS__)] isDirectory:NO relativeToURL:url]; \
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)(url), kUTTypePNG, 1, NULL); \
-    if (destination == NULL) @throw [NSException exceptionWithName:NSGenericException reason:@"CGImageDestinationCreateWithURL() failed" userInfo:nil]; \
-    CGImageDestinationAddImage(destination, (IMAGE), (CFDictionaryRef)@{(NSString *)(kCGImagePropertyHasAlpha):@YES}); \
-    CGImageDestinationFinalize(destination); \
-    CFRelease(destination); \
-} while (0)
+void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
+    NSError * __autoreleasing error;
+
+    NSURL *url = [[NSFileManager defaultManager] URLForDirectory:NSDesktopDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error];
+    if (url == nil) @throw [NSException exceptionWithName:NSGenericException reason:error.localizedDescription userInfo:nil];
+
+    url = [NSURL fileURLWithPath:fileName isDirectory:NO relativeToURL:url];
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((CFURLRef)(url), kUTTypePNG, 1, NULL);
+    if (destination == NULL) @throw [NSException exceptionWithName:NSGenericException reason:@"CGImageDestinationCreateWithURL() failed" userInfo:nil];
+    CGImageDestinationAddImage(destination, image, (CFDictionaryRef)@{(NSString *)(kCGImagePropertyHasAlpha):@YES});
+    CGImageDestinationFinalize(destination);
+    CFRelease(destination);
+}
+
+#define CGImageWriteDebug(IMAGE, ...) __CGImageWriteDebug((IMAGE),[NSString stringWithFormat:@"%s%s.png", sel_getName(_cmd), (#__VA_ARGS__)]);
 
 #define VImageBufferWriteDebug(BUFFER, ...) do { \
     CGImageRef image = [(BUFFER) copyCGImageAndReturnError:NULL]; \
@@ -408,7 +412,7 @@
 
     __block BOOL success;
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         edges = buffer.copy;
         [self startMeasuring];
         success = [edges detectEdgesWithKernelSize:3 error:&error];
@@ -431,7 +435,7 @@
 
     __block BOOL success;
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         edges = buffer.copy;
         [self startMeasuring];
         success = [edges detectEdgesWithKernelSize:3 error:&error];
@@ -454,7 +458,7 @@
 
     __block BOOL success;
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         edges = buffer.copy;
         [self startMeasuring];
         success = [edges detectEdgesWithKernelSize:3 error:&error];
@@ -477,7 +481,7 @@
 
     __block BOOL success;
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         edges = buffer.copy;
         [self startMeasuring];
         success = [edges detectEdgesWithKernelSize:3 error:&error];
@@ -500,7 +504,7 @@
 
     __block BOOL success;
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         edges = buffer.copy;
         [self startMeasuring];
         success = [edges detectEdgesWithKernelSize:3 error:&error];
@@ -541,8 +545,213 @@
         memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
     }
 
-    NSArray<NSValue *> *lines = [buffer findSegmentsAndReturnError:&error];
+    NSArray<NSArray<NSNumber *> *> *lines = [buffer findSegmentsWithSignificance:1E-4 error:&error];
     XCTAssertNotNil(lines, @"%@", error);
+}
+
+- (CGImageRef)createImageWithImage:(CGImageRef)image segments:(NSArray<NSArray<NSNumber *> *> *)segments  {
+    size_t width = CGImageGetWidth(image), height = CGImageGetHeight(image);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, 0, colorSpace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
+    CGColorSpaceRelease(colorSpace);
+
+    CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), image);
+
+    CGContextTranslateCTM(ctx, 0, height);
+    CGContextScaleCTM(ctx, 1, -1);
+
+    for (NSArray<NSNumber *> *segment in segments) {
+        double x0 = segment[0].doubleValue;
+        double y0 = segment[1].doubleValue;
+        double x1 = segment[2].doubleValue;
+        double y1 = segment[3].doubleValue;
+
+        CGContextMoveToPoint(ctx, x0, y0);
+        CGContextAddLineToPoint(ctx, x1, y1);
+    }
+
+    CGContextSetRGBStrokeColor(ctx, 1, 0, 0, 1);
+    CGContextStrokePath(ctx);
+
+    for (NSArray<NSNumber *> *segment in segments) {
+        double x0 = segment[0].doubleValue;
+        double y0 = segment[1].doubleValue;
+        double x1 = segment[2].doubleValue;
+        double y1 = segment[3].doubleValue;
+
+        CGContextAddEllipseInRect(ctx, CGRectMake(x0 - 3, y0 - 3, 6, 6));
+        CGContextAddEllipseInRect(ctx, CGRectMake(x1 - 3, y1 - 3, 6, 6));
+    }
+
+    CGContextSetRGBFillColor(ctx, 0, 0, 1, 1);
+    CGContextFillPath(ctx);
+
+    image = CGBitmapContextCreateImage(ctx);
+
+    CGContextRelease(ctx);
+
+    return image;
+}
+
+- (void)testHoughWithImage01 {
+    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+
+    __block NSArray<NSArray<NSNumber *> *> *segments;
+
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error;
+
+        [self startMeasuring];
+        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(segments, @"%@", error);
+    }];
+
+    imageRef = [buffer copyCGImageAndReturnError:&error];
+
+    CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+    CGImageRelease(imageRef);
+
+    CGImageWriteDebug(result);
+    CGImageRelease(result);
+}
+
+- (void)testHoughWithImage02 {
+    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+
+    __block NSArray<NSArray<NSNumber *> *> *segments;
+
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error;
+
+        [self startMeasuring];
+        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(segments, @"%@", error);
+    }];
+
+    imageRef = [buffer copyCGImageAndReturnError:&error];
+
+    CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+    CGImageRelease(imageRef);
+
+    CGImageWriteDebug(result);
+    CGImageRelease(result);
+}
+
+- (void)testHoughWithImage03 {
+    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+
+    __block NSArray<NSArray<NSNumber *> *> *segments;
+
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error;
+
+        [self startMeasuring];
+        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(segments, @"%@", error);
+    }];
+
+    imageRef = [buffer copyCGImageAndReturnError:&error];
+
+    CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+    CGImageRelease(imageRef);
+
+    CGImageWriteDebug(result);
+    CGImageRelease(result);
+}
+
+- (void)testHoughWithImage04 {
+    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+
+    __block NSArray<NSArray<NSNumber *> *> *segments;
+
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error;
+
+        [self startMeasuring];
+        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(segments, @"%@", error);
+    }];
+
+    imageRef = [buffer copyCGImageAndReturnError:&error];
+
+    CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+    CGImageRelease(imageRef);
+
+    CGImageWriteDebug(result);
+    CGImageRelease(result);
+}
+
+- (void)testHoughWithImage05 {
+    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
+    XCTAssertNotEqual(imageRef, NULL);
+
+    NSError * __autoreleasing error;
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
+
+    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+
+    __block NSArray<NSArray<NSNumber *> *> *segments;
+
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+        NSError * __autoreleasing error;
+
+        [self startMeasuring];
+        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        [self stopMeasuring];
+
+        XCTAssertNotNil(segments, @"%@", error);
+    }];
+
+    imageRef = [buffer copyCGImageAndReturnError:&error];
+
+    CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+    CGImageRelease(imageRef);
+
+    CGImageWriteDebug(result);
+    CGImageRelease(result);
 }
 
 - (void)testNormalizeContrast {

@@ -710,7 +710,7 @@ static NSRegularExpression *expr = NULL;
         [input addObject:image.absoluteURL.path];
     }
 
-    [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:^{
+    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
         NSError * __autoreleasing error = nil;
 
         [self startMeasuring];

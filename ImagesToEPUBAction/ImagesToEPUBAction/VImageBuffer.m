@@ -7,12 +7,12 @@
 //
 
 #import "VImageBuffer.h"
+#include "HoughTransform.h"
 
 @import AppKit.NSColor;
 @import AppKit.NSColorSpace;
 @import Accelerate.vImage;
 @import simd;
-@import Darwin.C.tgmath;
 
 #define UTILITY_QUEUE dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
 
@@ -31,26 +31,6 @@ _Static_assert(sizeof(vector_int4) == 16, "size incorrect");
 _Static_assert(sizeof(vector_cgfloat2) == sizeof(NSPoint), "Incorrect sizing");
 
 NS_ASSUME_NONNULL_BEGIN
-
-/*!
- * @abstract Calculate the cosine of the angle formed by three points.
- *
- * @discussion Use the law of cosines:
- * <code>cos(∠abc) = (|ab|²+|bc|²-|ac|²) / (2|ab||bc|)</code>
- *
- * @param a The first point of the angle
- * @param b The vertex of the angle
- * @param c The third point of the angle
- * @return The cosine of the angle formed by the three points
- */
-FOUNDATION_STATIC_INLINE
-__unused CGFloat cosineOfAngle(vector_cgfloat2 a, vector_cgfloat2 b, vector_cgfloat2 c) {
-    CGFloat ab2 = vector_distance_squared(a, b);
-    CGFloat bc2 = vector_distance_squared(b, c);
-    CGFloat ac2 = vector_distance_squared(a, c);
-
-    return (ab2 + bc2 - ac2) / (2.0 * sqrt(ab2) * sqrt(bc2));
-}
 
 NSString * const VImageErrorDomain = @"VImageErrorDomain";
 
@@ -103,23 +83,11 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     TRY(vImageContrastStretch_Planar8(src, dest, kvImageNoFlags));
 }
 
-const NSUInteger kMaxTheta = 1024;
-const CGFloat kRScale = 2.0;
-const uint8_t kGrayscaleThreshold = 0x7f;
-const NSUInteger kAngleLimit = 128;
-
-static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
-
 @implementation VImageBuffer {
     vImage_Buffer buffer;
 }
 
 + (void)initialize {
-    for (NSUInteger theta = 0; theta < kMaxTheta; ++theta) {
-        CGFloat semiturns = (CGFloat)(theta) / (CGFloat)(kMaxTheta / 2);
-        Sine[theta] = __sinpi(semiturns), Cosine[theta] = __cospi(semiturns);
-    }
-
     [NSError setUserInfoValueProviderForDomain:VImageErrorDomain provider:^id(NSError *err, NSString *userInfoKey) {
         if ([NSLocalizedDescriptionKey isEqualToString:userInfoKey]) {
             switch (err.code) {
@@ -262,8 +230,13 @@ static CGFloat Sine[kMaxTheta], Cosine[kMaxTheta];
     return YES;
 }
 
-- (nullable NSArray<NSValue *> *)findSegmentsAndReturnError:(NSError **)error {
-    return @[]; // TODO: Implement
+- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithSignificance:(double)significance error:(NSError **)error {
+    CFErrorRef cfError = NULL;
+
+    NSArray<NSArray<NSNumber *> *> *segments = CFBridgingRelease(CreateSegmentsFromImage(&buffer, 0x7f, significance, 3, error ? &cfError : NULL));
+    if (!segments && error) *error = CFBridgingRelease(cfError);
+
+    return segments;
 }
 
 - (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error {
