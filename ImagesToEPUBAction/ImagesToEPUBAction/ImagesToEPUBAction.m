@@ -364,7 +364,14 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
             localToGlobal = CGAffineTransformScale(localToGlobal, width / originalWidth, height / originalHeight);
 
-            VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithImage:(__bridge CGImageRef)(image) backgroundColor:self.backgroundColor error:error];
+            CIImage *ciImage = [CIImage imageWithCGImage:(CGImageRef)(image)];
+
+            ciImage = [ciImage imageByCompositingOverImage:[CIImage imageWithColor:[[CIColor alloc] initWithColor:self.backgroundColor]]];
+            ciImage = [ciImage imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+            ciImage = [ciImage imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+            ciImage = [ciImage imageByCroppingToRect:CGRectMake(0, 0, originalWidth, originalHeight)];
+
+            VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithCIImage:ciImage error:error];
             if (!imageBuffer) return nil;
 
             NSArray<NSValue *> *regions = [imageBuffer findRegionsAndReturnError:error];

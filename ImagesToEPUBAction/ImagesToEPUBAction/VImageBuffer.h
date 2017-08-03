@@ -7,6 +7,7 @@
 //
 
 @import Foundation;
+@import CoreImage;
 
 @class NSColor;
 
@@ -23,12 +24,7 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 - (instancetype)init NS_UNAVAILABLE;
 
 - (nullable instancetype)initWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error NS_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithImage:(CGImageRef)image backgroundColor:(nullable NSColor *)backgroundColor error:(NSError **)error NS_DESIGNATED_INITIALIZER;
-
-- (nullable VImageBuffer *)maximizeWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
-- (nullable VImageBuffer *)minimizeWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
-
-- (BOOL)detectEdgesWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error;
+- (nullable instancetype)initWithCIImage:(CIImage *)image error:(NSError **)error;
 
 - (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithSignificance:(double)significance error:(NSError **)error;
 - (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error;

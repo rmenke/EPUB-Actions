@@ -41,7 +41,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 @end
 
 @implementation VImageBufferTests {
-    NSArray<NSImage *> *images;
+    NSArray<NSURL *> *images;
 }
 
 - (void)setUp {
@@ -59,10 +59,10 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     XCTAssert([actionBundle loadAndReturnError:&error], @"%@", error);
 
-    NSMutableArray<NSImage *> *foundImages = [NSMutableArray array];
+    NSMutableArray<NSURL *> *foundImages = [NSMutableArray array];
 
     for (NSUInteger index = 1; index; ++index) {
-        NSImage *foundImage = [bundle imageForResource:[NSString stringWithFormat:@"image%02lu", (unsigned long)index]];
+        NSURL *foundImage = [bundle URLForImageResource:[NSString stringWithFormat:@"image%02lu", (unsigned long)index]];
         if (!foundImage) break;
         [foundImages addObject:foundImage];
     }
@@ -77,12 +77,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testInitialization {
-    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
+    CIImage *image = [CIImage imageWithContentsOfURL:images[0]];
+    XCTAssertNotNil(image);
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertEqual(buffer.width, 680);
@@ -90,12 +90,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testInitializationNoBackground {
-    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:nil error:&error];
+    CIImage *image = [CIImage imageWithContentsOfURL:images[0]];
+    XCTAssertNotNil(image);
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertEqual(buffer.width, 680);
@@ -103,12 +103,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testInitializationGrayBackground {
-    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor grayColor] error:&error];
+    CIImage *image = [CIImage imageWithContentsOfURL:images[0]];
+    XCTAssertNotNil(image);
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
 
     XCTAssertEqual(buffer.width, 680);
@@ -122,396 +122,6 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:~0 height:~0 error:&error];
     XCTAssertNil(buffer);
     XCTAssertEqualObjects(error.localizedDescription, @"Memory allocation error");
-}
-
-- (void)testMinimize {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    VImageBuffer *minimum = [buffer minimizeWithKernelSize:3 error:&error];
-    XCTAssertNotNil(minimum, @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = minimum.data + minimum.bytesPerRow * y;
-
-        for (NSUInteger x = 0; x < buffer.width; ++x) {
-            unsigned actual   = row[x];
-            unsigned expected = (x > 2 && x < 7 && y > 2 && y < 7) ? W : B;
-
-            XCTAssertEqual(actual, expected, "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testMaximize {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    VImageBuffer *maximum = [buffer maximizeWithKernelSize:3 error:&error];
-    XCTAssertNotNil(maximum, @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = maximum.data + maximum.bytesPerRow * y;
-
-        for (NSUInteger x = 0; x < buffer.width; ++x) {
-            unsigned actual   = row[x];
-            unsigned expected = (x > 0 && x < 9 && y > 0 && y < 9) ? W : B;
-
-            XCTAssertEqual(actual, expected, "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testEdgeDetection1 {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, W, W, W, W, W, W, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, B, B, B, B, B, B, B, B, B },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = buffer.data + buffer.bytesPerRow * y;
-
-        for (NSUInteger x = 0; x < buffer.width; ++x) {
-            unsigned actual = row[x];
-            unsigned expected =
-                x == 0 || x == 9 || y == 0 || y == 9 ? B :
-                x == 1 || x == 8 || y == 1 || y == 8 ? W : B;
-
-            XCTAssertEqual(actual, expected, "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testEdgeDetection2 {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { W, W, W, W, W, W, W, W, W, W },
-        { W, B, B, B, B, B, B, B, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, W, W, W, W, W, W, B, W },
-        { W, B, B, B, B, B, B, B, B, W },
-        { W, W, W, W, W, W, W, W, W, W },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = buffer.data + buffer.bytesPerRow * y;
-        for (NSUInteger x = 0; x < buffer.height; ++x) {
-            uint8_t expected =
-            x == 0 || x == 9 || y == 0 || y == 9 ? B :
-            x == 1 || x == 8 || y == 1 || y == 8 ? W : B;
-
-            XCTAssertEqual((unsigned)(row[x]), (unsigned)(expected), "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testEdgeDetection3 {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { W, W, W, W, W, W, W, W, W, W },
-        { W, W, W, W, W, W, W, W, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, B, B, B, B, B, B, W, W },
-        { W, W, W, W, W, W, W, W, W, W },
-        { W, W, W, W, W, W, W, W, W, W },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = buffer.data + buffer.bytesPerRow * y;
-        for (NSUInteger x = 0; x < buffer.height; ++x) {
-            uint8_t expected =
-                x < 2 || x > 7 || y < 2 || y > 7 ? B :
-                x == 2 || x == 7 || y == 2 || y == 7 ? W : B;
-
-            XCTAssertEqual((unsigned)(row[x]), (unsigned)(expected), "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testEdgeDetection4 {
-    NSError * __autoreleasing error;
-
-    const uint8_t B =  0;
-    const uint8_t W = ~0;
-
-    const uint8_t pixels[][10] = {
-        { B, B, B, B, B, B, B, B, B, B },
-        { B, W, W, W, W, W, W, W, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, B, B, B, B, B, B, W, B },
-        { B, W, W, W, W, W, W, W, W, B },
-        { B, B, B, B, B, B, B, B, B, B },
-    };
-
-    const NSUInteger rows = sizeof(pixels) / sizeof(pixels[0]);
-    const NSUInteger cols = sizeof(pixels[0]) / sizeof(pixels[0][0]);
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithWidth:cols height:rows error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    XCTAssertGreaterThanOrEqual(buffer.bytesPerRow, sizeof(pixels[0]));
-
-    for (NSUInteger y = 0; y < rows; ++y) {
-        memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
-    }
-
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], @"%@", error);
-
-    for (NSUInteger y = 0; y < buffer.height; ++y) {
-        uint8_t *row = buffer.data + buffer.bytesPerRow * y;
-        for (NSUInteger x = 0; x < buffer.height; ++x) {
-            uint8_t expected =
-                x == 0 || x == 9 || y == 0 || y == 9 ? W :
-                x == 1 || x == 8 || y == 1 || y == 8 ? B :
-                x == 2 || x == 7 || y == 2 || y == 7 ? W : B;
-
-            XCTAssertEqual((unsigned)(row[x]), (unsigned)(expected), "row %lu, col %lu", (unsigned long)y, (unsigned long)x);
-        }
-    }
-}
-
-- (void)testEdgeDetectionWithImage01 {
-    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
-    __block NSError *error;
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    __block VImageBuffer *edges;
-
-    __block BOOL success;
-
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
-        edges = buffer.copy;
-        [self startMeasuring];
-        success = [edges detectEdgesWithKernelSize:3 error:&error];
-        [self stopMeasuring];
-    }];
-
-    XCTAssertTrue(success, @"%@", error);
-}
-
-- (void)testEdgeDetectionWithImage02 {
-    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
-    __block NSError *error;
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    __block VImageBuffer *edges;
-
-    __block BOOL success;
-
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
-        edges = buffer.copy;
-        [self startMeasuring];
-        success = [edges detectEdgesWithKernelSize:3 error:&error];
-        [self stopMeasuring];
-    }];
-
-    XCTAssertTrue(success, @"%@", error);
-}
-
-- (void)testEdgeDetectionWithImage03 {
-    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
-    __block NSError *error;
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    __block VImageBuffer *edges;
-
-    __block BOOL success;
-
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
-        edges = buffer.copy;
-        [self startMeasuring];
-        success = [edges detectEdgesWithKernelSize:3 error:&error];
-        [self stopMeasuring];
-    }];
-
-    XCTAssertTrue(success, @"%@", error);
-}
-
-- (void)testEdgeDetectionWithImage04 {
-    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
-    __block NSError *error;
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    __block VImageBuffer *edges;
-
-    __block BOOL success;
-
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
-        edges = buffer.copy;
-        [self startMeasuring];
-        success = [edges detectEdgesWithKernelSize:3 error:&error];
-        [self stopMeasuring];
-    }];
-
-    XCTAssertTrue(success, @"%@", error);
-}
-
-- (void)testEdgeDetectionWithImage05 {
-    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
-    __block NSError *error;
-
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
-
-    __block VImageBuffer *edges;
-
-    __block BOOL success;
-
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
-        edges = buffer.copy;
-        [self startMeasuring];
-        success = [edges detectEdgesWithKernelSize:3 error:&error];
-        [self stopMeasuring];
-    }];
-
-    XCTAssertTrue(success, @"%@", error);
 }
 
 - (void)testHough {
@@ -595,15 +205,20 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testHoughWithImage01 {
-    CGImageRef imageRef = [images[0] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
+    CIImage *image = [CIImage imageWithContentsOfURL:images[0]];
 
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+    CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+    image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+
+    XCTAssertNotNil(image, @"image filter chain failed");
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
 
     __block NSArray<NSArray<NSNumber *> *> *segments;
 
@@ -617,8 +232,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
-    imageRef = [buffer copyCGImageAndReturnError:&error];
-
+    CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
@@ -627,15 +241,18 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testHoughWithImage02 {
-    CGImageRef imageRef = [images[1] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
+    CIImage *image = [CIImage imageWithContentsOfURL:images[1]];
 
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+    CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+    image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
 
     __block NSArray<NSArray<NSNumber *> *> *segments;
 
@@ -649,8 +266,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
-    imageRef = [buffer copyCGImageAndReturnError:&error];
-
+    CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
@@ -659,15 +275,18 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testHoughWithImage03 {
-    CGImageRef imageRef = [images[2] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
+    CIImage *image = [CIImage imageWithContentsOfURL:images[2]];
 
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+    CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+    image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
 
     __block NSArray<NSArray<NSNumber *> *> *segments;
 
@@ -681,8 +300,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
-    imageRef = [buffer copyCGImageAndReturnError:&error];
-
+    CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
@@ -691,15 +309,18 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testHoughWithImage04 {
-    CGImageRef imageRef = [images[3] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
+    CIImage *image = [CIImage imageWithContentsOfURL:images[3]];
 
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+    CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+    image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
 
     __block NSArray<NSArray<NSNumber *> *> *segments;
 
@@ -713,8 +334,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
-    imageRef = [buffer copyCGImageAndReturnError:&error];
-
+    CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
@@ -723,15 +343,18 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 }
 
 - (void)testHoughWithImage05 {
-    CGImageRef imageRef = [images[4] CGImageForProposedRect:NULL context:NULL hints:NULL];
-    XCTAssertNotEqual(imageRef, NULL);
-
     NSError * __autoreleasing error;
 
-    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithImage:imageRef backgroundColor:[NSColor whiteColor] error:&error];
-    XCTAssertNotNil(buffer, @"%@", error);
+    CIImage *image = [CIImage imageWithContentsOfURL:images[4]];
 
-    XCTAssert([buffer detectEdgesWithKernelSize:3 error:&error], "%@", error);
+    CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+    image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+
+    VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+    XCTAssertNotNil(buffer, @"%@", error);
 
     __block NSArray<NSArray<NSNumber *> *> *segments;
 
@@ -745,8 +368,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
-    imageRef = [buffer copyCGImageAndReturnError:&error];
-
+    CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 

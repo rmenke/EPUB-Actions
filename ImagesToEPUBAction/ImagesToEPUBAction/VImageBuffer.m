@@ -48,23 +48,8 @@ BOOL InitBuffer(vImage_Buffer *buf, NSUInteger height, NSUInteger width, uint32_
 }
 
 FOUNDATION_STATIC_INLINE
-BOOL InitWithCGImage(vImage_Buffer *buf, vImage_CGImageFormat *format, const CGFloat * _Nullable bgColor, CGImageRef image, NSError **error) {
-    TRY(vImageBuffer_InitWithCGImage(buf, format, bgColor, image, kvImageNoFlags));
-}
-
-FOUNDATION_STATIC_INLINE
 BOOL CopyBuffer(const vImage_Buffer *src, const vImage_Buffer *dst, size_t pixelBytes, NSError **error) {
     TRY(vImageCopyBuffer(src, dst, pixelBytes, kvImageNoFlags));
-}
-
-FOUNDATION_STATIC_INLINE
-BOOL MaxPlanar8(const vImage_Buffer *src, const vImage_Buffer *dst, NSUInteger xOffset, NSUInteger yOffset, NSUInteger ksize, NSError **error) {
-    TRY(vImageMax_Planar8(src, dst, NULL, xOffset, yOffset, ksize, ksize, kvImageNoFlags));
-}
-
-FOUNDATION_STATIC_INLINE
-BOOL MinPlanar8(const vImage_Buffer *src, const vImage_Buffer *dst, NSUInteger xOffset, NSUInteger yOffset, NSUInteger ksize, NSError **error) {
-    TRY(vImageMin_Planar8(src, dst, NULL, xOffset, yOffset, ksize, ksize, kvImageNoFlags));
 }
 
 FOUNDATION_STATIC_INLINE
@@ -72,10 +57,12 @@ _Nullable CGImageRef CreateCGImageFromBuffer(vImage_Buffer *buffer, vImage_CGIma
     vImage_Error code;
 
     CGImageRef image = vImageCreateCGImageFromBuffer(buffer, format, NULL, NULL, kvImageNoFlags, &code);
-    if (image) return image;
 
-    if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:code userInfo:nil];
-    return NULL;
+    if (!image) {
+        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:code userInfo:nil];
+    }
+
+    return image;
 }
 
 FOUNDATION_STATIC_INLINE
@@ -148,24 +135,23 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     return self;
 }
 
-- (nullable instancetype)initWithImage:(CGImageRef)image backgroundColor:(nullable NSColor *)backgroundColor error:(NSError **)error {
-    self = [super init];
+- (nullable instancetype)initWithCIImage:(CIImage *)image error:(NSError **)error {
+    if (!image) {
+        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:kvImageNullPointerArgument userInfo:nil];
+        return nil;
+    }
+
+    CGRect extent = image.extent;
+
+    if (CGRectIsEmpty(extent) || CGRectIsInfinite(extent)) {
+        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:kvImageInvalidImageObject userInfo:nil];
+        return nil;
+    }
+
+    self = [self initWithWidth:CGRectGetWidth(extent) height:CGRectGetHeight(extent) error:error];
 
     if (self) {
-        NSColorSpace *imageColorSpace = [[NSColorSpace alloc] initWithCGColorSpace:CGImageGetColorSpace(image)];
-        NS_VALID_UNTIL_END_OF_SCOPE NSColorSpace *grayColorSpace = [NSColorSpace genericGrayColorSpace];
-
-        backgroundColor = [backgroundColor colorUsingColorSpace:imageColorSpace];
-        if (!backgroundColor) backgroundColor = [[NSColor whiteColor] colorUsingColorSpace:imageColorSpace];
-
-        CGFloat backgroundPixels[backgroundColor.numberOfComponents];
-        [backgroundColor getComponents:backgroundPixels];
-
-        vImage_CGImageFormat format = {
-            8, 8, grayColorSpace.CGColorSpace, kCGBitmapByteOrderDefault, 0, NULL, kCGRenderingIntentDefault
-        };
-
-        if (!InitWithCGImage(&buffer, &format, backgroundColor ? backgroundPixels : NULL, image, error)) return nil;
+        [[CIContext context] render:image toBitmap:buffer.data rowBytes:buffer.rowBytes bounds:extent format:kCIFormatR8 colorSpace:NULL];
     }
 
     return self;
@@ -180,54 +166,6 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     }
 
     return copy;
-}
-
-- (nullable VImageBuffer *)maximizeWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error {
-    if ((kernelSize & 1) == 0) { // vImage does not check
-        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:kvImageInvalidKernelSize userInfo:nil];
-        return nil;
-    }
-
-    VImageBuffer *maximaBuffer = [[VImageBuffer alloc] initWithWidth:buffer.width height:buffer.height error:error];
-    if (!maximaBuffer) return nil;
-
-    return MaxPlanar8(&(buffer), &(maximaBuffer->buffer), 0, 0, kernelSize, error) ? maximaBuffer : nil;
-}
-
-- (nullable VImageBuffer *)minimizeWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error {
-    if ((kernelSize & 1) == 0) { // vImage does not check
-        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:kvImageInvalidKernelSize userInfo:nil];
-        return nil;
-    }
-
-    VImageBuffer *minimaBuffer = [[VImageBuffer alloc] initWithWidth:buffer.width height:buffer.height error:error];
-    if (!minimaBuffer) return nil;
-
-    return MinPlanar8(&(buffer), &(minimaBuffer->buffer), 0, 0, kernelSize, error) ? minimaBuffer : nil;
-}
-
-- (BOOL)detectEdgesWithKernelSize:(NSUInteger)kernelSize error:(NSError **)error {
-    VImageBuffer *maximaBuffer = [self maximizeWithKernelSize:kernelSize error:error];
-    if (!maximaBuffer) return NO;
-
-    const vImage_Buffer * const maxima = &(maximaBuffer->buffer);
-
-    ptrdiff_t vec_per_row = (buffer.width + 15) / 16;
-
-    NSAssert(vec_per_row * sizeof(vector_uchar16) <= buffer.rowBytes, @"incorrect alignment - rowBytes should be greater than or equal to %zu but is %zu", vec_per_row * sizeof(vector_uchar16), buffer.rowBytes);
-
-    dispatch_apply(buffer.height, UTILITY_QUEUE, ^(size_t row) {
-        const vector_uchar16 *maxRow = maxima->data + maxima->rowBytes * row;
-
-        vector_uchar16 *dstRow = buffer.data + buffer.rowBytes * row;
-        vector_uchar16 *endRow = dstRow + vec_per_row;
-
-        do {
-            *dstRow = *maxRow - *dstRow;
-        } while (++maxRow, ++dstRow < endRow);
-    });
-
-    return YES;
 }
 
 - (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithSignificance:(double)significance error:(NSError **)error {
