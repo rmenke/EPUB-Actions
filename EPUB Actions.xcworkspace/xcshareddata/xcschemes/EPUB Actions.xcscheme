@@ -62,6 +62,20 @@
                ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E1B4C3AD1F491D1300CDC7C0"
+               BuildableName = "Convert EPUB Folder to Container.action"
+               BlueprintName = "Convert EPUB Folder to Container"
+               ReferencedContainer = "container:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

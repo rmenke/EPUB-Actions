@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E1B4C3B21F491D1400CDC7C0 /* main.command in Resources */ = {isa = PBXBuildFile; fileRef = E1B4C3B11F491D1400CDC7C0 /* main.command */; };
+		E1B4C3B51F491D1400CDC7C0 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1B4C3B31F491D1400CDC7C0 /* main.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Convert EPUB Folder to Container.action"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1B4C3B11F491D1400CDC7C0 /* main.command */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.command; sourceTree = "<group>"; };
+		E1B4C3B41F491D1400CDC7C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/main.xib; sourceTree = "<group>"; };
+		E1B4C3B61F491D1400CDC7C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E1B4C3AA1F491D1300CDC7C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E1B4C3A41F491D1300CDC7C0 = {
+			isa = PBXGroup;
+			children = (
+				E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */,
+				E1B4C3B01F491D1400CDC7C0 /* ConvertEPUBFolderToEPUBContainerAction */,
+				E1B4C3AF1F491D1300CDC7C0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E1B4C3AF1F491D1300CDC7C0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E1B4C3B01F491D1400CDC7C0 /* ConvertEPUBFolderToEPUBContainerAction */ = {
+			isa = PBXGroup;
+			children = (
+				E1B4C3B11F491D1400CDC7C0 /* main.command */,
+				E1B4C3B31F491D1400CDC7C0 /* main.xib */,
+				E1B4C3B61F491D1400CDC7C0 /* Info.plist */,
+			);
+			path = ConvertEPUBFolderToEPUBContainerAction;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E1B4C3AD1F491D1300CDC7C0 /* Convert EPUB Folder to Container */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1B4C3BC1F491D1500CDC7C0 /* Build configuration list for PBXNativeTarget "Convert EPUB Folder to Container" */;
+			buildPhases = (
+				E1B4C3A91F491D1300CDC7C0 /* Sources */,
+				E1B4C3AA1F491D1300CDC7C0 /* Frameworks */,
+				E1B4C3AB1F491D1300CDC7C0 /* Resources */,
+				E1B4C3AC1F491D1300CDC7C0 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Convert EPUB Folder to Container";
+			productName = ConvertEPUBFolderToEPUBContainerAction;
+			productReference = E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E1B4C3A51F491D1300CDC7C0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Rob Menke";
+				TargetAttributes = {
+					E1B4C3AD1F491D1300CDC7C0 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E1B4C3A81F491D1300CDC7C0 /* Build configuration list for PBXProject "ConvertEPUBFolderToEPUBContainerAction" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E1B4C3A41F491D1300CDC7C0;
+			productRefGroup = E1B4C3AF1F491D1300CDC7C0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E1B4C3AD1F491D1300CDC7C0 /* Convert EPUB Folder to Container */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E1B4C3AB1F491D1300CDC7C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1B4C3B51F491D1400CDC7C0 /* main.xib in Resources */,
+				E1B4C3B21F491D1400CDC7C0 /* main.command in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E1B4C3AC1F491D1300CDC7C0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "amlint \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E1B4C3A91F491D1300CDC7C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E1B4C3B31F491D1400CDC7C0 /* main.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E1B4C3B41F491D1400CDC7C0 /* Base */,
+			);
+			name = main.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E1B4C3BA1F491D1500CDC7C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				VERSIONING_SYSTEM = "";
+			};
+			name = Debug;
+		};
+		E1B4C3BB1F491D1500CDC7C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				VERSIONING_SYSTEM = "";
+			};
+			name = Release;
+		};
+		E1B4C3BD1F491D1500CDC7C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ConvertEPUBFolderToEPUBContainerAction/Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Automator";
+				OTHER_OSAFLAGS = "-x -t 0 -c 0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ConvertEPUBFolderToEPUBContainerAction";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = action;
+			};
+			name = Debug;
+		};
+		E1B4C3BE1F491D1500CDC7C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ConvertEPUBFolderToEPUBContainerAction/Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Automator";
+				OTHER_OSAFLAGS = "-x -t 0 -c 0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ConvertEPUBFolderToEPUBContainerAction";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = action;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E1B4C3A81F491D1300CDC7C0 /* Build configuration list for PBXProject "ConvertEPUBFolderToEPUBContainerAction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1B4C3BA1F491D1500CDC7C0 /* Debug */,
+				E1B4C3BB1F491D1500CDC7C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1B4C3BC1F491D1500CDC7C0 /* Build configuration list for PBXNativeTarget "Convert EPUB Folder to Container" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1B4C3BD1F491D1500CDC7C0 /* Debug */,
+				E1B4C3BE1F491D1500CDC7C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E1B4C3A51F491D1300CDC7C0 /* Project object */;
+}

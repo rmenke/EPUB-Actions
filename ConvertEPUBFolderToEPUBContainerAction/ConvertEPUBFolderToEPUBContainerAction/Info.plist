@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMAccepts</key>
+	<dict>
+		<key>Container</key>
+		<string>List</string>
+		<key>Optional</key>
+		<false/>
+		<key>Types</key>
+		<array>
+			<string>com.apple.cocoa.string</string>
+		</array>
+	</dict>
+	<key>AMApplication</key>
+	<string>iBooks</string>
+	<key>AMCanShowSelectedItemsWhenRun</key>
+	<false/>
+	<key>AMCanShowWhenRun</key>
+	<true/>
+	<key>AMCategory</key>
+	<string>AMCategoryUtilities</string>
+	<key>AMDefaultParameters</key>
+	<dict>
+		<key>compressImages</key>
+		<false/>
+		<key>compression</key>
+		<integer>0</integer>
+	</dict>
+	<key>AMDescription</key>
+	<dict>
+		<key>AMDInput</key>
+		<string>EPUB folders</string>
+		<key>AMDRequires</key>
+		<string>The Info-ZIP compression utility.</string>
+		<key>AMDResult</key>
+		<string>EPUB container files</string>
+		<key>AMDSummary</key>
+		<string>Compress an EPUB folder (org.idpf.epub-folder) into an EPUB container (org.idpf.epub-container).</string>
+		<key>AMDWebsite</key>
+		<string>http://www.the-wabe.com/epub-automator/</string>
+	</dict>
+	<key>AMKeywords</key>
+	<array>
+		<string>File</string>
+		<string>Create</string>
+		<string>Make</string>
+		<string>Compress</string>
+		<string>EPUB</string>
+		<string>iBooks</string>
+		<string>Folder</string>
+		<string>Container</string>
+	</array>
+	<key>AMName</key>
+	<string>Convert EPUB Folder to Container</string>
+	<key>AMProvides</key>
+	<dict>
+		<key>Container</key>
+		<string>List</string>
+		<key>Types</key>
+		<array>
+			<string>com.apple.cocoa.string</string>
+		</array>
+	</dict>
+	<key>AMRequiredResources</key>
+	<array>
+		<dict>
+			<key>Display Name</key>
+			<string></string>
+			<key>Resource</key>
+			<string>/usr/bin/zip</string>
+			<key>Type</key>
+			<string>file</string>
+			<key>Version</key>
+			<string></string>
+		</dict>
+	</array>
+	<key>AMWarning</key>
+	<dict>
+		<key>Action</key>
+		<string>com.apple.Automator.CopyFiles</string>
+		<key>ApplyButton</key>
+		<string>Add</string>
+		<key>IgnoreButton</key>
+		<string>Don’t Add</string>
+		<key>Level</key>
+		<integer>1</integer>
+		<key>Message</key>
+		<string>This action will create a ZIP archive of the EPUB folder. Some of the extended attributes on the files may be lost in this process. Would you like to add a Copy Finder Items action so that the copies are changed and your originals are preserved?</string>
+	</dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2017 Rob Menke. All rights reserved.</string>
+	<key>NSPrincipalClass</key>
+	<string>AMShellScriptAction</string>
+</dict>
+</plist>

@@ -433,13 +433,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
 				INFOPLIST_FILE = ImagesToEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ImagesToEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = action;
 			};
 			name = Debug;
@@ -448,13 +446,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
 				INFOPLIST_FILE = ImagesToEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ImagesToEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = action;
 			};
 			name = Release;
