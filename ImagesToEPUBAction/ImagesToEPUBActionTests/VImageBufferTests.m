@@ -211,9 +211,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
 
-    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    CGRect extent = image.extent;
+
+    image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
     image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
     image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+    image = [image imageByCroppingToRect:extent];
 
     XCTAssertNotNil(image, @"image filter chain failed");
 
@@ -247,9 +250,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
 
-    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    CGRect extent = image.extent;
+
+    image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
     image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
     image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+    image = [image imageByCroppingToRect:extent];
 
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
@@ -281,9 +287,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
 
-    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    CGRect extent = image.extent;
+
+    image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
     image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
     image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+    image = [image imageByCroppingToRect:extent];
 
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
@@ -315,9 +324,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
 
-    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    CGRect extent = image.extent;
+
+    image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
     image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
     image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+    image = [image imageByCroppingToRect:extent];
 
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
@@ -349,9 +361,12 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
 
     CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
 
-    image = [[image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]] imageByCroppingToRect:image.extent];
+    CGRect extent = image.extent;
+
+    image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
     image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
     image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+    image = [image imageByCroppingToRect:extent];
 
     VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
     XCTAssertNotNil(buffer, @"%@", error);
