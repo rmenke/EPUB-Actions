@@ -391,6 +391,52 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
     CGImageRelease(result);
 }
 
+- (void)testHoughWithAdditionalImages {
+    NSError * __autoreleasing error;
+
+    NSURL *url = [NSURL fileURLWithPath:NSProcessInfo.processInfo.environment[@"SOURCE_ROOT"]];
+
+    url = [url URLByAppendingPathComponent:@"ImagesToEPUBActionTests/Additional Images" isDirectory:YES];
+
+    NSArray<NSURL *> *files = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:url includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:&error];
+
+    if ((!files) && (![error.domain isEqualToString:NSCocoaErrorDomain] || error.code != NSFileReadNoSuchFileError)) {
+        XCTFail(@"error - %@", error);
+        return;
+    }
+
+    if (!files || files.count == 0) {
+        NSLog(@"No additional images found (test skipped)");
+        return;
+    }
+
+    for (NSURL *url in files) {
+        CIImage *image = [CIImage imageWithContentsOfURL:url];
+        if (image == nil) continue;
+
+        CIColor *backgroundColor = [[CIColor alloc] initWithColor:[NSColor whiteColor]];
+
+        CGRect extent = image.extent;
+
+        image = [image imageByCompositingOverImage:[CIImage imageWithColor:backgroundColor]];
+        image = [image imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
+        image = [image imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
+        image = [image imageByCroppingToRect:extent];
+
+        VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
+        XCTAssertNotNil(buffer, @"%@", error);
+
+        NSArray<NSArray<NSNumber *> *> *segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        XCTAssertNotNil(segments, @"error - %@", error);
+
+        CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
+        CGImageRef result = [self createImageWithImage:imageRef segments:segments];
+        CGImageRelease(imageRef);
+        __CGImageWriteDebug(result, [NSString stringWithFormat:@"%s-%@.png", sel_getName(_cmd), url.lastPathComponent.stringByDeletingPathExtension]);
+        CGImageRelease(result);
+    }
+}
+
 - (void)testNormalizeContrast {
     uint8_t pixels[][5] = {
         { 8, 3, 3, 8, 5 },
