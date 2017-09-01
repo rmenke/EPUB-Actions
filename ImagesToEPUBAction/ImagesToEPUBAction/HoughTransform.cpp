@@ -29,12 +29,28 @@ constexpr double cosineTolerance = 0.999;
 
 static CFStringRef kHTErrorDomain = CFSTR("HoughTransformErrorDomain");
 
-static std::array<simd::double2, maxTheta> trig;
-
 template <>
 struct std::less<simd::uint2> {
     bool operator()(simd::uint2 a, simd::uint2 b) const {
         return (a.x < b.x) || (a.x == b.x && a.y < b.y);
+    }
+};
+
+template <>
+struct std::less<simd::double4> {
+    bool operator()(const simd::double4 a, const simd::double4 b) const {
+        return
+            a.x < b.x ? true : a.x > b.x ? false :
+            a.y < b.y ? true : a.y > b.y ? false :
+            a.z < b.z ? true : a.z > b.z ? false :
+            a.w < b.w ? true : false;
+    }
+};
+
+template <>
+struct std::equal_to<simd::double4> {
+    bool operator()(const simd::double4 a, const simd::double4 b) const {
+        return simd::all(a == b);
     }
 };
 
@@ -107,6 +123,19 @@ namespace cf {      // Core Foundation support
 }
 
 namespace hough {
+    struct trig : std::array<simd::double2, maxTheta> {
+        trig() {
+            for (vImagePixelCount theta = 0; theta < maxTheta; ++theta) {
+                auto angle = static_cast<double>(theta) / (maxTheta / 2);
+                data()[theta] = simd::double2 {
+                  __cospi(angle), __sinpi(angle)
+                };
+            }
+        }
+    };
+
+    static struct trig trig;
+
     enum class state : unsigned char {
         unset, pending, voted
     };
@@ -409,18 +438,40 @@ namespace hough {
 
         return simd::dot(ba, bc) / std::sqrt(simd::length_squared(ba) * simd::length_squared(bc));
     }
+
+    /*!
+     * @abstract Find the intersection point of two line segments.
+     *
+     * @param a The start of the first segment.
+     * @param b The end of the first segment.
+     * @param c The start of the second segment.
+     * @param d The end of the second segment.
+     *
+     * @return The intersection point of the lines coinciding with the segments.  If the segments are parallel, this solution will contain NaN.
+     */
+    __unused static inline simd::double2 intersection(simd::double2 a, simd::double2 b, simd::double2 c, simd::double2 d) {
+        const auto t = (b - a);
+        const auto u = (d - c);
+
+        const auto v = t.yx * u;
+
+        if (v.x == v.y) {
+            // segments are parallel or colinear
+            return { INFINITY, INFINITY };
+        }
+
+        auto p = t.yx * a;
+        p = (p.y - p.x) * u;
+
+        auto q = u.yx * c;
+        q = (q.y - q.x) * t;
+
+        return (p - q) / (v.y - v.x);
+    }
 }
 
 static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, unsigned channel_width, unsigned max_gap) {
     if (buffer->width == 0 && buffer->height == 0) return std::vector<simd::double4> { };
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        for (vImagePixelCount theta = 0; theta < maxTheta; ++theta) {
-            auto angle = static_cast<double>(theta) / (maxTheta / 2);
-            trig[theta] = vector2(__cospi(angle), __sinpi(angle));
-        }
-    });
 
     hough::scoreboard scoreboard { buffer, gray_threshold, significance };
 
@@ -431,10 +482,10 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
         double rho;
 
         if (scoreboard.vote(p, &theta, &rho)) {
-            auto delta = trig[(theta + maxTheta / 4) % maxTheta];
+            auto delta = hough::trig[(theta + maxTheta / 4) % maxTheta];
             delta /= vector_reduce_max(simd::fabs(delta));
 
-            const auto offset = trig[theta];
+            const auto offset = hough::trig[theta];
 
             const auto bounds = simd::double2 { std::nextafter(buffer->width, 0), std::nextafter(buffer->height, 0) };
 
@@ -539,7 +590,18 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
 
             if (longest_segment != segments.end()) {
                 scoreboard.unvote(longest_segment->begin(), longest_segment->end());
-                found_segments.push_back(longest_segment->segment());
+
+                simd::double4 segment = longest_segment->segment();
+
+                // Reorient segments so that they all point in the same direction.
+                // Segments that have endpoints equidistant from the origin will
+                // not orient correctly and fail to cluster, but they should be
+                // rare enough that it won't matter.
+                if (simd::length_squared(segment.lo) > simd::length_squared(segment.hi)) {
+                    segment = segment.s2301;
+                }
+
+                found_segments.push_back(segment);
             }
         }
     }
