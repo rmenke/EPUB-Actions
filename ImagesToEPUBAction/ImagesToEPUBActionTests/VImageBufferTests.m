@@ -235,12 +235,14 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
+#ifdef RENDER_TEST_IMAGES
     CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
     CGImageWriteDebug(result);
     CGImageRelease(result);
+#endif
 }
 
 - (void)testHoughWithImage02 {
@@ -272,12 +274,14 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
+#ifdef RENDER_TEST_IMAGES
     CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
     CGImageWriteDebug(result);
     CGImageRelease(result);
+#endif
 }
 
 - (void)testHoughWithImage03 {
@@ -309,12 +313,14 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
+#ifdef RENDER_TEST_IMAGES
     CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
     CGImageWriteDebug(result);
     CGImageRelease(result);
+#endif
 }
 
 - (void)testHoughWithImage04 {
@@ -346,12 +352,14 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
+#ifdef RENDER_TEST_IMAGES
     CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
     CGImageWriteDebug(result);
     CGImageRelease(result);
+#endif
 }
 
 - (void)testHoughWithImage05 {
@@ -383,18 +391,26 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         XCTAssertNotNil(segments, @"%@", error);
     }];
 
+#ifdef RENDER_TEST_IMAGES
     CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];
     CGImageRef result = [self createImageWithImage:imageRef segments:segments];
     CGImageRelease(imageRef);
 
     CGImageWriteDebug(result);
     CGImageRelease(result);
+#endif
 }
 
 - (void)testHoughWithAdditionalImages {
     NSError * __autoreleasing error;
 
-    NSURL *url = [NSURL fileURLWithPath:NSProcessInfo.processInfo.environment[@"SOURCE_ROOT"]];
+    NSString *sourceRoot = NSProcessInfo.processInfo.environment[@"SOURCE_ROOT"];
+    if (!sourceRoot) {
+        NSLog(@"Environment variable SOURCE_ROOT undefined (test skipped)");
+        return;
+    }
+
+    NSURL *url = [NSURL fileURLWithPath:sourceRoot];
 
     url = [url URLByAppendingPathComponent:@"ImagesToEPUBActionTests/Additional Images" isDirectory:YES];
 
