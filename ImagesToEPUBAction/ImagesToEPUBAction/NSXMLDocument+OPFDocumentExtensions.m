@@ -224,9 +224,8 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
 }
 
 - (void)addSpineItem:(NSString *)item properties:(nullable NSString *)properties {
-    NSXMLElement *manifestElement = [self.rootElement elementsForLocalName:@"manifest" URI:NS_OPF].firstObject;
     NSXMLElement *spineElement = [self.rootElement elementsForLocalName:@"spine" URI:NS_OPF].firstObject;
-    NSAssert(manifestElement && spineElement, @"Document is missing elements.");
+    NSAssert(spineElement, @"Document is missing elements.");
 
     NSString *ident = self.manifest[item];
     if (!ident) ident = [self addManifestItem:item properties:nil];
