@@ -20,7 +20,11 @@ extern "C" {
 #define NOEXCEPT_SPECIFIER
 #endif
 
+CF_IMPLICIT_BRIDGING_ENABLED
+
 CFArrayRef _Nullable CreateSegmentsFromImage(const vImage_Buffer * _Nonnull buffer, uint8_t grayThreshold, double significance, unsigned channelWidth, CFErrorRef _Nullable * _Nullable errorPtr) NOEXCEPT_SPECIFIER;
+
+CF_IMPLICIT_BRIDGING_DISABLED
 
 #if defined(__cplusplus)
 } // extern "C"

@@ -98,7 +98,7 @@ static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMark
 - (BOOL)processFolder:(NSURL *)epubURL error:(NSError **)error {
     NSError * __autoreleasing internalError;
 
-    NSFileWrapper *directory = [[NSFileWrapper alloc] initWithURL:epubURL options:0 error:error];
+    NSFileWrapper *directory = [[NSFileWrapper alloc] initWithURL:epubURL options:NSFileWrapperReadingWithoutMapping error:error];
     if (!directory) return NO;
 
     NSFileWrapper *contentsDirectory = directory.fileWrappers[@"Contents"];
@@ -164,7 +164,6 @@ static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMark
         return NO;
     }
 
-
     NSXMLNode *idAttr = [NSXMLNode attributeWithName:@"id" stringValue:@"data-nav"];
     NSXMLNode *hrefAttr = [NSXMLNode attributeWithName:@"href" stringValue:dataNavPath];
     NSXMLNode *propertiesAttr = [NSXMLNode attributeWithName:@"properties" stringValue:@"data-nav"];
@@ -175,7 +174,7 @@ static NSString * const ConvertMarkupToEPUBNavigationErrorDomain = @"ConvertMark
     [contentsDirectory removeFileWrapper:packageFile];
     [contentsDirectory addRegularFileWithContents:[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"package.opf"];
 
-    return [directory writeToURL:epubURL options:NSFileWrapperWritingAtomic|NSFileWrapperWritingWithNameUpdating originalContentsURL:epubURL error:error];
+    return [directory writeToURL:epubURL options:NSFileWrapperWritingAtomic originalContentsURL:epubURL error:error];
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {

@@ -13,7 +13,6 @@
 @import AppKit.NSColorSpace;
 @import AppKit.NSKeyValueBinding;
 @import ObjectiveC.runtime;
-@import simd;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,6 +28,7 @@ static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
     static NSSet<NSString *> *imageTypes;
+
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         imageTypes = [NSSet setWithArray:CFBridgingRelease(CGImageSourceCopyTypeIdentifiers())];
@@ -42,8 +42,9 @@ static inline NSString *extensionForType(NSString *typeIdentifier) {
 }
 
 static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *typeIdentifier) {
-    static dispatch_once_t onceToken;
     static NSDictionary<NSString *, NSSet<NSString *> *> *extensions;
+
+    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSArray<NSString *> *imageTypes = CFBridgingRelease(CGImageSourceCopyTypeIdentifiers());
         NSMutableArray<NSSet<NSString *> *> *extensionSets = [NSMutableArray arrayWithCapacity:imageTypes.count];
@@ -70,16 +71,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (NSString *)webColor {
     NSColor *rgbColor = [self colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
     NSAssert(rgbColor.numberOfComponents == 4, @"Incorrect color space");
-#if CGFLOAT_IS_DOUBLE
-    vector_double4 fcomponents;
-#else
-    vector_float4 fcomponents;
-#endif
 
-    [rgbColor getComponents:(CGFloat *)(&fcomponents)];
-    fcomponents.xyz *= 255.0;
+    CGFloat fcomponents[4];
 
-    return [NSString stringWithFormat:@"rgba(%0.2f,%0.2f,%0.2f,%0.4f)", fcomponents.x, fcomponents.y, fcomponents.z, fcomponents.w];
+    [rgbColor getComponents:fcomponents];
+
+    return [NSString stringWithFormat:@"rgba(%0.2f,%0.2f,%0.2f,%0.4f)", fcomponents[0] * 255.0, fcomponents[1] * 255.0, fcomponents[2] * 255.0, fcomponents[3]];
 }
 
 @end
@@ -149,7 +146,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 - (NSString *)title {
     NSString *title = self.parameters[@"title"];
-    if ([title length] == 0) {
+    if (title.length == 0) {
         self.parameters[@"title"] = title = @"Untitled";
         [self logMessageWithLevel:AMLogLevelWarn format:@"Title unset; setting to '%@'", title];
     }
@@ -162,7 +159,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 - (NSString *)publicationID {
     NSString *publicationID = self.parameters[@"publicationID"];
-    if ([publicationID length] == 0) {
+    if (publicationID.length == 0) {
         self.parameters[@"publicationID"] = publicationID = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
         [self logMessageWithLevel:AMLogLevelWarn format:@"Publication ID unset; setting to '%@'", publicationID];
     }
@@ -243,6 +240,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         if (![inputURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return nil;
 
         if (typeIsImage(typeIdentifier)) {
+            if (self.stopped) return nil;
+
             NSString *pendingChapter = inputURL.URLByDeletingLastPathComponent.lastPathComponent;
 
             if (![chapter.title isEqualToString:pendingChapter]) {
@@ -258,10 +257,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
             NSAssert(result.count > 0, @"Chapter has not been recorded");
 
-            NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:inputURL options:0 error:error];
+            NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:inputURL options:NSFileWrapperReadingImmediate error:error];
             if (!wrapper) return nil;
 
-            wrapper.preferredFilename = [NSString stringWithFormat:@"im%04lu.%@", [chapter.fileWrappers count] + 1, extensionForType(typeIdentifier)];
+            wrapper.preferredFilename = [NSString stringWithFormat:@"im%04lu.%@", chapter.fileWrappers.count + 1, extensionForType(typeIdentifier)];
             [chapter addFileWrapper:wrapper];
         }
         else {
@@ -423,6 +422,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         CGFloat currentHeight = 0.0;
 
         for (NSString *name in [chapter.fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+            if (self.stopped) return nil;
+
             NSFileWrapper *imageWrapper = chapter.fileWrappers[name];
 
             CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)(imageWrapper.regularFileContents), NULL);
@@ -493,33 +494,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return result;
 }
 
-- (BOOL)addMetadataToDirectory:(NSFileWrapper *)epubDirectory chapters:(NSArray<NSFileWrapper *> *)chapters spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
-    NSURL *containerURL = [self.bundle URLForResource:@"container" withExtension:@"xml"];
-    NSAssert(containerURL, @"container.xml resource is missing from action.");
-
-    NSURL *stylesheetURL = [self.bundle URLForResource:@"contents" withExtension:@"css"];
-    NSAssert(stylesheetURL, @"contents.css resource is missing from action.");
-
+- (BOOL)addMetadataToDirectory:(NSFileWrapper *)contentsDirectory chapters:(NSArray<NSFileWrapper *> *)chapters spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
     NSURL *packageURL = [self.bundle URLForResource:@"package" withExtension:@"opf"];
     NSAssert(packageURL, @"package.opf resource is missing from action.");
 
     NSURL *navURL = [self.bundle URLForResource:@"nav" withExtension:@"xhtml"];
     NSAssert(navURL, @"nav.xhtml resource is missing from action.");
-
-    NSFileWrapper *metainfoDirectory = epubDirectory.fileWrappers[@"META-INF"];
-    NSAssert(metainfoDirectory, @"META-INF subdirectory does not exist.");
-
-    NSFileWrapper *contentsDirectory = epubDirectory.fileWrappers[@"Contents"];
-    NSAssert(metainfoDirectory, @"Contents subdirectory does not exist.");
-
-    NSFileWrapper *containerFile = [[NSFileWrapper alloc] initWithURL:containerURL options:0 error:error];
-    if (!containerFile) return NO;
-
-    NSFileWrapper *stylesheetFile = [[NSFileWrapper alloc] initWithURL:stylesheetURL options:0 error:error];
-    if (!stylesheetFile) return NO;
-
-    [metainfoDirectory addFileWrapper:containerFile];
-    [contentsDirectory addFileWrapper:stylesheetFile];
 
     NSError * __autoreleasing internalError;
 
@@ -594,7 +574,17 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     [contentsDirectory addRegularFileWithContents:[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"nav.xhtml"];
 
-    return YES;
+    return !self.stopped;
+}
+
+- (NSFileWrapper *)fileWrapperForResource:(NSString *)resource withExtension:(NSString *)extension error:(NSError **)error {
+    NSURL *url = [self.bundle URLForResource:resource withExtension:extension];
+    if (!url) {
+        if (error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:@{NSURLErrorKey:[[self.bundle.resourceURL URLByAppendingPathComponent:resource] URLByAppendingPathExtension:extension], NSLocalizedDescriptionKey:[NSString stringWithFormat:@"The bundle resource “%@.%@” is missing.", resource ? resource : @"*", extension ? extension : @"*"], NSLocalizedFailureReasonErrorKey:@"A bundle resource is missing.", NSLocalizedRecoverySuggestionErrorKey:@"Reinstall the action and try again."}];
+        return nil;
+    }
+
+    return [[NSFileWrapper alloc] initWithURL:url options:NSFileWrapperReadingImmediate error:error];
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
@@ -603,9 +593,15 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
     [self bind:AMFractionCompletedBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
 
+    NSFileWrapper *containerFile = [self fileWrapperForResource:@"container" withExtension:@"xml" error:error];
+    if (!containerFile) return nil;
+
+    NSFileWrapper *stylesheetFile = [self fileWrapperForResource:@"contents" withExtension:@"css" error:error];
+    if (!stylesheetFile) return nil;
+
     NSFileWrapper *mimetypeFile      = [[NSFileWrapper alloc] initRegularFileWithContents:[@"application/epub+zip" dataUsingEncoding:NSASCIIStringEncoding]];
-    NSFileWrapper *contentsDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{}];
-    NSFileWrapper *metainfoDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{}];
+    NSFileWrapper *contentsDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"contents.css":stylesheetFile}];
+    NSFileWrapper *metainfoDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"container.xml":containerFile}];
 
     NSFileWrapper *epubDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"mimetype":mimetypeFile, @"META-INF":metainfoDirectory, @"Contents":contentsDirectory}];
 
@@ -617,15 +613,15 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     if (!chapters) return nil;
 
+    // This will happen if there are no supported image files in the input
+    if (chapters.count == 0) return @[];
+
     for (NSFileWrapper *chapter in chapters) {
         [contentsDirectory addFileWrapper:chapter];
     }
 
-    // This will happen if there are no supported image files in the input
-    if (chapters.count == 0) return @[];
-
     BEGIN_TIMING(paginate);
-    [progress becomeCurrentWithPendingUnitCount:85];
+    [progress becomeCurrentWithPendingUnitCount:80];
     NSArray<NSString *> *pages = [self createPagesForChapters:chapters error:error];
     [progress resignCurrent];
     END_TIMING(paginate);
@@ -633,14 +629,14 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     if (!pages) return nil;
 
     BEGIN_TIMING(metadata);
-    [progress becomeCurrentWithPendingUnitCount:4];
-    if (![self addMetadataToDirectory:epubDirectory chapters:chapters spineItems:pages error:error]) return nil;
+    [progress becomeCurrentWithPendingUnitCount:1];
+    if (![self addMetadataToDirectory:contentsDirectory chapters:chapters spineItems:pages error:error]) return nil;
     [progress resignCurrent];
     END_TIMING(metadata);
 
     BEGIN_TIMING(write);
-    [progress becomeCurrentWithPendingUnitCount:1];
-    BOOL success = [epubDirectory writeToURL:self.outputURL options:NSFileWrapperWritingAtomic|NSFileWrapperWritingWithNameUpdating originalContentsURL:self.outputURL error:error];
+    [progress becomeCurrentWithPendingUnitCount:9];
+    BOOL success = [epubDirectory writeToURL:self.outputURL options:NSFileWrapperWritingAtomic originalContentsURL:nil error:error];
     [progress resignCurrent];
     END_TIMING(write);
 

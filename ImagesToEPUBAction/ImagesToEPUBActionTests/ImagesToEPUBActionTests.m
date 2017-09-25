@@ -510,11 +510,6 @@ static NSRegularExpression *expr = NULL;
     NSFileWrapper *epubWrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
     XCTAssertNotNil(epubWrapper, @"%@", error);
 
-    NSFileWrapper *contents = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{}];
-    contents.preferredFilename = @"Contents";
-
-    [epubWrapper addFileWrapper:contents];
-
     NSFileWrapper *image1 = [[NSFileWrapper alloc] initWithURL:_images[0] options:0 error:&error];
     image1.preferredFilename = @"im0001.png";
     XCTAssertNotNil(image1, @"%@", error);
@@ -525,22 +520,15 @@ static NSRegularExpression *expr = NULL;
 
     NSFileWrapper *ch1 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.png":image1, @"im0002.jpg":image2}];
     NSFileWrapper *contentsWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"01.Alpha":ch1}];
-    NSFileWrapper *metainfoWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{}];
 
     contentsWrapper.preferredFilename = @"Contents";
     [epubWrapper addFileWrapper:contentsWrapper];
 
-    metainfoWrapper.preferredFilename = @"META-INF";
-    [epubWrapper addFileWrapper:metainfoWrapper];
-
-    XCTAssertTrue([_action addMetadataToDirectory:epubWrapper chapters:@[ch1] spineItems:@[@"pg01.xhtml"] error:&error], @"%@", error);
+    XCTAssertTrue([_action addMetadataToDirectory:contentsWrapper chapters:@[ch1] spineItems:@[@"pg01.xhtml"] error:&error], @"%@", error);
 
     XCTAssert([epubWrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:nil error:&error], @"%@", error);
 
-    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"META-INF/"].isDirectoryOnFileSystem);
-    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"META-INF/container.xml"].isRegularFileOnFileSystem);
     XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"Contents/package.opf"].isRegularFileOnFileSystem);
-    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"Contents/contents.css"].isRegularFileOnFileSystem);
 
     NSXMLDocument *package = [[NSXMLDocument alloc] initWithContentsOfURL:[outDirectory URLByAppendingPathComponent:@"Contents/package.opf"] options:0 error:&error];
     XCTAssertNotNil(package, @"%@", error);
