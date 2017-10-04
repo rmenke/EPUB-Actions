@@ -698,16 +698,20 @@ static NSRegularExpression *expr = NULL;
         [input addObject:image.absoluteURL.path];
     }
 
-    [self measureMetrics:XCTestCase.defaultPerformanceMetrics automaticallyStartMeasuring:NO forBlock:^{
+    // The first run may initialize some variables thus leading to a bad STDEV.
+    XCTAssertNotNil([_action runWithInput:input error:&error], @"%@", error);
+
+    __block NSArray<NSString *> *result = nil;
+
+    [self measureBlock:^{
         NSError * __autoreleasing error = nil;
 
-        [self startMeasuring];
-        NSArray<NSString *> *result = [_action runWithInput:input error:&error];
-        [self stopMeasuring];
+        result = [_action runWithInput:input error:&error];
 
         XCTAssertNotNil(result, @"%@", error);
-        XCTAssertEqualObjects(result[0], outDirectory.path);
     }];
+
+    XCTAssertEqualObjects(result[0], outDirectory.path);
 }
 
 @end
