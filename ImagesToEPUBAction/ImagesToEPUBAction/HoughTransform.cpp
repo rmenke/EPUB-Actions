@@ -31,29 +31,6 @@ static CFStringRef kHTErrorDomain = CFSTR("HoughTransformErrorDomain");
 
 static std::array<simd::double2, maxTheta> trig;
 
-/*!
- * @abstract Calculate the cosine of the angle formed by three points.
- *
- * @discussion Use the law of cosines:
- * <code>cos(∠abc) = (|ab|²+|bc|²-|ac|²) / (2|ab||bc|)</code>
- *
- * @param a The first point of the angle
- * @param b The vertex of the angle
- * @param c The third point of the angle
- * @return The cosine of the angle formed by the three points
- */
-template <typename _V>
-static inline auto cosine(_V a, _V b, _V c) -> typename std::remove_reference<decltype(a.x)>::type {
-    auto ab2 = simd::distance_squared(a, b);
-    auto bc2 = simd::distance_squared(b, c);
-    auto ac2 = simd::distance_squared(a, c);
-
-    auto ab = std::sqrt(ab2);
-    auto bc = std::sqrt(bc2);
-
-    return (ab2 + bc2 - ac2) / (2.0 * ab * bc);
-}
-
 template <>
 struct std::less<simd::uint2> {
     bool operator()(simd::uint2 a, simd::uint2 b) const {
@@ -68,7 +45,7 @@ namespace cf {      // Core Foundation support
         }
     };
 
-    template <typename T> using managed = std::unique_ptr<typename std::remove_pointer<T>::type, struct __release>;
+    template <typename T> using managed = std::unique_ptr<typename std::remove_pointer_t<T>, struct __release>;
 
     static inline managed<CFNumberRef> make_number(CGFloat f) {
         return managed<CFNumberRef> { CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &f) };
@@ -413,6 +390,25 @@ namespace hough {
             return vector4(start, finish);
         }
     };
+
+    /*!
+     * @abstract Calculate the cosine of the angle formed by three points.
+     *
+     * @discussion Use the geometric interpretation of inner product:
+     *   <code>b͢a⋅b͢c = cos(∡abc)|b͢a||b͢c|</code>
+     *
+     * @param a The first point of the angle
+     * @param b The vertex of the angle
+     * @param c The third point of the angle
+     * @return The cosine of the angle formed by the three points
+     */
+    template <typename _Vector>
+    static inline auto cosine(const _Vector a, const _Vector b, const _Vector c) {
+        const auto ba = a - b;
+        const auto bc = c - b;
+
+        return simd::dot(ba, bc) / std::sqrt(simd::length_squared(ba) * simd::length_squared(bc));
+    }
 }
 
 static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, unsigned channel_width, unsigned max_gap) {
@@ -583,7 +579,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
                 continue;
             }
 
-            const auto cs = cosine(x, y, z);
+            const auto cs = hough::cosine(x, y, z);
 
             // If the segments are not colinear, nothing else can be done.
             if (cs >= -cosineTolerance && cs <= +cosineTolerance) continue;
