@@ -169,7 +169,7 @@ static NSRegularExpression *expr = NULL;
     }
     free(properties);
 
-    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255.00,255.00,255.00,1.0000)");
+    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255,255,255,1.00)");
 }
 
 - (void)testParametersWithColor {
@@ -177,7 +177,7 @@ static NSRegularExpression *expr = NULL;
 
     parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithSRGBRed:1.0 green:0.5 blue:0.5 alpha:1.0]];
 
-    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255.00,127.50,127.50,1.0000)");
+    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255,127,128,1.00)");
 }
 
 - (void)testParametersWithColorNonRGBA {
@@ -185,7 +185,7 @@ static NSRegularExpression *expr = NULL;
 
     parameters[@"backgroundColor"] = [NSArchiver archivedDataWithRootObject:[NSColor colorWithWhite:0.5 alpha:1.0]];
 
-    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(127.50,127.50,127.50,1.0000)");
+    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(128,128,128,1.00)");
 }
 
 - (void)testLoadParametersWithColorMissing {
@@ -193,7 +193,7 @@ static NSRegularExpression *expr = NULL;
 
     parameters[@"backgroundColor"] = nil;
 
-    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255.00,255.00,255.00,1.0000)");
+    XCTAssertEqualObjects([_action valueForKeyPath:@"backgroundColor.webColor"], @"rgba(255,255,255,1.00)");
 }
 
 - (void)testOutputURL {

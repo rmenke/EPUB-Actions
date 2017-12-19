@@ -76,7 +76,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     [rgbColor getComponents:fcomponents];
 
-    return [NSString stringWithFormat:@"rgba(%0.2f,%0.2f,%0.2f,%0.4f)", fcomponents[0] * 255.0, fcomponents[1] * 255.0, fcomponents[2] * 255.0, fcomponents[3]];
+    return [NSString stringWithFormat:@"rgba(%0.0f,%0.0f,%0.0f,%0.2f)", fcomponents[0] * 255.0, fcomponents[1] * 255.0, fcomponents[2] * 255.0, fcomponents[3]];
 }
 
 @end
@@ -320,7 +320,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     NSXMLElement *bodyElement = [pageDocument nodesForXPath:@"/html/body" error:&underlyingError].firstObject;
     if (!bodyElement) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
 
-    [bodyElement addAttribute:[NSXMLNode attributeWithName:@"style" stringValue:[NSString stringWithFormat:@"width:%lupx; height:%lupx", (unsigned long)(self.pageWidth), (unsigned long)(self.pageHeight)]]];
+    [bodyElement addAttribute:[NSXMLNode attributeWithName:@"style" stringValue:[NSString stringWithFormat:@"width:%lupx; height:%lupx; background-color:%@", (unsigned long)(self.pageWidth), (unsigned long)(self.pageHeight), self.backgroundColor.webColor]]];
 
     NSXMLNode *viewportNode = [pageDocument nodesForXPath:@"/html/head/meta[@name='viewport']/@content" error:&underlyingError].firstObject;
     if (!viewportNode) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
