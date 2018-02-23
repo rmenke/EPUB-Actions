@@ -155,7 +155,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         memcpy(buffer.data + buffer.bytesPerRow * y, pixels[y], sizeof(pixels[0]));
     }
 
-    NSArray<NSArray<NSNumber *> *> *lines = [buffer findSegmentsWithSignificance:1E-4 error:&error];
+    NSArray<NSArray<NSNumber *> *> *lines = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-4} error:&error];
     XCTAssertNotNil(lines, @"%@", error);
 }
 
@@ -229,7 +229,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         NSError * __autoreleasing error;
 
         [self startMeasuring];
-        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        segments = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-15} error:&error];
         [self stopMeasuring];
 
         XCTAssertNotNil(segments, @"%@", error);
@@ -268,7 +268,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         NSError * __autoreleasing error;
 
         [self startMeasuring];
-        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        segments = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-15} error:&error];
         [self stopMeasuring];
 
         XCTAssertNotNil(segments, @"%@", error);
@@ -307,7 +307,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         NSError * __autoreleasing error;
 
         [self startMeasuring];
-        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        segments = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-15} error:&error];
         [self stopMeasuring];
 
         XCTAssertNotNil(segments, @"%@", error);
@@ -346,7 +346,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         NSError * __autoreleasing error;
 
         [self startMeasuring];
-        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        segments = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-15} error:&error];
         [self stopMeasuring];
 
         XCTAssertNotNil(segments, @"%@", error);
@@ -385,7 +385,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         NSError * __autoreleasing error;
 
         [self startMeasuring];
-        segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        segments = [buffer findSegmentsWithParameters:@{@"grayThreshold":@0x7f, @"channelWidth":@3, @"maxGap":@4, @"significance":@1E-15} error:&error];
         [self stopMeasuring];
 
         XCTAssertNotNil(segments, @"%@", error);
@@ -442,7 +442,7 @@ void __CGImageWriteDebug(CGImageRef image, NSString *fileName) {
         VImageBuffer *buffer = [[CLS(VImageBuffer) alloc] initWithCIImage:image error:&error];
         XCTAssertNotNil(buffer, @"%@", error);
 
-        NSArray<NSArray<NSNumber *> *> *segments = [buffer findSegmentsWithSignificance:1E-15 error:&error];
+        NSArray<NSArray<NSNumber *> *> *segments = [buffer findSegmentsWithParameters:@{@"signficance":@1E-15} error:&error];
         XCTAssertNotNil(segments, @"error - %@", error);
 
         CGImageRef imageRef = [buffer copyCGImageAndReturnError:&error];

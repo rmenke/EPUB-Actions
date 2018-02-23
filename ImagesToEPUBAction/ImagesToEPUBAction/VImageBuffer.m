@@ -168,10 +168,11 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     return copy;
 }
 
-- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithSignificance:(double)significance error:(NSError **)error {
+- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     CFErrorRef cfError = NULL;
 
-    NSArray<NSArray<NSNumber *> *> *segments = CFBridgingRelease(CreateSegmentsFromImage(&buffer, 0x7f, significance, 3, error ? &cfError : NULL));
+    NSArray<NSArray<NSNumber *> *> *segments = CFBridgingRelease(CreateSegmentsFromImage(&buffer, (__bridge CFDictionaryRef)(parameters), error ? &cfError : NULL));
+
     if (!segments && error) *error = CFBridgingRelease(cfError);
 
     return segments;

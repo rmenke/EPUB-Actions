@@ -22,7 +22,7 @@ extern "C" {
 
 CF_IMPLICIT_BRIDGING_ENABLED
 
-CFArrayRef _Nullable CreateSegmentsFromImage(const vImage_Buffer * _Nonnull buffer, uint8_t grayThreshold, double significance, unsigned channelWidth, CFErrorRef _Nullable * _Nullable errorPtr) NOEXCEPT_SPECIFIER;
+CFArrayRef _Nullable CreateSegmentsFromImage(const vImage_Buffer * _Nonnull buffer, CFDictionaryRef _Nonnull parameters, CFErrorRef _Nullable * _Nullable errorPtr) NOEXCEPT_SPECIFIER;
 
 CF_IMPLICIT_BRIDGING_DISABLED
 

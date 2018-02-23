@@ -63,8 +63,21 @@ namespace cf {      // Core Foundation support
 
     template <typename T> using managed = std::unique_ptr<typename std::remove_pointer_t<T>, struct __release>;
 
-    static inline managed<CFNumberRef> make_number(CGFloat f) {
-        return managed<CFNumberRef> { CFNumberCreate(kCFAllocatorDefault, kCFNumberCGFloatType, &f) };
+    template <typename T> struct number_type { };
+
+    template <> struct number_type<char> { static constexpr CFNumberType value = kCFNumberCharType; };
+    template <> struct number_type<short> { static constexpr CFNumberType value = kCFNumberShortType; };
+    template <> struct number_type<int> { static constexpr CFNumberType value = kCFNumberIntType; };
+    template <> struct number_type<long> { static constexpr CFNumberType value = kCFNumberLongLongType; };
+    template <> struct number_type<long long> { static constexpr CFNumberType value = kCFNumberLongLongType; };
+    template <> struct number_type<float> { static constexpr CFNumberType value = kCFNumberFloatType; };
+    template <> struct number_type<double> { static constexpr CFNumberType value = kCFNumberDoubleType; };
+
+    template <typename T> constexpr CFNumberType number_type_v = number_type<T>::value;
+
+    template <typename _N>
+    static inline managed<CFNumberRef> make_number(_N value) {
+        return managed<CFNumberRef> { CFNumberCreate(kCFAllocatorDefault, number_type<_N>::value, &value) };
     }
 
     template <typename... T>
@@ -274,7 +287,7 @@ namespace hough {
 
                     unsigned int factor = 512;
 
-                    const auto theta_is_multiple_of_factor = [&factor](const coord &a) {
+                    const auto theta_is_multiple_of_factor = [&factor] (const coord &a) {
                         return (a.first % factor) == 0;
                     };
 
@@ -470,7 +483,9 @@ namespace hough {
     }
 }
 
-static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, unsigned channel_width, unsigned max_gap) {
+static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, uint8_t channel_width, uint8_t max_gap) {
+    assert((channel_width & 1) == 1);
+
     if (buffer->width == 0 && buffer->height == 0) return std::vector<simd::double4> { };
 
     static const hough::trig trig;
@@ -586,7 +601,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
                 p0 += delta;
             }
 
-            auto longest_segment = std::max_element(segments.begin(), segments.end(), [](const hough::image_segment &a, const hough::image_segment &b) {
+            auto longest_segment = std::max_element(segments.begin(), segments.end(), [] (const hough::image_segment &a, const hough::image_segment &b) {
                 return a.length_squared() < b.length_squared();
             });
 
@@ -613,7 +628,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
     // Find segments that are colinear and share an endpoint.
     // If they overlap, remove the smaller one; otherwise, join the segments.
 
-    const auto max_gap_squared = max_gap * max_gap;
+    const double max_gap_squared = max_gap * max_gap;
 
     auto end = found_segments.end();
 
@@ -677,7 +692,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
         }
     }
 
-    end = std::remove_if(found_segments.begin(), end, [](const simd::double4 &segment) {
+    end = std::remove_if(found_segments.begin(), end, [] (const simd::double4 &segment) {
         return simd::distance_squared(segment.lo, segment.hi) < 25.0;
     });
 
@@ -686,9 +701,36 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
     return found_segments;
 }
 
-extern "C" CFArrayRef CreateSegmentsFromImage(const vImage_Buffer *buffer, uint8_t grayThreshold, double significance, unsigned channelWidth, CFErrorRef *errorPtr) noexcept {
+template <typename T>
+static inline void getParam(T &key, CFTypeRef _Nonnull value, __unused const char *name) {
+#if DEBUG
+    if (value == nullptr) throw std::logic_error { std::string { "key '" } + name + "' undefined" };
+    if (CFGetTypeID(value) != CFNumberGetTypeID()) throw std::bad_cast { };
+#endif
+
+    CFNumberRef number = static_cast<CFNumberRef>(value);
+    if (!CFNumberGetValue(number, cf::number_type_v<T>, &key)) {
+#if DEBUG
+        std::cerr << "warning: lossy conversion of '" << name << "'" << std::endl;
+#endif
+    }
+}
+
+#define GET_PARAM(KEY) getParam(KEY, CFDictionaryGetValue(parameters, CFSTR(#KEY)), #KEY)
+
+extern "C" CFArrayRef CreateSegmentsFromImage(const vImage_Buffer *buffer, CFDictionaryRef parameters, CFErrorRef *errorPtr) noexcept {
     try {
-        auto segments = find_segments_in_image(buffer, grayThreshold, significance, channelWidth, 4);
+        char grayThreshold;
+        double significance;
+        char channelWidth;
+        char maxGap;
+
+        GET_PARAM(grayThreshold);
+        GET_PARAM(significance);
+        GET_PARAM(channelWidth);
+        GET_PARAM(maxGap);
+
+        auto segments = find_segments_in_image(buffer, grayThreshold, significance, channelWidth, maxGap);
 
         CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
