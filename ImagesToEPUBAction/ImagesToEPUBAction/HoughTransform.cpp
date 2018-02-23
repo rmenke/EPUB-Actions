@@ -483,7 +483,7 @@ namespace hough {
     }
 }
 
-static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, uint8_t channel_width, uint8_t max_gap) {
+static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, const uint8_t gray_threshold, const double significance, const uint8_t channel_width, const uint8_t max_segment_gap, const uint16_t min_segment_length) {
     assert((channel_width & 1) == 1);
 
     if (buffer->width == 0 && buffer->height == 0) return std::vector<simd::double4> { };
@@ -591,7 +591,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
 
                     gap = 0;
                 }
-                else if (gap < max_gap) {
+                else if (gap < max_segment_gap) {
                     gap++;
                 }
                 else {
@@ -628,7 +628,7 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
     // Find segments that are colinear and share an endpoint.
     // If they overlap, remove the smaller one; otherwise, join the segments.
 
-    const double max_gap_squared = max_gap * max_gap;
+    const double max_gap_squared = max_segment_gap * max_segment_gap;
 
     auto end = found_segments.end();
 
@@ -692,8 +692,10 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
         }
     }
 
-    end = std::remove_if(found_segments.begin(), end, [] (const simd::double4 &segment) {
-        return simd::distance_squared(segment.lo, segment.hi) < 25.0;
+    const double min_length_squared = min_segment_length * min_segment_length;
+
+    end = std::remove_if(found_segments.begin(), end, [min_length_squared] (const simd::double4 &segment) {
+        return simd::distance_squared(segment.lo, segment.hi) < min_length_squared;
     });
 
     found_segments.erase(end, found_segments.end());
@@ -723,14 +725,16 @@ extern "C" CFArrayRef CreateSegmentsFromImage(const vImage_Buffer *buffer, CFDic
         char grayThreshold;
         double significance;
         char channelWidth;
-        char maxGap;
+        char maxSegmentGap;
+        short minSegmentLength;
 
         GET_PARAM(grayThreshold);
         GET_PARAM(significance);
         GET_PARAM(channelWidth);
-        GET_PARAM(maxGap);
+        GET_PARAM(maxSegmentGap);
+        GET_PARAM(minSegmentLength);
 
-        auto segments = find_segments_in_image(buffer, grayThreshold, significance, channelWidth, maxGap);
+        auto segments = find_segments_in_image(buffer, grayThreshold, significance, channelWidth, maxSegmentGap, minSegmentLength);
 
         CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
