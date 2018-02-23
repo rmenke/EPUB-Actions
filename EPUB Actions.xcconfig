@@ -1,5 +1,5 @@
 //
-// The common version for both actions in this workspace.
+// The common version for all actions in this workspace.
 //
-CURRENT_PROJECT_VERSION = 2.7
+CURRENT_PROJECT_VERSION = 2.8
 VERSIONING_SYSTEM = apple-generic
