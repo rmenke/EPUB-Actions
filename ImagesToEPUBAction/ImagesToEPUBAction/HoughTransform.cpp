@@ -134,14 +134,14 @@ namespace hough {
         }
     };
 
-    static struct trig trig;
-
     enum class state : unsigned char {
         unset, pending, voted
     };
 
     class scoreboard {
         using accumulator_type = uint32_t;
+
+        const struct trig &trig;
 
         const double rhoScale;
         const unsigned long maxRho;
@@ -170,10 +170,10 @@ namespace hough {
                 threshold(std::log(significance)) { }
         };
 
-        scoreboard(const param &p) : rhoScale(p.rhoScale), maxRho(p.maxRho), width(p.width), image(hough::state::unset, p.width * p.height), accumulator(p.maxRho * maxTheta), voted(0), threshold(p.threshold) { }
+        scoreboard(const param &p, const struct trig &trig) : trig(trig), rhoScale(p.rhoScale), maxRho(p.maxRho), width(p.width), image(hough::state::unset, p.width * p.height), accumulator(p.maxRho * maxTheta), voted(0), threshold(p.threshold) { }
 
     public:
-        scoreboard(const vImage_Buffer *buffer, uint8_t grayThreshold, double significance) : scoreboard(param(buffer, significance)) {
+        scoreboard(const vImage_Buffer *buffer, uint8_t grayThreshold, double significance, const struct trig &trig) : scoreboard(param(buffer, significance), trig) {
             auto iter = std::begin(image);
 
             for (unsigned int y = 0; y < buffer->height; ++y) {
@@ -473,7 +473,9 @@ namespace hough {
 static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *buffer, uint8_t gray_threshold, double significance, unsigned channel_width, unsigned max_gap) {
     if (buffer->width == 0 && buffer->height == 0) return std::vector<simd::double4> { };
 
-    hough::scoreboard scoreboard { buffer, gray_threshold, significance };
+    static const hough::trig trig;
+
+    hough::scoreboard scoreboard { buffer, gray_threshold, significance, trig };
 
     std::vector<simd::double4> found_segments;
 
@@ -482,10 +484,10 @@ static std::vector<simd::double4> find_segments_in_image(const vImage_Buffer *bu
         double rho;
 
         if (scoreboard.vote(p, &theta, &rho)) {
-            auto delta = hough::trig[(theta + maxTheta / 4) % maxTheta];
+            auto delta = trig[(theta + maxTheta / 4) % maxTheta];
             delta /= vector_reduce_max(simd::fabs(delta));
 
-            const auto offset = hough::trig[theta];
+            const auto offset = trig[theta];
 
             const auto bounds = simd::double2 { std::nextafter(buffer->width, 0), std::nextafter(buffer->height, 0) };
 
