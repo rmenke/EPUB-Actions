@@ -168,7 +168,7 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     return copy;
 }
 
-- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
+- (nullable NSArray<NSArray<NSNumber *> *> *)findSegments:(NSDictionary *)parameters error:(NSError **)error {
     CFErrorRef cfError = NULL;
 
     NSArray<NSArray<NSNumber *> *> *segments = CFBridgingRelease(CreateSegmentsFromImage(&buffer, (__bridge CFDictionaryRef)(parameters), error ? &cfError : NULL));
@@ -178,7 +178,7 @@ BOOL ContrastStretch(const vImage_Buffer *src, const vImage_Buffer *dest, NSErro
     return segments;
 }
 
-- (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error {
+- (nullable NSArray<NSValue *> *)findRegions:(NSDictionary *)paramenters error:(NSError **)error {
     return @[]; // TODO: Implement
 }
 

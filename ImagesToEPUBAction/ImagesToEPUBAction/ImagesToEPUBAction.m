@@ -374,7 +374,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithCIImage:ciImage error:error];
             if (!imageBuffer) return nil;
 
-            NSArray<NSValue *> *regions = [imageBuffer findRegionsAndReturnError:error];
+            NSArray<NSValue *> *regions = [imageBuffer findRegions:self.parameters error:error];
             if (!regions) return nil;
 
             for (NSValue *value in regions) {

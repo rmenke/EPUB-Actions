@@ -26,8 +26,8 @@ FOUNDATION_EXTERN NSUInteger const kMaxTheta;
 - (nullable instancetype)initWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error NS_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCIImage:(CIImage *)image error:(NSError **)error;
 
-- (nullable NSArray<NSArray<NSNumber *> *> *)findSegmentsWithParameters:(NSDictionary *)paramenters error:(NSError **)error;
-- (nullable NSArray<NSValue *> *)findRegionsAndReturnError:(NSError **)error;
+- (nullable NSArray<NSArray<NSNumber *> *> *)findSegments:(NSDictionary<NSString *, id> *)paramenters error:(NSError **)error;
+- (nullable NSArray<NSValue *> *)findRegions:(NSDictionary<NSString *, id> *)paramenters error:(NSError **)error;
 
 - (nullable VImageBuffer *)normalizeContrastAndReturnError:(NSError **)error;
 - (nullable CGImageRef)copyCGImageAndReturnError:(NSError **)error CF_RETURNS_RETAINED;
