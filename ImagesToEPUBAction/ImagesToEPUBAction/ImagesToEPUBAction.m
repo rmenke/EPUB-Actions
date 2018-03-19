@@ -8,7 +8,6 @@
 
 #import "ImagesToEPUBAction.h"
 #import "NSXMLDocument+OPFDocumentExtensions.h"
-#import "VImageBuffer.h"
 
 @import AppKit.NSColorSpace;
 @import AppKit.NSKeyValueBinding;
@@ -191,10 +190,6 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return [self.parameters[@"layoutStyle"] unsignedIntegerValue];
 }
 
-- (BOOL)doPanelAnalysis {
-    return [self.parameters[@"doPanelAnalysis"] boolValue];
-}
-
 - (BOOL)firstIsCover {
     return [self.parameters[@"firstIsCover"] boolValue];
 }
@@ -354,45 +349,6 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         NSXMLElement *divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr.copy]];
 
         [bodyElement addChild:divElement];
-
-        if (self.doPanelAnalysis) {
-            id image = [frame valueForKey:@"image"];
-
-            CGFloat originalWidth = CGImageGetWidth((CGImageRef)image);
-            CGFloat originalHeight = CGImageGetHeight((CGImageRef)image);
-
-            CGAffineTransform localToGlobal = CGAffineTransformMakeTranslation(x, y);
-            localToGlobal = CGAffineTransformScale(localToGlobal, width / originalWidth, height / originalHeight);
-
-            CIImage *ciImage = [CIImage imageWithCGImage:(CGImageRef)(image)];
-
-            ciImage = [ciImage imageByCompositingOverImage:[CIImage imageWithColor:[[CIColor alloc] initWithColor:self.backgroundColor]]];
-            ciImage = [ciImage imageByApplyingFilter:@"CIEdges" withInputParameters:nil];
-            ciImage = [ciImage imageByApplyingFilter:@"CIMaximumComponent" withInputParameters:nil];
-            ciImage = [ciImage imageByCroppingToRect:CGRectMake(0, 0, originalWidth, originalHeight)];
-
-            VImageBuffer *imageBuffer = [[VImageBuffer alloc] initWithCIImage:ciImage error:error];
-            if (!imageBuffer) return nil;
-
-            NSArray<NSValue *> *regions = [imageBuffer findRegions:self.parameters error:error];
-            if (!regions) return nil;
-
-            for (NSValue *value in regions) {
-                CGRect region = NSRectToCGRect(value.rectValue);
-
-                region = CGRectApplyAffineTransform(region, localToGlobal);
-                region = CGRectApplyAffineTransform(region, pixelToPercent);
-
-                style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", region.origin.x, region.origin.y, region.size.width, region.size.height];
-
-                classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
-                styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
-
-                divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr]];
-
-                [bodyElement addChild:divElement];
-            }
-        }
 
         y += height;
         y += vSpace;
@@ -584,7 +540,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return !self.stopped;
 }
 
-- (NSFileWrapper *)fileWrapperForResource:(NSString *)resource withExtension:(NSString *)extension error:(NSError **)error {
+- (nullable NSFileWrapper *)fileWrapperForResource:(NSString *)resource withExtension:(NSString *)extension error:(NSError **)error {
     NSURL *url = [self.bundle URLForResource:resource withExtension:extension];
     if (!url) {
         if (error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:@{NSURLErrorKey:[[self.bundle.resourceURL URLByAppendingPathComponent:resource] URLByAppendingPathExtension:extension], NSLocalizedDescriptionKey:[NSString stringWithFormat:@"The bundle resource “%@.%@” is missing.", resource ? resource : @"*", extension ? extension : @"*"], NSLocalizedFailureReasonErrorKey:@"A bundle resource is missing.", NSLocalizedRecoverySuggestionErrorKey:@"Reinstall the action and try again."}];
