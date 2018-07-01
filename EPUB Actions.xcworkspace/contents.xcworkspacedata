@@ -8,6 +8,9 @@
       location = "group:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:/Users/rgm/Source/EPUB-Actions/ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
+      location = "group:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
    </FileRef>
 </Workspace>
