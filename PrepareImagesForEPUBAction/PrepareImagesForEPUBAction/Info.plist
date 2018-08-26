@@ -27,6 +27,22 @@
 		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEBAYY=</data>
 		<key>ignoreAlpha</key>
 		<false/>
+		<key>openKernel</key>
+		<integer>1</integer>
+		<key>cropTop</key>
+		<integer>0</integer>
+		<key>cropBottom</key>
+		<integer>0</integer>
+		<key>cropLeft</key>
+		<integer>0</integer>
+		<key>cropRight</key>
+		<integer>0</integer>
+		<key>sensitivity</key>
+		<integer>12</integer>
+		<key>maxGap</key>
+		<integer>3</integer>
+		<key>closeGap</key>
+		<integer>5</integer>
 	</dict>
 	<key>AMDescription</key>
 	<dict>

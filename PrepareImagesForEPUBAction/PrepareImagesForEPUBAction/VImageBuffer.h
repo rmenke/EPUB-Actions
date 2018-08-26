@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface VImageBuffer : NSObject
 
 @property (nonatomic, readonly) NSUInteger width, height;
-@property (nonatomic, readonly) CGRect ROI;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -24,12 +23,19 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable instancetype)bufferWithWidth:(NSUInteger)width height:(NSUInteger)height bitsPerPixel:(NSUInteger)bitsPerPixel error:(NSError **)error;
 + (nullable instancetype)bufferWithContentsOfURL:(NSURL *)url error:(NSError **)error;
 
-- (void)cropTop:(NSUInteger)top bottom:(NSUInteger)bottom left:(NSUInteger)left right:(NSUInteger)right NS_SWIFT_NAME(crop(top:bottom:left:right:));
+- (nullable VImageBuffer *)dilateWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error NS_SWIFT_NAME(dilate(width:height:));
+- (nullable VImageBuffer *)erodeWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error NS_SWIFT_NAME(erode(width:height:));
 
-- (nullable VImageBuffer *)extractBorderMaskAndReturnError:(NSError **)error;
+- (nullable VImageBuffer *)openWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error NS_SWIFT_NAME(open(width:height:));
+
+- (BOOL)subtractBuffer:(VImageBuffer *)subtrahend error:(NSError **)error;
+
+- (nullable VImageBuffer *)extractBorderMaskInRect:(CGRect)rect error:(NSError **)error;
 
 - (BOOL)detectEdgesAndReturnError:(NSError **)error;
-- (nullable NSArray<NSArray<NSNumber *> *> *)detectSegmentsAndReturnError:(NSError **)error;
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectSegmentsWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error;
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectPolylinesWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error;
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectRegionsWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error;
 
 - (nullable CGImageRef)newGrayscaleImageFromBufferAndReturnError:(NSError **)error CF_RETURNS_RETAINED;
 

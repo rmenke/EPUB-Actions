@@ -11,6 +11,7 @@
 @import XCTest;
 @import Automator;
 @import ObjectiveC.runtime;
+@import Darwin.POSIX.sys.xattr;
 
 #define CLS(X) objc_getClass(#X)
 
@@ -91,6 +92,18 @@ static NSRegularExpression *expr = NULL;
     NSURL *inDirectory, *outDirectory;
 }
 
+- (BOOL)setRegion:(id)region onURL:(NSURL *)url error:(NSError **)error {
+    NSData *data = [NSPropertyListSerialization dataWithPropertyList:region format:NSPropertyListBinaryFormat_v1_0 options:0 error:error];
+    if (!data) return NO;
+
+    if (setxattr(url.fileSystemRepresentation, "com_the-wabe_regions", data.bytes, data.length, 0, 0) != 0) {
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:url}];
+        return NO;
+    }
+
+    return YES;
+}
+
 - (void)setUp {
     [super setUp];
 
@@ -135,9 +148,15 @@ static NSRegularExpression *expr = NULL;
         [bundle URLForImageResource:@"image01"],
         [bundle URLForImageResource:@"image02"],
         [bundle URLForImageResource:@"image03"],
-        [bundle URLForImageResource:@"image04"],
-        [bundle URLForImageResource:@"image05"]
+        [bundle URLForImageResource:@"image04"]
     ];
+
+    if (![self setRegion:@[@[@20,@20,@200,@200],@[@240,@20,@200,@200],@[@460,@20,@200,@200]] onURL:_images[0] error:&error]) {
+        XCTFail(@"error - %@", error);
+    }
+    if (![self setRegion:@[@[@20,@20,@200,@200],@[@240,@20,@200,@90],@[@240,@130,@200,@90],@[@460,@20,@200,@200]] onURL:_images[1] error:&error]) {
+        XCTFail(@"error - %@", error);
+    }
 }
 
 - (void)tearDown {

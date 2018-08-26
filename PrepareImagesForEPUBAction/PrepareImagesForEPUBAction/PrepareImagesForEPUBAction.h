@@ -11,6 +11,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+const char * const EPUB_REGION_XATTR = "com_the-wabe_regions";
+
+@interface NSURL (FileExtendedAttributes)
+
+- (BOOL)setFileExtendedAttribute:(NSString *)name data:(NSData *)data error:(NSError **)error;
+- (nullable NSData *)fileExtendedAttribute:(NSString *)name error:(NSError **)error;
+
+@end
+
 @interface PrepareImagesForEPUBAction : AMBundleAction
 
 @property (nonatomic, readonly) BOOL ignoreAlpha;

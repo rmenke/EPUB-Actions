@@ -11,6 +11,7 @@
 
 @import AppKit.NSColorSpace;
 @import AppKit.NSKeyValueBinding;
+@import Darwin.POSIX.sys.xattr;
 @import ObjectiveC.runtime;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -59,12 +60,6 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return [extensions[typeIdentifier] containsObject:extension];
 }
 
-@interface NSColor (WebColorExtension)
-
-@property (nonatomic, readonly) NSString *webColor;
-
-@end
-
 @implementation NSColor (WebColorExtension)
 
 - (NSString *)webColor {
@@ -80,13 +75,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @end
 
-@interface NSFileWrapper (ChapterTitleExtension)
-
-@property (nonatomic, nullable, copy) NSString *title;
-
-@end
-
-@implementation NSFileWrapper (ChapterTitleExtension)
+@implementation NSFileWrapper (EPUBExtension)
 
 - (nullable NSString *)title {
     return objc_getAssociatedObject(self, "com.the-wabe.title");
@@ -96,33 +85,66 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     objc_setAssociatedObject(self, "com.the-wabe.title", title, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (nullable NSArray<NSArray<NSNumber *> *> *)regions {
+    return objc_getAssociatedObject(self, "com.the-wabe.regions");
+}
+
+- (void)setRegions:(nullable NSArray<NSArray<NSNumber *> *> *)regions {
+    objc_setAssociatedObject(self, "com.the-wabe.regions", regions, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
 @end
 
 @interface Frame : NSObject
 
 @property (nonatomic, nonnull) id image;
 @property (nonatomic, nonnull, copy) NSString *name;
+@property (nonatomic, nonnull, copy) NSArray<NSValue *> *regions;
 @property (nonatomic, assign) CGFloat width, height;
 
 - (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWithImage:(id)image name:(NSString *)name width:(CGFloat)width height:(CGFloat)height NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithImage:(id)image name:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height NS_DESIGNATED_INITIALIZER;
 
 @end
 
 @implementation Frame
 
-- (instancetype)initWithImage:(id)image name:(NSString *)name width:(CGFloat)width height:(CGFloat)height {
+- (instancetype)initWithImage:(id)image name:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height {
     self = [super init];
 
     if (self) {
         self.image = image;
         self.name = name;
+        self.regions = regions;
         self.width = width;
         self.height = height;
     }
 
     return self;
+}
+
+@end
+
+@implementation NSURL (Regions)
+
+- (id)regionsAndReturnError:(NSError **)error {
+    ssize_t size = getxattr(self.fileSystemRepresentation, EPUB_REGION_XATTR, NULL, 0, 0, 0);
+    if (size < 0) {
+        if (errno == ENOATTR) return @[];
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:self}];
+        return nil;
+    }
+
+    NSMutableData *data = [NSMutableData dataWithLength:size];
+    size = getxattr(self.fileSystemRepresentation, EPUB_REGION_XATTR, data.mutableBytes, data.length, 0, 0);
+    if (size < 0) {
+        if (errno == ENOATTR) return @[];
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:self}];
+        return nil;
+    }
+
+    return [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:error];
 }
 
 @end
@@ -255,7 +277,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:inputURL options:NSFileWrapperReadingImmediate error:error];
             if (!wrapper) return nil;
 
+            NSArray *regions = [inputURL regionsAndReturnError:error];
+            if (!regions) return nil;
+
             wrapper.preferredFilename = [NSString stringWithFormat:@"im%04lu.%@", chapter.fileWrappers.count + 1, extensionForType(typeIdentifier)];
+            wrapper.regions = regions;
+
             [chapter addFileWrapper:wrapper];
         }
         else {
@@ -328,6 +355,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         CGFloat width = [[frame valueForKey:@"width"] doubleValue];
         CGFloat height = [[frame valueForKey:@"height"] doubleValue];
 
+        NSArray<NSValue *> *regions = [frame valueForKey:@"regions"];
+
         CGFloat x = (contentWidth - width) / 2.0 + self.pageMargin;
 
         CGRect r = CGRectApplyAffineTransform(CGRectMake(x, y, width, height), pixelToPercent);
@@ -347,6 +376,18 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         NSXMLNode *classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel-group"];
 
         NSXMLElement *divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr.copy]];
+
+        CGAffineTransform localToPercent = CGAffineTransformMakeScale(100.0 / width, 100.0 / height);
+
+        for (NSValue *value in regions) {
+            CGRect r = CGRectApplyAffineTransform(NSRectToCGRect(value.rectValue), localToPercent);
+
+            NSString *style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", r.origin.x, r.origin.y, r.size.width, r.size.height];
+            NSXMLNode *classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
+            NSXMLNode *styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
+
+            [divElement addChild:[NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr]]];
+        }
 
         [bodyElement addChild:divElement];
 
@@ -430,7 +471,17 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             NSAssert(w * scale <= contentWidth, @"width: %f, scale: %f, scaled width: %f, max: %f", w, scale, w * scale, contentWidth);
             NSAssert(h * scale <= contentHeight, @"height: %f, scale: %f, scaled height: %f, max: %f", h, scale, h * scale, contentHeight);
 
-            Frame *frame = [[Frame alloc] initWithImage:image name:imageWrapper.preferredFilename width:(w * scale) height:(h * scale)];
+            NSMutableArray<NSValue *> *regions = [NSMutableArray array];
+
+            CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
+
+            for (NSArray<NSNumber *> *region in imageWrapper.regions) {
+                CGRect r = CGRectMake(region[0].doubleValue, region[1].doubleValue, region[2].doubleValue, region[3].doubleValue);
+                NSValue *value = [NSValue valueWithRect:NSRectFromCGRect(CGRectApplyAffineTransform(r, scaleTransform))];
+                [regions addObject:value];
+            }
+
+            Frame *frame = [[Frame alloc] initWithImage:image name:imageWrapper.preferredFilename regions:regions width:(w * scale) height:(h * scale)];
 
             if (currentHeight + h * scale > contentHeight) {
                 NSString *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapter error:error];

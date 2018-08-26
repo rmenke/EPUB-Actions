@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E109C4B620F667F800FFD8BF /* cf_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E109C4B420F667F800FFD8BF /* cf_util.cpp */; };
+		E14F64C3210E897E0076280D /* image06.png in Resources */ = {isa = PBXBuildFile; fileRef = E14F64C2210E897E0076280D /* image06.png */; };
 		E15AE4EB20D5DCD000A143D6 /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E820D5DCD000A143D6 /* image03.gif */; };
 		E15AE4EC20D5DCD000A143D6 /* image04.png in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E920D5DCD000A143D6 /* image04.png */; };
-		E15AE4ED20D5DCD000A143D6 /* image05.png in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4EA20D5DCD000A143D6 /* image05.png */; };
 		E15AE4F020D5DD7400A143D6 /* VImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */; };
 		E15AE4F220D5E4B700A143D6 /* VImageBufferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E15AE4F120D5E4B700A143D6 /* VImageBufferTests.m */; };
 		E19E535C20D6FB8C001444E3 /* AnalysisTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */; };
-		E1CEAC7520E0A14800F832A9 /* image06.png in Resources */ = {isa = PBXBuildFile; fileRef = E1CEAC7420E0A14800F832A9 /* image06.png */; };
+		E1CEAC7520E0A14800F832A9 /* image05.png in Resources */ = {isa = PBXBuildFile; fileRef = E1CEAC7420E0A14800F832A9 /* image05.png */; };
 		E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */; };
 		E1D0DABC20D21C1A00EF7F35 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D0DABA20D21C1A00EF7F35 /* main.xib */; };
 		E1D0DAD920D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D0DAD820D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m */; };
@@ -33,15 +34,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E109C4B420F667F800FFD8BF /* cf_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cf_util.cpp; sourceTree = "<group>"; };
+		E109C4B520F667F800FFD8BF /* cf_util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cf_util.hpp; sourceTree = "<group>"; };
+		E14F64C2210E897E0076280D /* image06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image06.png; sourceTree = "<group>"; };
 		E15AE4E820D5DCD000A143D6 /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = image03.gif; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image03.gif; sourceTree = "<group>"; };
 		E15AE4E920D5DCD000A143D6 /* image04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image04.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image04.png; sourceTree = "<group>"; };
-		E15AE4EA20D5DCD000A143D6 /* image05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image05.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image05.png; sourceTree = "<group>"; };
 		E15AE4EE20D5DD7400A143D6 /* VImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = VImageBuffer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VImageBuffer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E15AE4F120D5E4B700A143D6 /* VImageBufferTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VImageBufferTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E19E535A20D6FB02001444E3 /* AnalysisTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AnalysisTools.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = AnalysisTools.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		E1CEAC7420E0A14800F832A9 /* image06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image06.png; sourceTree = "<group>"; };
+		E1CEAC7420E0A14800F832A9 /* image05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image05.png; sourceTree = "<group>"; };
 		E1D0DAB420D21C1A00EF7F35 /* Prepare Images for EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Prepare Images for EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D0DAB720D21C1A00EF7F35 /* PrepareImagesForEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PrepareImagesForEPUBAction.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PrepareImagesForEPUBAction.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -101,6 +104,8 @@
 				E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */,
 				E19E535A20D6FB02001444E3 /* AnalysisTools.h */,
 				E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */,
+				E109C4B520F667F800FFD8BF /* cf_util.hpp */,
+				E109C4B420F667F800FFD8BF /* cf_util.cpp */,
 				E1D0DABA20D21C1A00EF7F35 /* main.xib */,
 				E1D0DABD20D21C1A00EF7F35 /* Info.plist */,
 			);
@@ -116,8 +121,8 @@
 				E1D0DAE320D2285000EF7F35 /* image02.jpg */,
 				E15AE4E820D5DCD000A143D6 /* image03.gif */,
 				E15AE4E920D5DCD000A143D6 /* image04.png */,
-				E15AE4EA20D5DCD000A143D6 /* image05.png */,
-				E1CEAC7420E0A14800F832A9 /* image06.png */,
+				E1CEAC7420E0A14800F832A9 /* image05.png */,
+				E14F64C2210E897E0076280D /* image06.png */,
 				E1D0DADA20D2202300EF7F35 /* Info.plist */,
 			);
 			path = PrepareImagesForEPUBActionTests;
@@ -214,9 +219,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1D0DAE220D2283700EF7F35 /* image01.png in Resources */,
+				E14F64C3210E897E0076280D /* image06.png in Resources */,
 				E15AE4EC20D5DCD000A143D6 /* image04.png in Resources */,
-				E1CEAC7520E0A14800F832A9 /* image06.png in Resources */,
-				E15AE4ED20D5DCD000A143D6 /* image05.png in Resources */,
+				E1CEAC7520E0A14800F832A9 /* image05.png in Resources */,
 				E15AE4EB20D5DCD000A143D6 /* image03.gif in Resources */,
 				E1D0DAE020D2231400EF7F35 /* Prepare Images for EPUB.action in Resources */,
 				E1D0DAE420D2285000EF7F35 /* image02.jpg in Resources */,
@@ -238,6 +243,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "amlint \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\"";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -248,6 +254,7 @@
 			files = (
 				E15AE4F020D5DD7400A143D6 /* VImageBuffer.m in Sources */,
 				E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */,
+				E109C4B620F667F800FFD8BF /* cf_util.cpp in Sources */,
 				E19E535C20D6FB8C001444E3 /* AnalysisTools.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

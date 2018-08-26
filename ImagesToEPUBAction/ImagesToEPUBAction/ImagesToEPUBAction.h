@@ -13,6 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+const char * const EPUB_REGION_XATTR = "com_the-wabe_regions";
+
 @interface ImagesToEPUBAction : AMBundleAction
 
 typedef NS_ENUM(NSUInteger, PageLayoutStyle) {

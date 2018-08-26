@@ -25,15 +25,26 @@ using _Bool = bool;
  * @abstract Perform a flood-fill on the border of the image.
  * @discussion Performs a flood-fill based on the given region of interest.  Everything outside the region is automatically discarded.  The source buffer and destination buffer must have the same dimensions.
  * @param source The source buffer in XYZAf format.
- * @param destination The destination buffer in A8 format.
+ * @param destination The destination buffer in Planar8 format.
  * @param regionOfInterest The bounds of the content of the image.
  */
-void extractBorder(const vImage_Buffer * _Nonnull source, const vImage_Buffer * _Nonnull destination, CGRect regionOfInterest) _NOEXCEPT;
+void extractBorder(const vImage_Buffer *source, const vImage_Buffer *destination, CGRect regionOfInterest) _NOEXCEPT;
 
-_Bool detectEdges(const vImage_Buffer * _Nonnull buffer, CFErrorRef _Nullable * _Nullable error) _NOEXCEPT;
+/*!
+ * @abstract Use PPHT to find line segments in an image.
+ * @discussion The image is assumed to be in Planar8 format.
+ * @param buffer The buffer to analyze.
+ * @param error If not <code>NULL</code> and an error occurs, will be filled with the error information.
+ * @return A CFArrayRef of CFArrayRefs of four CFNumberRefs.
+ */
+CF_RETURNS_RETAINED
+CFArrayRef _Nullable detectSegments(const vImage_Buffer *buffer, CFDictionaryRef parameters, CFErrorRef *error) _NOEXCEPT;
 
 CF_RETURNS_RETAINED
-CFArrayRef _Nullable detectSegments(const vImage_Buffer * _Nonnull buffer, CFErrorRef _Nullable * _Nullable errorPtr) _NOEXCEPT;
+CFArrayRef _Nullable detectPolylines(const vImage_Buffer *buffer, CFDictionaryRef parameters, CFErrorRef *error) _NOEXCEPT;
+
+CF_RETURNS_RETAINED
+CFArrayRef _Nullable detectRegions(const vImage_Buffer *buffer, CFDictionaryRef parameters, CFErrorRef *error) _NOEXCEPT;
 
 #ifdef __cplusplus
 }

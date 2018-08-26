@@ -18,6 +18,8 @@
 @import AppKit.NSColor;
 @import AppKit.NSColorSpace;
 
+NS_ASSUME_NONNULL_BEGIN
+
 NSString * const VImageErrorDomain = @"VImageErrorDomain";
 
 @implementation VImageBuffer {
@@ -87,8 +89,6 @@ NSString * const VImageErrorDomain = @"VImageErrorDomain";
             if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:errc userInfo:nil];
             return nil;
         }
-
-        _ROI = CGRectMake(0, 0, width, height);
     }
 
     return self;
@@ -119,8 +119,6 @@ NSString * const VImageErrorDomain = @"VImageErrorDomain";
             if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:errc userInfo:nil];
             return nil;
         }
-
-        _ROI = CGRectMake(0, 0, buffer.width, buffer.height);
     }
 
     return self;
@@ -165,48 +163,106 @@ NSString * const VImageErrorDomain = @"VImageErrorDomain";
     return buffer.height;
 }
 
-- (void)cropTop:(NSUInteger)top bottom:(NSUInteger)bottom left:(NSUInteger)left right:(NSUInteger)right {
-    if (!top || !bottom || !left || !right) return;
-    if (top + bottom >= buffer.height) return;
-    if (left + right >= buffer.width) return;
-
-    _ROI = CGRectMake(left, top, buffer.width - left - right, buffer.height - top - bottom);
-}
-
-- (nullable VImageBuffer *)extractBorderMaskAndReturnError:(NSError **)error {
+- (nullable VImageBuffer *)dilateWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error {
     VImageBuffer *result = [VImageBuffer bufferWithWidth:buffer.width height:buffer.height bitsPerPixel:8 error:error];
-    if (!result) return nil;
 
-    result->_ROI = _ROI;
+    if (result) {
+        vImage_Error errc = vImageMax_Planar8(&buffer, &(result->buffer), NULL, 0, 0, height, width, kvImageNoFlags);
 
-    extractBorder(&buffer, &(result->buffer), _ROI);
+        if (errc != kvImageNoError) {
+            if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:errc userInfo:nil];
+            return nil;
+        }
+    }
 
     return result;
 }
 
-- (BOOL)detectEdgesAndReturnError:(NSError **)error {
-    if (error) {
-        CFErrorRef cfError;
-        if (detectEdges(&buffer, &cfError)) return YES;
-        *error = CFBridgingRelease(cfError);
-        return NO;
+- (nullable VImageBuffer *)erodeWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error {
+    VImageBuffer *result = [VImageBuffer bufferWithWidth:buffer.width height:buffer.height bitsPerPixel:8 error:error];
+
+    if (result) {
+        vImage_Error errc = vImageMin_Planar8(&buffer, &(result->buffer), NULL, 0, 0, height, width, kvImageNoFlags);
+
+        if (errc != kvImageNoError) {
+            if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:errc userInfo:nil];
+            return nil;
+        }
     }
-    else {
-        return detectEdges(&buffer, NULL);
-    }
+
+    return result;
 }
 
-- (nullable NSArray<NSArray<NSNumber *> *> *)detectSegmentsAndReturnError:(NSError **)error {
+- (nullable VImageBuffer *)openWithWidth:(NSUInteger)width height:(NSUInteger)height error:(NSError **)error {
+    return [[self dilateWithWidth:width height:height error:error] erodeWithWidth:width height:height error:error];
+}
+
+- (BOOL)detectEdgesAndReturnError:(NSError **)error {
+    VImageBuffer *erosion = [self erodeWithWidth:3 height:3 error:error];
+    return erosion ? [self subtractBuffer:erosion error:error] : NO;
+}
+
+- (BOOL)subtractBuffer:(VImageBuffer *)subtrahend error:(NSError **)error {
+    if (buffer.width != subtrahend->buffer.width || buffer.height != subtrahend->buffer.height) {
+        if (error) *error = [NSError errorWithDomain:VImageErrorDomain code:kvImageBufferSizeMismatch userInfo:nil];
+        return NO;
+    }
+
+    dispatch_apply(buffer.height, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^(size_t y) {
+              vector_uchar16 * a = buffer.data + buffer.rowBytes * y;
+        const vector_uchar16 * b = subtrahend->buffer.data + subtrahend->buffer.rowBytes * y;
+        const vector_uchar16 * const end = b + (buffer.width + 15) / 16;
+
+        do *a -= *b; while (++a, ++b < end);
+    });
+
+    return YES;
+}
+
+- (nullable VImageBuffer *)extractBorderMaskInRect:(CGRect)rect error:(NSError **)error {
+    VImageBuffer *result = [VImageBuffer bufferWithWidth:buffer.width height:buffer.height bitsPerPixel:8 error:error];
+    if (!result) return nil;
+
+    extractBorder(&buffer, &(result->buffer), CGRectIntegral(rect));
+
+    return result;
+}
+
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectSegmentsWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error {
     if (error) {
         NSArray<NSArray<NSNumber *> *> *result;
 
         CFErrorRef cfError;
-        result = CFBridgingRelease(detectSegments(&buffer, &cfError));
+        result = CFBridgingRelease(detectSegments(&buffer, (__bridge CFDictionaryRef)(options), &cfError));
         if (!result) *error = CFBridgingRelease(cfError);
         return result;
     }
     else {
-        return CFBridgingRelease(detectSegments(&buffer, NULL));
+        return CFBridgingRelease(detectSegments(&buffer, (__bridge CFDictionaryRef)(options), NULL));
+    }
+}
+
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectPolylinesWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error {
+    if (error) {
+        CFErrorRef cfError;
+        NSArray<NSArray<NSNumber *> *> *result = CFBridgingRelease(detectPolylines(&buffer, (__bridge CFDictionaryRef)(options), &cfError));
+        if (!result) *error = CFBridgingRelease(cfError);
+        return result;
+    }
+    else {
+        return CFBridgingRelease(detectPolylines(&buffer, (__bridge CFDictionaryRef)(options), NULL));
+    }
+}
+
+- (nullable NSArray<NSArray<NSNumber *> *> *)detectRegionsWithOptions:(NSDictionary<NSString *, id> *)options error:(NSError **)error {
+    if (error) {
+        CFErrorRef cfError;
+        NSArray<NSArray<NSNumber *> *> *result = CFBridgingRelease(detectRegions(&buffer, (__bridge CFDictionaryRef)(options), &cfError));
+        if (!result) *error = CFBridgingRelease(cfError);
+        return result;
+    }
+    else {
+        return CFBridgingRelease(detectRegions(&buffer, (__bridge CFDictionaryRef)(options), NULL));
     }
 }
 
@@ -233,4 +289,10 @@ NSString * const VImageErrorDomain = @"VImageErrorDomain";
     return image;
 }
 
+- (void *)row:(NSUInteger)row {
+    return buffer.data + buffer.rowBytes * row;
+}
+
 @end
+
+NS_ASSUME_NONNULL_END
