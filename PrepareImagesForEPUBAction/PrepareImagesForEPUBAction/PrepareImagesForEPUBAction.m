@@ -102,7 +102,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     NSSet<NSString *> *typeIdentifiers = [NSSet setWithArray:CFBridgingRelease(CGImageSourceCopyTypeIdentifiers())];
 
+    NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:input.count];
+    [self bind:@"fractionCompleted" toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+
     for (NSString *path in input) {
+        if (self.stopped) return nil;
+
         NSURL *url = [NSURL fileURLWithPath:path];
         NSString * __autoreleasing typeIdentifier;
 
@@ -146,9 +151,21 @@ NS_ASSUME_NONNULL_BEGIN
         if (!regions) return nil;
 
         if (![url setRegions:regions error:error]) return nil;
+
+        ++progress.completedUnitCount;
     }
 
     return input;
+}
+
+- (CGFloat)fractionCompleted {
+    return self.progressValue;
+}
+
+- (void)setFractionCompleted:(CGFloat)fractionCompleted {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressValue = fractionCompleted;
+    });
 }
 
 @end

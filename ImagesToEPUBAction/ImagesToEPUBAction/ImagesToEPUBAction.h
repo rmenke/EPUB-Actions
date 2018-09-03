@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-const char * const EPUB_REGION_XATTR = "com_the-wabe_regions";
+const char * const EPUB_REGION_XATTR = "com.the-wabe.regions";
 
 @interface ImagesToEPUBAction : AMBundleAction
 

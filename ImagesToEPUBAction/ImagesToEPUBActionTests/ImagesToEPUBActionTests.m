@@ -94,7 +94,7 @@ static NSRegularExpression *expr = NULL;
     NSData *data = [NSPropertyListSerialization dataWithPropertyList:region format:NSPropertyListBinaryFormat_v1_0 options:0 error:error];
     if (!data) return NO;
 
-    if (setxattr(url.fileSystemRepresentation, "com_the-wabe_regions", data.bytes, data.length, 0, 0) != 0) {
+    if (setxattr(url.fileSystemRepresentation, EPUB_REGION_XATTR, data.bytes, data.length, 0, 0) != 0) {
         if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:url}];
         return NO;
     }
