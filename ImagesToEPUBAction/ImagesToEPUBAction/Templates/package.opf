@@ -10,6 +10,7 @@
     <manifest>
         <item id="contents-css" href="contents.css" media-type="text/css"/>
         <item id="nav" href="nav.xhtml" properties="nav" media-type="application/xhtml+xml"/>
+        <item id="data-nav" href="data-nav.xhtml" properties="data-nav" media-type="application/xhtml+xml"/>
     </manifest>
     <spine/>
 </package>

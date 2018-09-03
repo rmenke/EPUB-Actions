@@ -25,24 +25,24 @@
 	<dict>
 		<key>backgroundColor</key>
 		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEBAYY=</data>
-		<key>ignoreAlpha</key>
-		<false/>
-		<key>openKernel</key>
-		<integer>1</integer>
-		<key>cropTop</key>
-		<integer>0</integer>
+		<key>closeGap</key>
+		<integer>5</integer>
 		<key>cropBottom</key>
 		<integer>0</integer>
 		<key>cropLeft</key>
 		<integer>0</integer>
 		<key>cropRight</key>
 		<integer>0</integer>
-		<key>sensitivity</key>
-		<integer>12</integer>
+		<key>cropTop</key>
+		<integer>0</integer>
+		<key>ignoreAlpha</key>
+		<false/>
 		<key>maxGap</key>
 		<integer>3</integer>
-		<key>closeGap</key>
-		<integer>5</integer>
+		<key>openKernel</key>
+		<integer>1</integer>
+		<key>sensitivity</key>
+		<integer>12</integer>
 	</dict>
 	<key>AMDescription</key>
 	<dict>
@@ -60,7 +60,20 @@
 		<string>http://www.the-wabe.com/epub-automator/</string>
 	</dict>
 	<key>AMKeywords</key>
-	<array/>
+	<array>
+		<string>File</string>
+		<string>Create</string>
+		<string>Make</string>
+		<string>iBooks</string>
+		<string>EPUB</string>
+		<string>Comic</string>
+		<string>Book</string>
+		<string>Images</string>
+		<string>JPEG</string>
+		<string>PNG</string>
+		<string>GIF</string>
+		<string>TIFF</string>
+	</array>
 	<key>AMName</key>
 	<string>Prepare Images for EPUB</string>
 	<key>AMProvides</key>

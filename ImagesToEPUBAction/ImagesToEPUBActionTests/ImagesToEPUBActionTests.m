@@ -27,8 +27,6 @@
 
 @protocol WhiteBoxTesting
 
-- (nonnull instancetype)initWithTitle:(nonnull NSString *)title wrapper:(nullable NSFileWrapper *)wrapper;
-
 @end
 
 @implementation NSURL (FilePropertyAccess)
@@ -246,22 +244,31 @@ static NSRegularExpression *expr = NULL;
     NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:tmpDirectory];
     NSURL *file3 = [NSURL fileURLWithPath:@"file56.txt" relativeToURL:tmpDirectory];
 
-    NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path];
+    @try {
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([@"not an image" writeToURL:file3 atomically:YES encoding:NSASCIIStringEncoding error:&error], "%@", error);
 
-    for (NSString *path in paths) {
-        XCTAssert([[NSData data] writeToFile:path options:NSDataWritingAtomic error:&error], @"%@", error);
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path];
+
+        XCTAssert([_action prepareDestinationDirectoryForURL:outDirectory error:&error], @"%@", error);
+
+        NSDictionary<NSString *, NSArray<Frame *> *> *result = [_action createChaptersFromPaths:paths error:&error];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqual(result.count, 1);
+        XCTAssertEqualObjects(result.allKeys, (@[[@"01." stringByAppendingString:tmpDirectory.lastPathComponent.lowercaseString]]));
+        XCTAssertEqual(result.allValues.firstObject.count, 2);
+        XCTAssertEqualObjects([result.allValues.firstObject valueForKey:@"name"], (@[@"im0001.png", @"im0002.jpeg"]));
+
+        // Verify a warning was created for the ignored file.
+        XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file56.txt'");
     }
-
-    NSArray<NSFileWrapper *> *result = [_action createChaptersFromPaths:paths error:&error];
-
-    // Verify a warning was created for the ignored file.
-    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file56.txt'");
-
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 1);
-    XCTAssertEqualObjects([result valueForKey:@"preferredFilename"], (@[[@"01." stringByAppendingString:tmpDirectory.lastPathComponent.lowercaseString]]));
-    XCTAssertEqual(result[0].fileWrappers.count, 2);
-    XCTAssertEqualObjects([result[0].fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"im0001.png", @"im0002.jpeg"]));
+    @finally {
+        [fileManager removeItemAtURL:file1 error:NULL];
+        [fileManager removeItemAtURL:file2 error:NULL];
+        [fileManager removeItemAtURL:file3 error:NULL];
+    }
 }
 
 - (void)testCopyItemsChaptering {
@@ -273,38 +280,40 @@ static NSRegularExpression *expr = NULL;
     NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
-    NSArray<NSURL *> *chapters = @[ch1, ch2];
+    [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+    [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
-    for (NSURL *url in chapters) {
-        [fileManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
+    @try {
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
+
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file3 error:&error], "%@", error);
+        XCTAssert([@"not an image" writeToURL:file4 atomically:YES encoding:NSASCIIStringEncoding error:&error], "%@", error);
+
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
+
+        XCTAssert([_action prepareDestinationDirectoryForURL:outDirectory error:&error], @"%@", error);
+
+        NSDictionary<NSString *, NSArray<Frame *> *> *result = [_action createChaptersFromPaths:paths error:&error];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects([result.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"01.alpha-one", @"02.beta-two"]));
+        XCTAssertEqual(result[@"01.alpha-one"].count, 2);
+        XCTAssertEqualObjects([result[@"01.alpha-one"] valueForKey:@"name"], (@[@"im0001.png", @"im0002.jpeg"]));
+        XCTAssertEqual(result[@"02.beta-two"].count, 1);
+        XCTAssertEqualObjects([result[@"02.beta-two"] valueForKey:@"name"], (@[@"im0001.jpeg"]));
+
+        // Verify a warning was created for the ignored file.
+        XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
     }
-
-    NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
-    NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
-    NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
-    NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
-
-    NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
-
-    for (NSString *path in paths) {
-        XCTAssert([[NSData data] writeToFile:path options:NSDataWritingAtomic error:&error], @"%@", error);
-    }
-
-    NSArray<NSFileWrapper *> *result = [_action createChaptersFromPaths:paths error:&error];
-
-    // Verify a warning was created for the ignored file.
-    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
-
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 2);
-    XCTAssertEqualObjects(([result valueForKeyPath:@"preferredFilename"]), (@[@"01.alpha-one", @"02.beta-two"]));
-    XCTAssertEqual(result[0].fileWrappers.count, 2);
-    XCTAssertEqualObjects([result[0].fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"im0001.png", @"im0002.jpeg"]));
-    XCTAssertEqual(result[1].fileWrappers.count, 1);
-    XCTAssertEqualObjects([result[1].fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"im0001.jpeg"]));
-
-    for (NSURL *url in chapters) {
-        [fileManager removeItemAtURL:url error:NULL];
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
     }
 }
 
@@ -317,128 +326,176 @@ static NSRegularExpression *expr = NULL;
     NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
-    NSArray<NSURL *> *chapters = @[ch1, ch2];
+    [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+    [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
-    for (NSURL *url in chapters) {
-        [fileManager createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:NULL];
+    @try {
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
+
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file3 error:&error], "%@", error);
+        XCTAssert([@"not an image" writeToURL:file4 atomically:YES encoding:NSASCIIStringEncoding error:&error], "%@", error);
+
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
+
+        [_action parameters][@"firstIsCover"] = @YES;
+        XCTAssert([_action prepareDestinationDirectoryForURL:outDirectory error:&error], @"%@", error);
+
+        NSDictionary<NSString *, NSArray<Frame *> *> *result = [_action createChaptersFromPaths:paths error:&error];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects(([result allKeys]), (@[@"01.alpha-one", @"02.beta-two"]));
+        XCTAssertEqualObjects([result[@"01.alpha-one"] valueForKey:@"name"], @[@"im0001.jpeg"]);
+        XCTAssertEqualObjects([result[@"02.beta-two"] valueForKey:@"name"], @[@"im0001.jpeg"]);
+
+        // Verify a warning was created for the ignored file.
+        XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
     }
-
-    NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
-    NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
-    NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
-    NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
-
-    NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
-
-    for (NSString *path in paths) {
-        XCTAssert([[NSData data] writeToFile:path options:NSDataWritingAtomic error:&error], @"%@", error);
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
     }
+}
 
-    [_action parameters][@"firstIsCover"] = @YES;
+- (void)testCopyItemsFixImageExtensions {
+    NSError * __autoreleasing error = nil;
 
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
-    XCTAssertNotNil(wrapper, @"%@", error);
+    NSString *title1 = @"Alpha One";
+    NSString *title2 = @"Beta  Two";
 
-    NSArray<NSFileWrapper *> *result = [_action createChaptersFromPaths:paths error:&error];
+    NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
+    NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
-    XCTAssert([wrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:outDirectory error:&error], @"%@", error);
+    [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+    [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
-    // Verify a warning was created for the ignored file.
-    XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
+    @try {
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.bmp" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.bmp" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.bmp" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"img78.bmp" relativeToURL:ch2];
 
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 2);
-    XCTAssertEqualObjects(([result valueForKeyPath:@"preferredFilename"]), (@[@"01.alpha-one", @"02.beta-two"]));
-    XCTAssertEqual(result[0].fileWrappers.count, 1);
-    XCTAssertEqualObjects([result[0].fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"im0001.jpeg"]));
-    XCTAssertEqual(result[1].fileWrappers.count, 1);
-    XCTAssertEqualObjects([result[1].fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"im0001.jpeg"]));
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[2] toURL:file3 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[3] toURL:file4 error:&error], "%@", error);
 
-    for (NSURL *url in chapters) {
-        XCTAssert([fileManager removeItemAtURL:url error:&error], @"%@", error);
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
+
+        XCTAssert([_action prepareDestinationDirectoryForURL:outDirectory error:&error], @"%@", error);
+
+        NSDictionary<NSString *, NSArray<Frame *> *> *result = [_action createChaptersFromPaths:paths error:&error];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects(([result allKeys]), (@[@"01.alpha-one", @"02.beta-two"]));
+        XCTAssertEqualObjects([result[@"01.alpha-one"] valueForKey:@"name"], (@[@"im0001.png", @"im0002.jpeg"]));
+        XCTAssertEqualObjects([result[@"02.beta-two"] valueForKey:@"name"], (@[@"im0001.gif", @"im0002.png"]));
+
+        for (NSUInteger ix = 0; ix < 4; ++ix) {
+            NSString *extension = @[@"png", @"jpeg", @"gif", @"png"][ix];
+
+            // Verify warnings were created for the incorrect file extensions
+            XCTAssertPredicate(_messages, @"level[%d] == 2 AND message[%d] CONTAINS %@", ix, ix, extension);
+        }
+    }
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
     }
 }
 
 - (void)testCreatePages {
     NSError * __autoreleasing error = nil;
 
-    NSFileWrapper *epubWrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
-    XCTAssertNotNil(epubWrapper, @"%@", error);
+    NSString *title1 = @"Alpha One";
+    NSString *title2 = @"Beta  Two";
 
-    NSFileWrapper *image1 = [[NSFileWrapper alloc] initWithURL:_images[0] options:0 error:&error];
-    image1.preferredFilename = @"im0001.png";
-    XCTAssertNotNil(image1, @"%@", error);
+    NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
+    NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
-    NSFileWrapper *image2 = [[NSFileWrapper alloc] initWithURL:_images[1] options:0 error:&error];
-    image2.preferredFilename = @"im0002.jpg";
-    XCTAssertNotNil(image2, @"%@", error);
+    NSURL *destinationURL = nil;
 
-    NSFileWrapper *image3 = [[NSFileWrapper alloc] initWithURL:_images[2] options:0 error:&error];
-    image3.preferredFilename = @"im0001.gif";
-    XCTAssertNotNil(image3, @"%@", error);
+    @try {
+        [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+        [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
-    NSFileWrapper *image4 = [[NSFileWrapper alloc] initWithURL:_images[3] options:0 error:&error];
-    image4.preferredFilename = @"im0002.png";
-    XCTAssertNotNil(image4, @"%@", error);
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.gif" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"img78.png" relativeToURL:ch2];
 
-    NSFileWrapper *ch1 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.png":image1, @"im0002.jpg":image2}];
-    NSFileWrapper *ch2 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.gif":image3, @"im0002.png":image4}];
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[2] toURL:file3 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[3] toURL:file4 error:&error], "%@", error);
 
-    NSFileWrapper *contentsWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"01.Alpha":ch1, @"02.Beta":ch2}];
-    contentsWrapper.preferredFilename = @"Contents";
-    [epubWrapper addFileWrapper:contentsWrapper];
+        destinationURL = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+        XCTAssertNotNil(destinationURL, @"%@", error);
 
-    NSArray<NSString *> *result = [_action createPagesForChapters:@[ch1, ch2] error:&error];
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 3);
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
 
-    XCTAssert([epubWrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:outDirectory error:&error], @"%@", error);
+        id frames = [_action createChaptersFromPaths:paths error:&error];
+        XCTAssertNotNil(frames, "%@", error);
 
-    NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:outDirectory includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
-    NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
-        return [obj1.absoluteString compare:obj2.absoluteString];
-    }];
+        XCTAssertTrue(([_action createPagesForChapters:frames error:&error]), @"%@", error);
 
-    XCTAssertEqual(items.count, 10);
-    XCTAssertTrue(items[0].isDirectoryOnFileSystem);
-    XCTAssertEqualFileURLs(items[0], [outDirectory URLByAppendingPathComponent:@"Contents"]);
-    XCTAssertTrue(items[1].isDirectoryOnFileSystem);
-    XCTAssertEqualFileURLs(items[1], [outDirectory URLByAppendingPathComponent:@"Contents/01.Alpha"]);
-    XCTAssertTrue(items[4].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[4], [outDirectory URLByAppendingPathComponent:@"Contents/01.Alpha/pg0001.xhtml"]);
-    XCTAssertTrue(items[5].isDirectoryOnFileSystem);
-    XCTAssertEqualFileURLs(items[5], [outDirectory URLByAppendingPathComponent:@"Contents/02.Beta"]);
-    XCTAssertTrue(items[8].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[8], [outDirectory URLByAppendingPathComponent:@"Contents/02.Beta/pg0001.xhtml"]);
-    XCTAssertTrue(items[9].isRegularFileOnFileSystem);
-    XCTAssertEqualFileURLs(items[9], [outDirectory URLByAppendingPathComponent:@"Contents/02.Beta/pg0002.xhtml"]);
+        NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:destinationURL includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+        NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
+            return [obj1.absoluteString compare:obj2.absoluteString];
+        }];
 
-    NSXMLDocument *document;
-    NSArray<NSXMLNode *> *nodes;
+        XCTAssertEqual(items.count, 14);
+        XCTAssertTrue(items[0].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[0], [destinationURL URLByAppendingPathComponent:@"Contents"]);
+        XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[1], [destinationURL URLByAppendingPathComponent:@"Contents/01.alpha-one"]);
+        XCTAssertTrue(items[4].isRegularFileOnFileSystem);
+        XCTAssertEqualFileURLs(items[4], [destinationURL URLByAppendingPathComponent:@"Contents/01.alpha-one/pg0001.xhtml"]);
+        XCTAssertTrue(items[5].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[5], [destinationURL URLByAppendingPathComponent:@"Contents/02.beta-two"]);
+        XCTAssertTrue(items[8].isRegularFileOnFileSystem);
+        XCTAssertEqualFileURLs(items[8], [destinationURL URLByAppendingPathComponent:@"Contents/02.beta-two/pg0001.xhtml"]);
+        XCTAssertTrue(items[9].isRegularFileOnFileSystem);
+        XCTAssertEqualFileURLs(items[9], [destinationURL URLByAppendingPathComponent:@"Contents/02.beta-two/pg0002.xhtml"]);
 
-    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[4] options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        NSXMLDocument *document;
+        NSArray<NSXMLNode *> *nodes;
 
-    nodes = [document nodesForXPath:@"//img/@src" error:&error];
-    XCTAssertNotNil(nodes, @"%@", error);
-    XCTAssertEqual(nodes.count, 2);
-    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.png", @"im0002.jpg"]));
+        document = [[NSXMLDocument alloc] initWithContentsOfURL:items[4] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[8] options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        nodes = [document nodesForXPath:@"//img/@src" error:&error];
+        XCTAssertNotNil(nodes, @"%@", error);
+        XCTAssertEqual(nodes.count, 2);
+        XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.png", @"im0002.jpeg"]));
 
-    nodes = [document nodesForXPath:@"//img/@src" error:&error];
-    XCTAssertNotNil(nodes, @"%@", error);
-    XCTAssertEqual(nodes.count, 1);
-    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.gif"]));
+        document = [[NSXMLDocument alloc] initWithContentsOfURL:items[8] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    document = [[NSXMLDocument alloc] initWithContentsOfURL:items[9] options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        nodes = [document nodesForXPath:@"//img/@src" error:&error];
+        XCTAssertNotNil(nodes, @"%@", error);
+        XCTAssertEqual(nodes.count, 1);
+        XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.gif"]));
 
-    nodes = [document nodesForXPath:@"//img/@src" error:&error];
-    XCTAssertNotNil(nodes, @"%@", error);
-    XCTAssertEqual(nodes.count, 1);
-    XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0002.png"]));
+        document = [[NSXMLDocument alloc] initWithContentsOfURL:items[9] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
+
+        nodes = [document nodesForXPath:@"//img/@src" error:&error];
+        XCTAssertNotNil(nodes, @"%@", error);
+        XCTAssertEqual(nodes.count, 1);
+        XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0002.png"]));
+    }
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
+        if (destinationURL) [fileManager removeItemAtURL:destinationURL error:NULL];
+    }
 }
 
 - (void)testCreatePagesNoScaling {
@@ -446,78 +503,78 @@ static NSRegularExpression *expr = NULL;
 
     [_action parameters][@"disableUpscaling"] = @YES;
 
-    NSFileWrapper *epubWrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
-    XCTAssertNotNil(epubWrapper, @"%@", error);
+    NSString *title1 = @"Alpha One";
+    NSString *title2 = @"Beta  Two";
 
-    NSFileWrapper *image1 = [[NSFileWrapper alloc] initWithURL:_images[0] options:0 error:&error];
-    image1.preferredFilename = @"im0001.png";
-    XCTAssertNotNil(image1, @"%@", error);
+    NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
+    NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
-    NSFileWrapper *image2 = [[NSFileWrapper alloc] initWithURL:_images[1] options:0 error:&error];
-    image2.preferredFilename = @"im0002.jpg";
-    XCTAssertNotNil(image2, @"%@", error);
+    NSURL *destinationURL = nil;
 
-    NSFileWrapper *image3 = [[NSFileWrapper alloc] initWithURL:_images[2] options:0 error:&error];
-    image3.preferredFilename = @"im0001.gif";
-    XCTAssertNotNil(image3, @"%@", error);
+    @try {
+        [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+        [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
-    NSFileWrapper *image4 = [[NSFileWrapper alloc] initWithURL:_images[3] options:0 error:&error];
-    image4.preferredFilename = @"im0002.png";
-    XCTAssertNotNil(image4, @"%@", error);
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.gif" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"img78.png" relativeToURL:ch2];
 
-    NSFileWrapper *ch1 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.png":image1, @"im0002.jpg":image2}];
-    NSFileWrapper *ch2 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.gif":image3, @"im0002.png":image4}];
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[2] toURL:file3 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[3] toURL:file4 error:&error], "%@", error);
 
-    NSFileWrapper *contentsWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"01.Alpha":ch1, @"02.Beta":ch2}];
-    contentsWrapper.preferredFilename = @"Contents";
-    [epubWrapper addFileWrapper:contentsWrapper];
+        destinationURL = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+        XCTAssertNotNil(destinationURL, @"%@", error);
 
-    NSArray *result = [_action createPagesForChapters:@[ch1, ch2] error:&error];
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 2);
-}
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
 
-- (void)testCreatePagesFixImageExtensions {
-    [_action parameters][@"publicationID"] = @"urn:uuid:48E1C7E3-B9D7-43C4-BFBC-FF78E9E50EC4";
+        id frames = [_action createChaptersFromPaths:paths error:&error];
+        XCTAssertNotNil(frames, "%@", error);
 
-    NSError * __autoreleasing error = nil;
+        XCTAssertTrue(([_action createPagesForChapters:frames error:&error]), @"%@", error);
 
-    NSFileWrapper *epubWrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
-    XCTAssertNotNil(epubWrapper, @"%@", error);
+        NSDirectoryEnumerator<NSURL *> *enumerator = [fileManager enumeratorAtURL:destinationURL includingPropertiesForKeys:@[NSURLIsDirectoryKey, NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+        NSArray<NSURL *> *items = [enumerator.allObjects sortedArrayUsingComparator:^NSComparisonResult(NSURL *obj1, NSURL *obj2) {
+            return [obj1.absoluteString compare:obj2.absoluteString];
+        }];
 
-    NSFileWrapper *image1 = [[NSFileWrapper alloc] initWithURL:_images[0] options:0 error:&error];
-    image1.preferredFilename = @"im0001.bmp";
-    XCTAssertNotNil(image1, @"%@", error);
+        XCTAssertEqual(items.count, 13);
+        XCTAssertTrue(items[0].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[0], [destinationURL URLByAppendingPathComponent:@"Contents"]);
+        XCTAssertTrue(items[1].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[1], [destinationURL URLByAppendingPathComponent:@"Contents/01.alpha-one"]);
+        XCTAssertTrue(items[4].isRegularFileOnFileSystem);
+        XCTAssertEqualFileURLs(items[4], [destinationURL URLByAppendingPathComponent:@"Contents/01.alpha-one/pg0001.xhtml"]);
+        XCTAssertTrue(items[5].isDirectoryOnFileSystem);
+        XCTAssertEqualFileURLs(items[5], [destinationURL URLByAppendingPathComponent:@"Contents/02.beta-two"]);
+        XCTAssertTrue(items[8].isRegularFileOnFileSystem);
+        XCTAssertEqualFileURLs(items[8], [destinationURL URLByAppendingPathComponent:@"Contents/02.beta-two/pg0001.xhtml"]);
 
-    NSFileWrapper *image2 = [[NSFileWrapper alloc] initWithURL:_images[1] options:0 error:&error];
-    image2.preferredFilename = @"im0002.bmp";
-    XCTAssertNotNil(image2, @"%@", error);
+        NSXMLDocument *document;
+        NSArray<NSXMLNode *> *nodes;
 
-    NSFileWrapper *image3 = [[NSFileWrapper alloc] initWithURL:_images[2] options:0 error:&error];
-    image3.preferredFilename = @"im0001.bmp";
-    XCTAssertNotNil(image3, @"%@", error);
+        document = [[NSXMLDocument alloc] initWithContentsOfURL:items[4] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    NSFileWrapper *image4 = [[NSFileWrapper alloc] initWithURL:_images[3] options:0 error:&error];
-    image4.preferredFilename = @"im0002.bmp";
-    XCTAssertNotNil(image4, @"%@", error);
+        nodes = [document nodesForXPath:@"//img/@src" error:&error];
+        XCTAssertNotNil(nodes, @"%@", error);
+        XCTAssertEqual(nodes.count, 2);
+        XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.png", @"im0002.jpeg"]));
 
-    NSFileWrapper *ch1 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.bmp":image1, @"im0002.bmp":image2}];
-    NSFileWrapper *ch2 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.bmp":image3, @"im0002.bmp":image4}];
+        document = [[NSXMLDocument alloc] initWithContentsOfURL:items[8] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    NSFileWrapper *contentsWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"01.Alpha":ch1, @"02.Beta":ch2}];
-    contentsWrapper.preferredFilename = @"Contents";
-    [epubWrapper addFileWrapper:contentsWrapper];
-
-    NSArray *result = [_action createPagesForChapters:@[ch1, ch2] error:&error];
-    XCTAssertNotNil(result, @"%@", error);
-    XCTAssertEqual(result.count, 3);
-
-    for (NSUInteger ix = 0; ix < 4; ++ix) {
-        NSString *extension = @[@"png", @"jpeg", @"gif", @"png"][ix];
-
-        // Verify warnings were created for the incorrect file extensions
-        NSString *target = [NSString stringWithFormat:@"im%04lu.%@", (unsigned long)(ix) % 2 + 1, extension];
-        XCTAssertPredicate(_messages, @"level[%d] == 2 AND message[%d] CONTAINS %@", ix, ix, target);
+        nodes = [document nodesForXPath:@"//img/@src" error:&error];
+        XCTAssertNotNil(nodes, @"%@", error);
+        XCTAssertEqual(nodes.count, 2);
+        XCTAssertEqualObjects(([nodes valueForKey:@"stringValue"]), (@[@"im0001.gif", @"im0002.png"]));
+    }
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
+        if (destinationURL) [fileManager removeItemAtURL:destinationURL error:NULL];
     }
 }
 
@@ -526,30 +583,16 @@ static NSRegularExpression *expr = NULL;
 
     NSError * __autoreleasing error;
 
-    NSFileWrapper *epubWrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:0 error:&error];
-    XCTAssertNotNil(epubWrapper, @"%@", error);
+    NSURL *temporaryDirectory = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+    XCTAssertNotNil(temporaryDirectory, "%@", error);
 
-    NSFileWrapper *image1 = [[NSFileWrapper alloc] initWithURL:_images[0] options:0 error:&error];
-    image1.preferredFilename = @"im0001.png";
-    XCTAssertNotNil(image1, @"%@", error);
+    XCTAssertTrue([_action writeMetadataFilesAndReturnError:&error], @"%@", error);
 
-    NSFileWrapper *image2 = [[NSFileWrapper alloc] initWithURL:_images[1] options:0 error:&error];
-    image2.preferredFilename = @"im0002.jpg";
-    XCTAssertNotNil(image2, @"%@", error);
+    NSURL *packageURL = [temporaryDirectory URLByAppendingPathComponent:@"Contents/package.opf"];
 
-    NSFileWrapper *ch1 = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"im0001.png":image1, @"im0002.jpg":image2}];
-    NSFileWrapper *contentsWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"01.Alpha":ch1}];
+    XCTAssertTrue(packageURL.isRegularFileOnFileSystem);
 
-    contentsWrapper.preferredFilename = @"Contents";
-    [epubWrapper addFileWrapper:contentsWrapper];
-
-    XCTAssertTrue([_action addMetadataToDirectory:contentsWrapper chapters:@[ch1] spineItems:@[@"pg01.xhtml"] error:&error], @"%@", error);
-
-    XCTAssert([epubWrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:nil error:&error], @"%@", error);
-
-    XCTAssertTrue([outDirectory URLByAppendingPathComponent:@"Contents/package.opf"].isRegularFileOnFileSystem);
-
-    NSXMLDocument *package = [[NSXMLDocument alloc] initWithContentsOfURL:[outDirectory URLByAppendingPathComponent:@"Contents/package.opf"] options:0 error:&error];
+    NSXMLDocument *package = [[NSXMLDocument alloc] initWithContentsOfURL:packageURL options:0 error:&error];
     XCTAssertNotNil(package, @"%@", error);
 
     NSArray<NSXMLElement *> *elements = [package nodesForXPath:@"//*:identifier" error:&error];
@@ -567,6 +610,8 @@ static NSRegularExpression *expr = NULL;
     XCTAssertNotNil(elements, @"%@", error);
 
     XCTAssertEqualObjects(([elements valueForKey:@"stringValue"]), (@[@"Bob Smith", @"Jack Brown", @"Bill Jones"]));
+
+    [[NSFileManager defaultManager] removeItemAtURL:temporaryDirectory error:NULL];
 }
 
 - (void)testLayoutDistribute {
@@ -574,7 +619,7 @@ static NSRegularExpression *expr = NULL;
 
     XCTAssertEqual([_action layoutStyle], distributeInternalSpace);
 
-    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+    NSMutableArray *frames = [NSMutableArray arrayWithCapacity:2];
 
     for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
         NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
@@ -582,32 +627,40 @@ static NSRegularExpression *expr = NULL;
         NSUInteger width = imageRep.pixelsWide;
 
         NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
-        [page addObject:dictionary];
+
+        [frames addObject:dictionary];
     }
 
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:NSFileWrapperReadingImmediate error:&error];
-    XCTAssertNotNil(wrapper, @"%@", error);
+    NSURL *destinationURL = nil;
 
-    NSString *path = [_action createPage:page number:1 inDirectory:wrapper error:&error];
-    XCTAssertNotNil(path, @"%@", error);
+    @try {
+        destinationURL = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+        XCTAssertNotNil(destinationURL, @"%@", error);
 
-    XCTAssert([wrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:outDirectory error:&error], @"%@", error);
+        XCTAssert([_action createPage:@"pg1.xhtml" fromFrames:frames error:&error], @"%@", error);
 
-    NSURL *url = [NSURL fileURLWithPath:path relativeToURL:[outDirectory URLByDeletingLastPathComponent]];
+        NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:@"Contents/pg1.xhtml" relativeToURL:destinationURL] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//img/@style)" error:&error] valueForKey:@"htmlStyle"];
 
-    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+        if (result.count == 2) {
+            double top = [result[0][@"top"] doubleValue];
+            double middleTop = top + [result[0][@"height"] doubleValue];
+            double middleBottom = [result[1][@"top"] doubleValue];
+            double bottom = middleBottom + [result[1][@"height"] doubleValue];
 
-    double top = [result[0][@"top"] doubleValue];
-    double middleTop = top + [result[0][@"height"] doubleValue];
-    double middleBottom = [result[1][@"top"] doubleValue];
-    double bottom = middleBottom + [result[1][@"height"] doubleValue];
-
-    XCTAssertGreaterThan(top, 0.0);
-    XCTAssertLessThan(middleTop, middleBottom);
-    XCTAssertLessThan(bottom, 100.0);
+            XCTAssertGreaterThan(top, 0.0);
+            XCTAssertLessThan(middleTop, middleBottom);
+            XCTAssertLessThan(bottom, 100.0);
+        }
+        else {
+            XCTFail(@"no panel information found");
+        }
+    }
+    @finally {
+        if (destinationURL) [fileManager removeItemAtURL:destinationURL error:NULL];
+    }
 }
 
 - (void)testLayoutMinimize {
@@ -617,7 +670,7 @@ static NSRegularExpression *expr = NULL;
 
     XCTAssertEqual([_action layoutStyle], minimizeInternalSpace);
 
-    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+    NSMutableArray *frames = [NSMutableArray arrayWithCapacity:2];
 
     for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
         NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
@@ -625,32 +678,39 @@ static NSRegularExpression *expr = NULL;
         NSUInteger width = imageRep.pixelsWide;
 
         NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
-        [page addObject:dictionary];
+        [frames addObject:dictionary];
     }
 
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:NSFileWrapperReadingImmediate error:&error];
-    XCTAssertNotNil(wrapper, @"%@", error);
+    NSURL *destinationURL = nil;
 
-    NSString *path = [_action createPage:page number:1 inDirectory:wrapper error:&error];
-    XCTAssertNotNil(path, @"%@", error);
+    @try {
+        destinationURL = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+        XCTAssertNotNil(destinationURL, @"%@", error);
 
-    XCTAssert([wrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:outDirectory error:&error], @"%@", error);
+        XCTAssert([_action createPage:@"pg1.xhtml" fromFrames:frames error:&error], "%@", error);
 
-    NSURL *url = [NSURL fileURLWithPath:path relativeToURL:[outDirectory URLByDeletingLastPathComponent]];
+        NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:@"Contents/pg1.xhtml" relativeToURL:destinationURL] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//img/@style)" error:&error] valueForKey:@"htmlStyle"];
 
-    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+        if (result.count == 2) {
+            double top = [result[0][@"top"] doubleValue];
+            double middleTop = top + [result[0][@"height"] doubleValue];
+            double middleBottom = [result[1][@"top"] doubleValue];
+            double bottom = middleBottom + [result[1][@"height"] doubleValue];
 
-    double top = [result[0][@"top"] doubleValue];
-    double middleTop = top + [result[0][@"height"] doubleValue];
-    double middleBottom = [result[1][@"top"] doubleValue];
-    double bottom = middleBottom + [result[1][@"height"] doubleValue];
-
-    XCTAssertGreaterThan(top, 0.0);
-    XCTAssertEqualWithAccuracy(middleTop, middleBottom, 0.001);
-    XCTAssertLessThan(bottom, 100.0);
+            XCTAssertGreaterThan(top, 0.0);
+            XCTAssertEqualWithAccuracy(middleTop, middleBottom, 0.001);
+            XCTAssertLessThan(bottom, 100.0);
+        }
+        else {
+            XCTFail(@"no panel information found");
+        }
+    }
+    @finally {
+        if (destinationURL) [fileManager removeItemAtURL:destinationURL error:NULL];
+    }
 }
 
 - (void)testLayoutMaximize {
@@ -660,7 +720,7 @@ static NSRegularExpression *expr = NULL;
 
     XCTAssertEqual([_action layoutStyle], maximizeInternalSpace);
 
-    NSMutableArray *page = [NSMutableArray arrayWithCapacity:2];
+    NSMutableArray *frames = [NSMutableArray arrayWithCapacity:2];
 
     for (NSURL *url in [_images subarrayWithRange:NSMakeRange(0, 2)]) {
         NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
@@ -668,32 +728,39 @@ static NSRegularExpression *expr = NULL;
         NSUInteger width = imageRep.pixelsWide;
 
         NSDictionary<NSString *, id> *dictionary = @{@"url":url, @"width":@(width), @"height":@(height)};
-        [page addObject:dictionary];
+        [frames addObject:dictionary];
     }
 
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:outDirectory options:NSFileWrapperReadingImmediate error:&error];
-    XCTAssertNotNil(wrapper, @"%@", error);
+    NSURL *destinationURL = nil;
 
-    NSString *path = [_action createPage:page number:1 inDirectory:wrapper error:&error];
-    XCTAssertNotNil(path, @"%@", error);
+    @try {
+        destinationURL = [_action prepareDestinationDirectoryForURL:outDirectory error:&error];
+        XCTAssertNotNil(destinationURL, @"%@", error);
 
-    XCTAssert([wrapper writeToURL:outDirectory options:NSFileWrapperWritingAtomic originalContentsURL:outDirectory error:&error], @"%@", error);
+        XCTAssert([_action createPage:@"pg1.xhtml" fromFrames:frames error:&error], "%@", error);
 
-    NSURL *url = [NSURL fileURLWithPath:path relativeToURL:[outDirectory URLByDeletingLastPathComponent]];
+        NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:@"Contents/pg1.xhtml" relativeToURL:destinationURL] options:0 error:&error];
+        XCTAssertNotNil(document, @"%@", error);
 
-    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
-    XCTAssertNotNil(document, @"%@", error);
+        NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//img/@style)" error:&error] valueForKey:@"htmlStyle"];
 
-    NSArray<NSDictionary *> *result = [[document objectsForXQuery:@"data(//div[@class='panel-group']/@style)" error:&error] valueForKey:@"htmlStyle"];
+        if (result.count == 2) {
+            double top = [result[0][@"top"] doubleValue];
+            double middleTop = top + [result[0][@"height"] doubleValue];
+            double middleBottom = [result[1][@"top"] doubleValue];
+            double bottom = middleBottom + [result[1][@"height"] doubleValue];
 
-    double top = [result[0][@"top"] doubleValue];
-    double middleTop = top + [result[0][@"height"] doubleValue];
-    double middleBottom = [result[1][@"top"] doubleValue];
-    double bottom = middleBottom + [result[1][@"height"] doubleValue];
-
-    XCTAssertEqualWithAccuracy(top, 0.0, 0.001);
-    XCTAssertLessThan(middleTop, middleBottom);
-    XCTAssertEqualWithAccuracy(bottom, 100.0, 0.001);
+            XCTAssertEqualWithAccuracy(top, 0.0, 0.001);
+            XCTAssertLessThan(middleTop, middleBottom);
+            XCTAssertEqualWithAccuracy(bottom, 100.0, 0.001);
+        }
+        else {
+            XCTFail(@"no panel information found");
+        }
+    }
+    @finally {
+        if (destinationURL) [fileManager removeItemAtURL:destinationURL error:NULL];
+    }
 }
 
 - (void)testAction {
@@ -731,6 +798,97 @@ static NSRegularExpression *expr = NULL;
     }];
 
     XCTAssertEqualObjects(result[0], outDirectory.path);
+
+    NSURL *contentsURL = [outDirectory URLByAppendingPathComponent:@"Contents"];
+
+    NSXMLDocument *packageDocument = nil;
+
+    NSMutableArray<NSString *> *manifestItem = [NSMutableArray array];
+
+    for (NSString *subpath in [fileManager enumeratorAtPath:contentsURL.path]) {
+        NSURL *url = [NSURL fileURLWithPath:subpath relativeToURL:contentsURL];
+
+        NSString *typeIdentifier;
+
+        XCTAssert([url getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:&error], @"%@", error);
+
+        if (UTTypeConformsTo((__bridge CFStringRef)(typeIdentifier), kUTTypeDirectory)) continue;
+
+        if ([subpath isEqualToString:@"package.opf"]) {
+            packageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+            XCTAssertNotNil(packageDocument, "%@", error);
+        }
+        else if ([subpath isEqualToString:@"nav.xhtml"]) {
+            NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+            XCTAssertNotNil(document, "%@", error);
+
+            NSArray<NSXMLElement *> *navigation = [document objectsForXQuery:@"//li/a" error:&error];
+            XCTAssertEqual(navigation.count, 1);
+            XCTAssertEqualObjects(navigation[0].stringValue, @"Resources");
+            XCTAssertEqualObjects([navigation[0] attributeForName:@"href"].stringValue, @"01.resources/pg0001.xhtml");
+
+            [manifestItem addObject:@"nav.xhtml"];
+        }
+        else if ([subpath isEqualToString:@"data-nav.xhtml"]) {
+            NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+            XCTAssertNotNil(document, "%@", error);
+
+            NSArray *navigation = [document objectsForXQuery:@"data(//li[@epub:type='panel-group']/a/@href)" error:&error];
+            XCTAssertEqual(navigation.count, 4);
+
+            XCTAssertEqualObjects(navigation[0], @"01.resources/pg0001.xhtml#xywh=percent:0,15,100,28");
+            XCTAssertEqualObjects(navigation[1], @"01.resources/pg0001.xhtml#xywh=percent:0,57,100,28");
+            XCTAssertEqualObjects(navigation[2], @"01.resources/pg0002.xhtml#xywh=percent:5,0,90,100");
+            XCTAssertEqualObjects(navigation[3], @"01.resources/pg0003.xhtml#xywh=percent:0,12,100,76");
+
+            for (NSString *link in navigation) {
+                NSURL *linkURL = [NSURL URLWithString:link relativeToURL:url];
+                XCTAssertTrue([fileManager fileExistsAtPath:linkURL.path], @"file does not exist: %@", linkURL.path);
+            }
+
+            navigation = [document objectsForXQuery:@"data(//li[@epub:type='panel-group']/ol/li[@epub:type='panel']/a/@href)" error:&error];
+            XCTAssertEqual(navigation.count, 7);
+
+            XCTAssertEqualObjects(navigation[0], @"01.resources/pg0001.xhtml#xywh=percent:2,17,31,23");
+            XCTAssertEqualObjects(navigation[1], @"01.resources/pg0001.xhtml#xywh=percent:35,17,30,23");
+            XCTAssertEqualObjects(navigation[2], @"01.resources/pg0001.xhtml#xywh=percent:67,17,31,23");
+            XCTAssertEqualObjects(navigation[3], @"01.resources/pg0001.xhtml#xywh=percent:2,60,31,23");
+            XCTAssertEqualObjects(navigation[4], @"01.resources/pg0001.xhtml#xywh=percent:35,60,30,10");
+            XCTAssertEqualObjects(navigation[5], @"01.resources/pg0001.xhtml#xywh=percent:35,72,30,11");
+            XCTAssertEqualObjects(navigation[6], @"01.resources/pg0001.xhtml#xywh=percent:67,60,31,23");
+
+            [manifestItem addObject:@"data-nav.xhtml"];
+        }
+        else {
+            [manifestItem addObject:subpath];
+        }
+    }
+
+    XCTAssertNotNil(packageDocument, @"package.opf not found");
+
+    for (NSString *path in manifestItem) {
+        NSNumber *result = [packageDocument objectsForXQuery:@"count(//manifest/item[@href=$path])" constants:@{@"path":path} error:&error].firstObject;
+        XCTAssertNotNil(result, "%@", error);
+        XCTAssertEqualObjects(result, @1);
+    }
+
+    XCTAssert([fileManager moveItemAtURL:outDirectory toURL:outDirectory.URLByDeletingPathExtension error:&error], "%@", error);
+
+    outDirectory = outDirectory.URLByDeletingPathExtension;
+
+    NSString *epubcheck = @"~/bin/epubcheck".stringByStandardizingPath;
+
+    if ([fileManager fileExistsAtPath:epubcheck]) {
+        NSTask *task = [[NSTask alloc] init];
+        task.launchPath = @"~/bin/epubcheck".stringByStandardizingPath;
+        task.currentDirectoryPath = outDirectory.URLByDeletingLastPathComponent.path;
+        task.arguments = @[@"--mode", @"exp", @"--quiet", outDirectory.lastPathComponent];
+
+        [task launch];
+        [task waitUntilExit];
+
+        XCTAssertEqual(task.terminationStatus, 0);
+    }
 }
 
 @end

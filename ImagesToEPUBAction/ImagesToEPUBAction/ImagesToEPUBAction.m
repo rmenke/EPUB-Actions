@@ -16,14 +16,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if DEBUG
-    #define BEGIN_TIMING(TIMER) NSDate *TIMER = [NSDate date]
-    #define END_TIMING(TIMER)   [self logMessageWithLevel:AMLogLevelDebug format:@#TIMER " = %f s", [[NSDate date] timeIntervalSinceDate:TIMER]]
-#else
-    #define BEGIN_TIMING(TIMER) do {} while (0)
-    #define END_TIMING(TIMER)   do {} while (0)
-#endif
-
 static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
 
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
@@ -75,46 +67,24 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @end
 
-@implementation NSFileWrapper (EPUBExtension)
-
-- (nullable NSString *)title {
-    return objc_getAssociatedObject(self, "com.the-wabe.title");
-}
-
-- (void)setTitle:(nullable NSString *)title {
-    objc_setAssociatedObject(self, "com.the-wabe.title", title, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (nullable NSArray<NSArray<NSNumber *> *> *)regions {
-    return objc_getAssociatedObject(self, "com.the-wabe.regions");
-}
-
-- (void)setRegions:(nullable NSArray<NSArray<NSNumber *> *> *)regions {
-    objc_setAssociatedObject(self, "com.the-wabe.regions", regions, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-@end
-
 @interface Frame : NSObject
 
-@property (nonatomic, nonnull) id image;
 @property (nonatomic, nonnull, copy) NSString *name;
 @property (nonatomic, nonnull, copy) NSArray<NSValue *> *regions;
 @property (nonatomic, assign) CGFloat width, height;
 
 - (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWithImage:(id)image name:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithName:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height NS_DESIGNATED_INITIALIZER;
 
 @end
 
 @implementation Frame
 
-- (instancetype)initWithImage:(id)image name:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height {
+- (instancetype)initWithName:(NSString *)name regions:(NSArray<NSValue *> *)regions width:(CGFloat)width height:(CGFloat)height {
     self = [super init];
 
     if (self) {
-        self.image = image;
         self.name = name;
         self.regions = regions;
         self.width = width;
@@ -128,30 +98,34 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @implementation NSURL (Regions)
 
-- (id)regionsAndReturnError:(NSError **)error {
+- (NSArray<NSArray<NSNumber *> *> *)regions {
     ssize_t size = getxattr(self.fileSystemRepresentation, EPUB_REGION_XATTR, NULL, 0, 0, 0);
-    if (size < 0) {
-        if (errno == ENOATTR) return @[];
-        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:self}];
-        return nil;
-    }
+    if (size < 0 && errno == ENOATTR) return @[];
+
+    if (size < 0) @throw [NSException exceptionWithName:NSGenericException reason:[NSString stringWithFormat:@"Unable to read “%s” attribute on file “%@”: %s", EPUB_REGION_XATTR, self.lastPathComponent, strerror(errno)] userInfo:@{NSURLErrorKey:self}];
 
     NSMutableData *data = [NSMutableData dataWithLength:size];
     size = getxattr(self.fileSystemRepresentation, EPUB_REGION_XATTR, data.mutableBytes, data.length, 0, 0);
-    if (size < 0) {
-        if (errno == ENOATTR) return @[];
-        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:self}];
-        return nil;
-    }
+    if (size < 0) @throw [NSException exceptionWithName:NSGenericException reason:[NSString stringWithFormat:@"Unable to read “%s” attribute on file “%@”: %s", EPUB_REGION_XATTR, self.lastPathComponent, strerror(errno)] userInfo:@{NSURLErrorKey:self}];
 
-    return [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:error];
+    NSError * __autoreleasing error;
+
+    id result = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+
+    if (!result) @throw [NSException exceptionWithName:NSParseErrorException reason:[NSString stringWithFormat:@"Unable to parse “%s” attribute on file “%@”: %@", EPUB_REGION_XATTR, self.lastPathComponent, error.localizedDescription] userInfo:@{NSURLErrorKey:self}];
+
+    return result;
 }
 
 @end
 
 @interface ImagesToEPUBAction ()
 
-@property (nonatomic, nullable) NSFileWrapper *coverImage;
+@property (nonatomic, nullable) NSURL *contentsURL;
+@property (nonatomic, null_resettable) NSURL *outputURL;
+@property (nonatomic, nonnull) NSXMLDocument *packageDocument;
+@property (nonatomic, nonnull) NSXMLDocument *navDocument;
+@property (nonatomic, nonnull) NSXMLDocument *dataNavDocument;
 
 @end
 
@@ -217,37 +191,93 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 }
 
 - (NSURL *)outputURL {
-    NSURL *folderURL = [NSURL fileURLWithPath:self.outputFolder.stringByExpandingTildeInPath isDirectory:YES];
-    NSString *outputName = [[self.title stringByReplacingOccurrencesOfString:@"/" withString:@"-"] stringByAppendingPathExtension:@"epub"];
-    return [NSURL fileURLWithPath:outputName isDirectory:YES relativeToURL:folderURL];
+    if (!_outputURL) {
+        NSURL *folderURL = [NSURL fileURLWithPath:self.outputFolder.stringByExpandingTildeInPath isDirectory:YES];
+        NSString *outputName = [[self.title stringByReplacingOccurrencesOfString:@"/" withString:@"-"] stringByAppendingPathExtension:@"epub"];
+        _outputURL = [NSURL fileURLWithPath:outputName isDirectory:YES relativeToURL:folderURL];
+    }
+
+    return _outputURL;
 }
 
-- (nullable NSArray<NSFileWrapper *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error {
-    const NSUInteger count = paths.count;
+- (BOOL)copyResource:(NSString *)resource toDirectoryURL:(NSURL *)directoryURL error:(NSError **)error {
+    NSURL *url = [self.bundle URLForResource:resource.stringByDeletingPathExtension withExtension:resource.pathExtension];
+    NSAssert(url, @"The “%@” resource is missing from the action.", resource);
+    return [[NSFileManager defaultManager] copyItemAtURL:url toURL:[directoryURL URLByAppendingPathComponent:resource] error:error];
+}
 
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
+- (NSXMLDocument *)XMLDocumentForResource:(NSString *)resource {
+    NSURL *url = [self.bundle URLForResource:resource.stringByDeletingPathExtension withExtension:resource.pathExtension];
+    NSAssert(url, @"The “%@” resource is missing from the action.", resource);
 
-    NSMutableArray<NSFileWrapper *> *result = [NSMutableArray arrayWithCapacity:count];
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:NULL];
+    NSAssert(document, @"The “%@” resource is damaged.", resource);
+
+    return document;
+}
+
+- (NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSURL *destinationURL = [fileManager URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:url create:YES error:error];
+    if (!destinationURL) return nil;
+
+    NSData *data = [@"application/epub+zip" dataUsingEncoding:NSASCIIStringEncoding];
+    if (![data writeToURL:[destinationURL URLByAppendingPathComponent:@"mimetype"] options:0 error:error]) return nil;
+
+    NSURL *metaInfURL = [destinationURL URLByAppendingPathComponent:@"META-INF" isDirectory:YES];
+    if (![fileManager createDirectoryAtURL:metaInfURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+    if (![self copyResource:@"container.xml" toDirectoryURL:metaInfURL error:error]) return nil;
+
+    self.contentsURL = [destinationURL URLByAppendingPathComponent:@"Contents" isDirectory:YES];
+    if (![fileManager createDirectoryAtURL:self.contentsURL withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+    if (![self copyResource:@"contents.css" toDirectoryURL:self.contentsURL error:error]) return nil;
+
+    self.packageDocument = [self XMLDocumentForResource:@"package.opf"];
+    self.navDocument     = [self XMLDocumentForResource:@"nav.xhtml"];
+    self.dataNavDocument = [self XMLDocumentForResource:@"data-nav.xhtml"];
+
+    return destinationURL;
+}
+
+- (NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error {
+    const CGFloat contentWidth  = self.pageWidth  - 2 * self.pageMargin;
+    const CGFloat contentHeight = self.pageHeight - 2 * self.pageMargin;
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:paths.count];
+
+    NSXMLElement *olElement = [[self.navDocument nodesForXPath:@"//ol" error:NULL] objectAtIndex:0];
+    NSAssert(olElement, @"The “nav.xhtml” resource is damaged.");
 
     if (self.firstIsCover) {
         NSURL *inputURL = [NSURL fileURLWithPath:paths.firstObject];
         paths = [paths subarrayWithRange:NSMakeRange(1, paths.count - 1)];
 
-        NSString * _Nonnull typeIdentifier;
+        NSString * __autoreleasing typeIdentifier;
 
         if (![inputURL getResourceValue:&typeIdentifier forKey:NSURLTypeIdentifierKey error:error]) return nil;
 
         if (typeIsImage(typeIdentifier)) {
-            _coverImage = [[NSFileWrapper alloc] initWithURL:inputURL options:0 error:error];
-            _coverImage.preferredFilename = [NSString stringWithFormat:@"cover.%@", extensionForType(typeIdentifier)];
-            if (!_coverImage) return nil;
+            NSString *filename = [NSString stringWithFormat:@"cover.%@", extensionForType(typeIdentifier)];
+            if (![fileManager copyItemAtURL:inputURL toURL:[self.contentsURL URLByAppendingPathComponent:filename] error:error]) return nil;
+            [self.packageDocument addManifestItem:filename properties:@"cover-image"];
         }
         else {
-            [self logMessageWithLevel:AMLogLevelWarn format:@"%@ is not an image file supported by this action", inputURL.lastPathComponent];
+            [self logMessageWithLevel:AMLogLevelWarn format:@"%@ is not an image file supported by this action.", inputURL.lastPathComponent];
         }
+
+        ++progress.completedUnitCount;
     }
 
-    NSFileWrapper *chapter = nil;
+    NSString *chapter = nil;
+    NSString *title = @"";
+
+    NSUInteger chapterIndex = 0;
+    NSUInteger index = 0;
+
+    NSMutableDictionary<NSString *, NSMutableArray<Frame *> *> *chapters = [NSMutableDictionary dictionary];
 
     for (NSString *path in paths) {
         NSURL *inputURL = [NSURL fileURLWithPath:path];
@@ -261,49 +291,100 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
             NSString *pendingChapter = inputURL.URLByDeletingLastPathComponent.lastPathComponent;
 
-            if (![chapter.title isEqualToString:pendingChapter]) {
-                chapter = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{}];
-                chapter.title = pendingChapter;
+            if (![title isEqualToString:pendingChapter]) {
+                title = pendingChapter;
 
                 NSMutableArray<NSString *> *components = [pendingChapter componentsSeparatedByCharactersInSet:NSCharacterSet.URLPathAllowedCharacterSet.invertedSet].mutableCopy;
                 [components filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.length > 0"]];
-                chapter.preferredFilename = [NSString stringWithFormat:@"%02lu.%@", (unsigned long)(result.count + 1), [components componentsJoinedByString:@"-"].lowercaseString];
+                chapter = [NSString stringWithFormat:@"%02lu.%@", (unsigned long)(++chapterIndex), [components componentsJoinedByString:@"-"].lowercaseString];
 
-                [result addObject:chapter];
+                if (![fileManager createDirectoryAtURL:[self.contentsURL URLByAppendingPathComponent:chapter] withIntermediateDirectories:YES attributes:nil error:error]) return nil;
+
+                chapters[chapter] = [NSMutableArray array];
+
+                [olElement addChild:[NSXMLElement elementWithName:@"li" children:@[[NSXMLElement elementWithName:@"a" children:@[[NSXMLNode textWithStringValue:title]] attributes:@[[NSXMLNode attributeWithName:@"href" stringValue:[chapter stringByAppendingPathComponent:@"pg0001.xhtml"]]]]] attributes:nil]];
+
+                index = 0;
             }
 
-            NSAssert(result.count > 0, @"Chapter has not been recorded");
+            NSString *filename = [NSString stringWithFormat:@"im%04lu.%@", (unsigned long)(++index), extensionForType(typeIdentifier)];
+            NSString *relativePath = [chapter stringByAppendingPathComponent:filename];
 
-            NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:inputURL options:NSFileWrapperReadingImmediate error:error];
-            if (!wrapper) return nil;
+            NSURL *outputURL = [self.contentsURL URLByAppendingPathComponent:relativePath];
 
-            NSArray *regions = [inputURL regionsAndReturnError:error];
-            if (!regions) return nil;
+            id source = CFBridgingRelease(CGImageSourceCreateWithURL((CFURLRef)inputURL, NULL));
 
-            wrapper.preferredFilename = [NSString stringWithFormat:@"im%04lu.%@", chapter.fileWrappers.count + 1, extensionForType(typeIdentifier)];
-            wrapper.regions = regions;
+            if (!source) {
+                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSURLErrorKey:inputURL}];
+                return NO;
+            }
 
-            [chapter addFileWrapper:wrapper];
+            id image = CFBridgingRelease(CGImageSourceCreateImageAtIndex((CGImageSourceRef)source, 0, NULL));
+
+            if (!image) {
+                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSURLErrorKey:inputURL}];
+                return NO;
+            }
+
+            CGFloat w = CGImageGetWidth((CGImageRef)image);
+            CGFloat h = CGImageGetHeight((CGImageRef)image);
+            NSString *typeIdentifier = (NSString *)CGImageGetUTType((CGImageRef)image);
+
+            NSMutableArray<NSValue *> *regions = [NSMutableArray array];
+
+            CGAffineTransform pixelToFraction = CGAffineTransformMakeScale(1.0 / w, 1.0 / h);
+
+            for (NSArray<NSNumber *> *region in inputURL.regions) {
+                CGRect r = CGRectMake(region[0].doubleValue, region[1].doubleValue, region[2].doubleValue, region[3].doubleValue);
+                [regions addObject:[NSValue valueWithRect:NSRectFromCGRect(CGRectApplyAffineTransform(r, pixelToFraction))]];
+            }
+
+            if (!isExtensionCorrectForType(outputURL.pathExtension, typeIdentifier)) {
+                outputURL = [outputURL.URLByDeletingPathExtension URLByAppendingPathExtension:extensionForType(typeIdentifier)];
+                [self logMessageWithLevel:AMLogLevelWarn format:@"%@ has an incorrect extension; should be “%@”", inputURL.lastPathComponent, outputURL.pathExtension];
+            }
+
+            CGFloat scale = fmin(contentWidth / w, contentHeight / h);
+
+            while ((h * scale > contentHeight) || (w * scale > contentWidth)) {
+                scale = nextafter(scale, 0.0);
+            }
+
+            if (self.disableUpscaling && scale > 1.0) {
+                scale = 1.0;
+            }
+
+            NSAssert(w * scale <= contentWidth, @"width: %f, scale: %f, scaled width: %f, max: %f", w, scale, w * scale, contentWidth);
+            NSAssert(h * scale <= contentHeight, @"height: %f, scale: %f, scaled height: %f, max: %f", h, scale, h * scale, contentHeight);
+
+            Frame *frame = [[Frame alloc] initWithName:outputURL.lastPathComponent regions:regions width:(w * scale) height:(h * scale)];
+
+            if (![fileManager copyItemAtURL:inputURL toURL:outputURL error:error]) return nil;
+
+            [self.packageDocument addManifestItem:relativePath properties:nil];
+
+            [chapters[chapter] addObject:frame];
         }
         else {
             [self logMessageWithLevel:AMLogLevelWarn format:@"%@ is not a file type supported by this action", path.lastPathComponent];
         }
 
-        NSAssert(chapter == nil || chapter.fileWrappers.count > 0, @"Chapter should be non-empty");
-
-        progress.completedUnitCount++;
+        ++progress.completedUnitCount;
     }
 
-    return result;
+    return chapters;
 }
 
-- (nullable NSString *)createPage:(NSArray<Frame *> *)page number:(NSUInteger)pageNum inDirectory:(NSFileWrapper *)directory error:(NSError **)error {
-    NSAssert(page.count > 0, @"Attempted to generate page with no images");
+- (BOOL)createPage:(NSString *)pageName fromFrames:(NSArray<Frame *> *)frames error:(NSError **)error {
+    NSAssert(frames.count > 0, @"Attempted to generate page with no images");
+
+    NSXMLElement *dataNavOLElement = [self.dataNavDocument nodesForXPath:@"//ol" error:NULL].firstObject;
+    NSAssert(dataNavOLElement, @"The “data-nav.xhtml” resource is damaged.");
 
     const CGFloat contentWidth  = self.pageWidth  - 2 * self.pageMargin;
     const CGFloat contentHeight = self.pageHeight - 2 * self.pageMargin;
 
-    CGFloat usedHeight = [[page valueForKeyPath:@"@sum.height"] doubleValue];
+    CGFloat usedHeight = [[frames valueForKeyPath:@"@sum.height"] doubleValue];
 
     CGFloat vSpace, y;
 
@@ -314,42 +395,41 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             break;
 
         case maximizeInternalSpace:
-            if (page.count > 1) {
-                vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count - 1);
+            if (frames.count > 1) {
+                vSpace = (contentHeight - usedHeight) / (CGFloat)(frames.count - 1);
                 y = self.pageMargin;
                 break;
             }
 
         case distributeInternalSpace: // or maximizeInternalSpace with a single image
-            vSpace = (contentHeight - usedHeight) / (CGFloat)(page.count + 1);
+            vSpace = (contentHeight - usedHeight) / (CGFloat)(frames.count + 1);
             y = self.pageMargin + vSpace;
             break;
 
         default:
-            @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unknown layout style %lu", (unsigned long)(self.layoutStyle)] userInfo:nil];
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"bad value for self.layoutStyle" userInfo:nil];
     }
 
     CGAffineTransform pixelToPercent = CGAffineTransformMakeScale(100.0 / self.pageWidth, 100.0 / self.pageHeight);
 
-    NSURL * _Nonnull templateURL = [self.bundle URLForResource:@"page" withExtension:@"xhtml"];
-    if (!templateURL) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml resource missing" userInfo:nil];
+    NSXMLDocument *pageDocument = [self XMLDocumentForResource:@"page.xhtml"];
 
     NSError * __autoreleasing underlyingError;
 
-    NSXMLDocument *pageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:templateURL options:0 error:&underlyingError];
-    if (!pageDocument) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
-
     NSXMLElement *bodyElement = [pageDocument nodesForXPath:@"/html/body" error:&underlyingError].firstObject;
-    if (!bodyElement) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
+    NSAssert(bodyElement, @"The “page.xhtml” resource is damaged.");
 
     [bodyElement addAttribute:[NSXMLNode attributeWithName:@"style" stringValue:[NSString stringWithFormat:@"width:%lupx; height:%lupx; background-color:%@", (unsigned long)(self.pageWidth), (unsigned long)(self.pageHeight), self.backgroundColor.webColor]]];
 
     NSXMLNode *viewportNode = [pageDocument nodesForXPath:@"/html/head/meta[@name='viewport']/@content" error:&underlyingError].firstObject;
-    if (!viewportNode) @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"page.xhtml failed to load" userInfo:@{NSURLErrorKey:templateURL, NSUnderlyingErrorKey:underlyingError}];
+    NSAssert(viewportNode, @"The “page.xhtml” resource is damaged.");
 
     viewportNode.stringValue = [NSString stringWithFormat:@"width=%lu, height=%lu", (unsigned long)(self.pageWidth), (unsigned long)(self.pageHeight)];
 
-    for (Frame *frame in page) {
+    NSXMLNode *panelGroupTypeAttr = [NSXMLNode attributeWithName:@"epub:type" stringValue:@"panel-group"];
+    NSXMLNode *panelTypeAttr = [NSXMLNode attributeWithName:@"epub:type" stringValue:@"panel"];
+
+    for (Frame *frame in frames) {
         NSString *name = [frame valueForKey:@"name"];
 
         CGFloat width = [[frame valueForKey:@"width"] doubleValue];
@@ -373,152 +453,90 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
         [bodyElement addChild:imgElement];
 
-        NSXMLNode *classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel-group"];
+        r = CGRectIntegral(r);
+        NSString *href = [NSString stringWithFormat:@"%@#xywh=percent:%0.0f,%0.0f,%0.0f,%0.0f", pageName, r.origin.x, r.origin.y, r.size.width, r.size.height];
 
-        NSXMLElement *divElement = [NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr.copy]];
+        NSXMLElement *liElement = [NSXMLElement elementWithName:@"li" children:@[[NSXMLElement elementWithName:@"a" children:nil attributes:@[[NSXMLNode attributeWithName:@"href" stringValue:href]]]] attributes:@[panelGroupTypeAttr.copy]];
 
-        CGAffineTransform localToPercent = CGAffineTransformMakeScale(100.0 / width, 100.0 / height);
+        [dataNavOLElement addChild:liElement];
+
+        NSXMLElement *subNavOLElement = nil;
+
+        CGAffineTransform regionToPercent = CGAffineTransformTranslate(pixelToPercent, x, y);
+        regionToPercent = CGAffineTransformScale(regionToPercent, width, height);
 
         for (NSValue *value in regions) {
-            CGRect r = CGRectApplyAffineTransform(NSRectToCGRect(value.rectValue), localToPercent);
+            CGRect r = CGRectIntegral(CGRectApplyAffineTransform(NSRectToCGRect(value.rectValue), regionToPercent));
 
-            NSString *style = [NSString stringWithFormat:@"left:%0.4f%%; top:%0.4f%%; width:%0.4f%%; height:%0.4f%%", r.origin.x, r.origin.y, r.size.width, r.size.height];
-            NSXMLNode *classAttr = [NSXMLNode attributeWithName:@"class" stringValue:@"panel"];
-            NSXMLNode *styleAttr = [NSXMLNode attributeWithName:@"style" stringValue:style];
+            if (!subNavOLElement) {
+                subNavOLElement = [NSXMLElement elementWithName:@"ol"];
+                [liElement addChild:subNavOLElement];
+            }
 
-            [divElement addChild:[NSXMLElement elementWithName:@"div" children:nil attributes:@[classAttr, styleAttr]]];
+            NSString *href = [NSString stringWithFormat:@"%@#xywh=percent:%0.0f,%0.0f,%0.0f,%0.0f", pageName, r.origin.x, r.origin.y, r.size.width, r.size.height];
+
+            NSXMLElement *liElement = [NSXMLElement elementWithName:@"li" children:@[[NSXMLElement elementWithName:@"a" children:nil attributes:@[[NSXMLNode attributeWithName:@"href" stringValue:href]]]] attributes:@[panelTypeAttr.copy]];
+
+            [subNavOLElement addChild:liElement];
         }
-
-        [bodyElement addChild:divElement];
 
         y += height;
         y += vSpace;
     }
 
-    NSFileWrapper *chapterWrapper = directory;
+    NSData *data = [pageDocument XMLDataWithOptions:NSXMLNodePrettyPrint];
+    NSURL  *url  = [self.contentsURL URLByAppendingPathComponent:pageName];
 
-    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[pageDocument XMLDataWithOptions:NSXMLNodePrettyPrint]];
-    wrapper.preferredFilename = [NSString stringWithFormat:@"pg%04lu.xhtml", pageNum];
-    return [chapterWrapper.preferredFilename stringByAppendingPathComponent:[chapterWrapper addFileWrapper:wrapper]];
+    if (![data writeToURL:url options:NSDataWritingAtomic error:error]) return NO;
+
+    [self.packageDocument addSpineItem:pageName properties:nil];
+
+    return YES;
 }
 
-- (nullable NSArray<NSString *> *)createPagesForChapters:(NSArray<NSFileWrapper *> *)chapters error:(NSError **)error {
-    const CGFloat contentWidth  = self.pageWidth  - 2 * self.pageMargin;
+- (BOOL)createPagesForChapters:(NSDictionary<NSString *, NSArray<Frame *> *> *)chapters error:(NSError **)error {
     const CGFloat contentHeight = self.pageHeight - 2 * self.pageMargin;
 
-    NSAssert(contentWidth > 0, @"Content width incorrect");
     NSAssert(contentHeight > 0, @"Content height incorrect");
 
-    NSUInteger count = 0;
-
-    for (NSFileWrapper *chapter in chapters) {
-        count += chapter.fileWrappers.count;
-    }
+    NSUInteger count = [[chapters.allValues valueForKeyPath:@"@unionOfArrays.self"] count];
 
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
 
-    NSMutableArray<NSString *> *result = [NSMutableArray array];
-
-    for (NSFileWrapper *chapter in chapters) {
+    for (NSString *chapterName in [chapters.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
         NSUInteger pageCount = 0;
 
-        NSMutableArray<Frame *> *page = [NSMutableArray array];
+        NSMutableArray<Frame *> *frames = [NSMutableArray array];
         CGFloat currentHeight = 0.0;
 
-        for (NSString *name in [chapter.fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
-            if (self.stopped) return nil;
+        for (Frame *frame in chapters[chapterName]) {
+            if (self.stopped) return NO;
 
-            NSFileWrapper *imageWrapper = chapter.fileWrappers[name];
+            if (currentHeight + frame.height > contentHeight) {
+                NSString *pageName = [NSString stringWithFormat:@"%@/pg%04lu.xhtml", chapterName, (unsigned long)(++pageCount)];
+                if (![self createPage:pageName fromFrames:frames error:error]) return NO;
 
-            CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)(imageWrapper.regularFileContents), NULL);
-
-            if (!source) {
-                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSFilePathErrorKey:imageWrapper.preferredFilename}];
-                return nil;
-            }
-
-            id image = CFBridgingRelease(CGImageSourceCreateImageAtIndex(source, 0, NULL));
-            CFRelease(source);
-
-            if (!image) {
-                if (error) *error = [NSError errorWithDomain:@"CoreGraphicsErrorDomain" code:__LINE__ userInfo:@{NSFilePathErrorKey:imageWrapper.preferredFilename}];
-                return nil;
-            }
-
-            CGFloat w = CGImageGetWidth((CGImageRef)image);
-            CGFloat h = CGImageGetHeight((CGImageRef)image);
-            NSString *typeIdentifier = (NSString *)CGImageGetUTType((CGImageRef)image);
-
-            if (!isExtensionCorrectForType(name.pathExtension, typeIdentifier)) {
-                NSString *newName = [name.stringByDeletingPathExtension stringByAppendingPathExtension:extensionForType(typeIdentifier)];
-
-                [self logMessageWithLevel:AMLogLevelWarn format:@"%@ has an incorrect extension; should be %@", name, newName];
-                [chapter removeFileWrapper:imageWrapper];
-                imageWrapper.preferredFilename = newName;
-                [chapter addFileWrapper:imageWrapper];
-            }
-
-            CGFloat scale = fmin(contentWidth / w, contentHeight / h);
-
-            while ((h * scale > contentHeight) || (w * scale > contentWidth)) {
-                scale = nextafter(scale, 0.0);
-            }
-
-            if (self.disableUpscaling && scale > 1.0) {
-                scale = 1.0;
-            }
-
-            NSAssert(w * scale <= contentWidth, @"width: %f, scale: %f, scaled width: %f, max: %f", w, scale, w * scale, contentWidth);
-            NSAssert(h * scale <= contentHeight, @"height: %f, scale: %f, scaled height: %f, max: %f", h, scale, h * scale, contentHeight);
-
-            NSMutableArray<NSValue *> *regions = [NSMutableArray array];
-
-            CGAffineTransform scaleTransform = CGAffineTransformMakeScale(scale, scale);
-
-            for (NSArray<NSNumber *> *region in imageWrapper.regions) {
-                CGRect r = CGRectMake(region[0].doubleValue, region[1].doubleValue, region[2].doubleValue, region[3].doubleValue);
-                NSValue *value = [NSValue valueWithRect:NSRectFromCGRect(CGRectApplyAffineTransform(r, scaleTransform))];
-                [regions addObject:value];
-            }
-
-            Frame *frame = [[Frame alloc] initWithImage:image name:imageWrapper.preferredFilename regions:regions width:(w * scale) height:(h * scale)];
-
-            if (currentHeight + h * scale > contentHeight) {
-                NSString *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapter error:error];
-                if (!pageURL) return nil;
-
-                [result addObject:pageURL];
-
-                page = [NSMutableArray array];
+                frames = [NSMutableArray array];
                 currentHeight = 0.0;
             }
 
-            [page addObject:frame];
-            currentHeight += h * scale;
+            [frames addObject:frame];
+            currentHeight += frame.height;
 
-            progress.completedUnitCount++;
+            ++progress.completedUnitCount;
         }
 
-        NSString *pageURL = [self createPage:page number:(++pageCount) inDirectory:chapter error:error];
-        if (!pageURL) return nil;
-
-        [result addObject:pageURL];
+        NSString *pageName = [NSString stringWithFormat:@"%@/pg%04lu.xhtml", chapterName, (unsigned long)(++pageCount)];
+        if (![self createPage:pageName fromFrames:frames error:error]) return NO;
     }
 
-    return result;
+    return YES;
 }
 
-- (BOOL)addMetadataToDirectory:(NSFileWrapper *)contentsDirectory chapters:(NSArray<NSFileWrapper *> *)chapters spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error {
-    NSURL *packageURL = [self.bundle URLForResource:@"package" withExtension:@"opf"];
-    NSAssert(packageURL, @"package.opf resource is missing from action.");
+- (BOOL)writeMetadataFilesAndReturnError:(NSError **)error {
+    NSXMLDocument *packageDocument = self.packageDocument;
 
-    NSURL *navURL = [self.bundle URLForResource:@"nav" withExtension:@"xhtml"];
-    NSAssert(navURL, @"nav.xhtml resource is missing from action.");
-
-    NSError * __autoreleasing internalError;
-
-    NSXMLDocument *packageDocument = [[NSXMLDocument alloc] initWithContentsOfURL:packageURL options:0 error:&internalError];
-    NSAssert(packageDocument, @"package.opf resource is damaged - %@", internalError);
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:4];
 
     packageDocument.identifier = self.publicationID;
     packageDocument.title = self.title;
@@ -549,114 +567,52 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
         [packageDocument addAuthor:[components componentsJoinedByString:@" "] role:role];
     }
 
-    for (NSFileWrapper *chapter in chapters) {
-        NSString *path = chapter.preferredFilename;
+    ++progress.completedUnitCount;
 
-        for (NSString *subpath in [chapter.fileWrappers.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
-            [packageDocument addManifestItem:[path stringByAppendingPathComponent:subpath] properties:nil];
-        }
-    }
+    if (![[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement] writeToURL:[self.contentsURL URLByAppendingPathComponent:@"package.opf"] options:NSDataWritingAtomic error:error]) return NO;
 
-    if (self.coverImage) {
-        NSString *filename = [contentsDirectory addFileWrapper:self.coverImage];
-        [packageDocument addManifestItem:filename properties:@"cover-image"];
-    }
+    ++progress.completedUnitCount;
 
-    for (NSString *spineItem in spineItems) {
-        [packageDocument addSpineItem:spineItem properties:nil];
-    }
+    if (![[self.navDocument XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement] writeToURL:[self.contentsURL URLByAppendingPathComponent:@"nav.xhtml"] options:NSDataWritingAtomic error:error]) return NO;
 
-    [contentsDirectory addRegularFileWithContents:[packageDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"package.opf"];
+    ++progress.completedUnitCount;
 
-    NSXMLDocument *navDocument = [[NSXMLDocument alloc] initWithContentsOfURL:navURL options:0 error:&internalError];
-    NSAssert(navDocument, @"nav.xhtml resource is damaged - %@", internalError);
-
-    NSXMLElement *listElement = [navDocument nodesForXPath:@"//nav/ol" error:&internalError].firstObject;
-    NSAssert(listElement, @"nav.xhtml resource is damaged - %@", internalError);
-
-    for (NSFileWrapper *chapter in chapters) {
-        NSString *path  = [chapter.preferredFilename stringByAppendingPathComponent:@"pg0001.xhtml"];
-        NSString *title = chapter.title;
-
-        NSXMLNode *titleNode = [NSXMLNode textWithStringValue:title];
-        NSXMLNode *hrefAttribute = [NSXMLNode attributeWithName:@"href" stringValue:[path stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLPathAllowedCharacterSet]];
-        NSXMLElement *aElement = [NSXMLElement elementWithName:@"a" children:@[titleNode] attributes:@[hrefAttribute]];
-        NSXMLElement *liElement = [NSXMLElement elementWithName:@"li" children:@[aElement] attributes:nil];
-
-        [listElement addChild:liElement];
-    }
-
-    [contentsDirectory addRegularFileWithContents:[navDocument XMLDataWithOptions:NSXMLNodePrettyPrint] preferredFilename:@"nav.xhtml"];
+    if (![[self.dataNavDocument XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement] writeToURL:[self.contentsURL URLByAppendingPathComponent:@"data-nav.xhtml"] options:NSDataWritingAtomic error:error]) return NO;
 
     return !self.stopped;
-}
-
-- (nullable NSFileWrapper *)fileWrapperForResource:(NSString *)resource withExtension:(NSString *)extension error:(NSError **)error {
-    NSURL *url = [self.bundle URLForResource:resource withExtension:extension];
-    if (!url) {
-        if (error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadNoSuchFileError userInfo:@{NSURLErrorKey:[[self.bundle.resourceURL URLByAppendingPathComponent:resource] URLByAppendingPathExtension:extension], NSLocalizedDescriptionKey:[NSString stringWithFormat:@"The bundle resource “%@.%@” is missing.", resource ? resource : @"*", extension ? extension : @"*"], NSLocalizedFailureReasonErrorKey:@"A bundle resource is missing.", NSLocalizedRecoverySuggestionErrorKey:@"Reinstall the action and try again."}];
-        return nil;
-    }
-
-    return [[NSFileWrapper alloc] initWithURL:url options:NSFileWrapperReadingImmediate error:error];
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     if (!input || input.count == 0) return @[];
 
+    self.outputURL = nil;
+
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
     [self bind:AMFractionCompletedBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
 
-    NSFileWrapper *containerFile = [self fileWrapperForResource:@"container" withExtension:@"xml" error:error];
-    if (!containerFile) return nil;
+    NSURL *destinationURL = [self prepareDestinationDirectoryForURL:self.outputURL error:error];
+    if (!destinationURL) return nil;
 
-    NSFileWrapper *stylesheetFile = [self fileWrapperForResource:@"contents" withExtension:@"css" error:error];
-    if (!stylesheetFile) return nil;
-
-    NSFileWrapper *mimetypeFile      = [[NSFileWrapper alloc] initRegularFileWithContents:[@"application/epub+zip" dataUsingEncoding:NSASCIIStringEncoding]];
-    NSFileWrapper *contentsDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"contents.css":stylesheetFile}];
-    NSFileWrapper *metainfoDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"container.xml":containerFile}];
-
-    NSFileWrapper *epubDirectory = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:@{@"mimetype":mimetypeFile, @"META-INF":metainfoDirectory, @"Contents":contentsDirectory}];
-
-    BEGIN_TIMING(load);
-    [progress becomeCurrentWithPendingUnitCount:10];
-    NSArray<NSFileWrapper *> *chapters = [self createChaptersFromPaths:input error:error];
-    [progress resignCurrent];
-    END_TIMING(load);
-
+    [progress becomeCurrentWithPendingUnitCount:47];
+    NSDictionary<NSString *, NSArray<Frame *> *> *chapters = [self createChaptersFromPaths:input error:error];
     if (!chapters) return nil;
-
-    // This will happen if there are no supported image files in the input
-    if (chapters.count == 0) return @[];
-
-    for (NSFileWrapper *chapter in chapters) {
-        [contentsDirectory addFileWrapper:chapter];
-    }
-
-    BEGIN_TIMING(paginate);
-    [progress becomeCurrentWithPendingUnitCount:80];
-    NSArray<NSString *> *pages = [self createPagesForChapters:chapters error:error];
     [progress resignCurrent];
-    END_TIMING(paginate);
 
-    if (!pages) return nil;
-
-    BEGIN_TIMING(metadata);
-    [progress becomeCurrentWithPendingUnitCount:1];
-    if (![self addMetadataToDirectory:contentsDirectory chapters:chapters spineItems:pages error:error]) return nil;
+    [progress becomeCurrentWithPendingUnitCount:47];
+    if (![self createPagesForChapters:chapters error:error]) return nil;
     [progress resignCurrent];
-    END_TIMING(metadata);
 
-    BEGIN_TIMING(write);
-    [progress becomeCurrentWithPendingUnitCount:9];
-    BOOL success = [epubDirectory writeToURL:self.outputURL options:NSFileWrapperWritingAtomic originalContentsURL:nil error:error];
+    [progress becomeCurrentWithPendingUnitCount:4];
+    if (![self writeMetadataFilesAndReturnError:error]) return nil;
     [progress resignCurrent];
-    END_TIMING(write);
 
-    if (!success) return nil;
+    NSURL * __autoreleasing resultingItemURL;
 
-    return @[self.outputURL.path];
+    [progress becomeCurrentWithPendingUnitCount:2];
+    if (![[NSFileManager defaultManager] replaceItemAtURL:self.outputURL withItemAtURL:destinationURL backupItemName:nil options:0 resultingItemURL:&resultingItemURL error:error]) return nil;
+    [progress resignCurrent];
+
+    return @[resultingItemURL.path];
 }
 
 - (CGFloat)fractionCompleted {

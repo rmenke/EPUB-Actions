@@ -14,6 +14,34 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
+               BuildableName = "Prepare Images for EPUB.action"
+               BlueprintName = "Prepare Images for EPUB"
+               ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E1D0DAD520D2202300EF7F35"
+               BuildableName = "Prepare Images for EPUB Tests.xctest"
+               BlueprintName = "Prepare Images for EPUB Tests"
+               ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1FB9A9C1E1DCA0600DEAE0F"
                BuildableName = "Images to EPUB.action"
                BlueprintName = "Images to EPUB"
@@ -42,66 +70,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E12161611E1DD09B002C6F1F"
-               BuildableName = "Convert Markup to EPUB Navigation.action"
-               BlueprintName = "Convert Markup to EPUB Navigation"
-               ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E121618E1E1DFDAA002C6F1F"
-               BuildableName = "Convert Markup to EPUB Navigation Tests.xctest"
-               BlueprintName = "Convert Markup to EPUB Navigation Tests"
-               ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1B4C3AD1F491D1300CDC7C0"
                BuildableName = "Convert EPUB Folder to Container.action"
                BlueprintName = "Convert EPUB Folder to Container"
                ReferencedContainer = "container:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-               BuildableName = "Prepare Images for EPUB.action"
-               BlueprintName = "Prepare Images for EPUB"
-               ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D0DAD520D2202300EF7F35"
-               BuildableName = "Prepare Images for EPUB Tests.xctest"
-               BlueprintName = "Prepare Images for EPUB Tests"
-               ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -110,7 +82,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -126,16 +99,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E121618E1E1DFDAA002C6F1F"
-               BuildableName = "Convert Markup to EPUB Navigation Tests.xctest"
-               BlueprintName = "Convert Markup to EPUB Navigation Tests"
-               ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1D0DAD520D2202300EF7F35"
                BuildableName = "Prepare Images for EPUB Tests.xctest"
                BlueprintName = "Prepare Images for EPUB Tests"
@@ -143,15 +106,6 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E12161611E1DD09B002C6F1F"
-            BuildableName = "Convert Markup to EPUB Navigation.action"
-            BlueprintName = "Convert Markup to EPUB Navigation"
-            ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -168,10 +122,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E12161611E1DD09B002C6F1F"
-            BuildableName = "Convert Markup to EPUB Navigation.action"
-            BlueprintName = "Convert Markup to EPUB Navigation"
-            ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
+            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
+            BuildableName = "Prepare Images for EPUB.action"
+            BlueprintName = "Prepare Images for EPUB"
+            ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -186,10 +140,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E12161611E1DD09B002C6F1F"
-            BuildableName = "Convert Markup to EPUB Navigation.action"
-            BlueprintName = "Convert Markup to EPUB Navigation"
-            ReferencedContainer = "container:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
+            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
+            BuildableName = "Prepare Images for EPUB.action"
+            BlueprintName = "Prepare Images for EPUB"
+            ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
