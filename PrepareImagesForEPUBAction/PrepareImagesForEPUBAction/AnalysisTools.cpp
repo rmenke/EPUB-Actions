@@ -13,10 +13,10 @@
 
 #include <algorithm>
 #include <array>
-#include <deque>
 #include <iostream>
 #include <limits>
 #include <map>
+#include <queue>
 #include <random>
 #include <set>
 #include <tuple>
@@ -437,41 +437,46 @@ namespace fill {
         return matrix_multiply(M, f);
     }
 
-    template <typename _Predicate> static inline vImagePixelCount using_predicate(const vImage_Buffer *source, const vImage_Buffer *destination, const vImagePixelCount x, const vImagePixelCount y, const _Predicate &is_fillable) {
-        const auto srcRow = row_as_array_of<const simd::float4>(source, y);
-        const auto dstRow = row_as_array_of<uint8_t>(destination, y);
+    template <typename _Predicate> void using_predicate(const vImage_Buffer *source, const vImage_Buffer *destination, vImagePixelCount x, vImagePixelCount y, _Predicate is_fillable) {
+        std::queue<std::pair<vImagePixelCount, vImagePixelCount>> queue;
 
-        auto is_open = [srcRow, dstRow, &is_fillable] (vImagePixelCount x) -> bool {
-            return !dstRow[x] && is_fillable(srcRow[x]);
-        };
+        queue.emplace(x, y);
 
-        vImagePixelCount lo, hi;
+        while (!queue.empty()) {
+            std::tie(x, y) = queue.front();
 
-        const auto max_w = source->width - 1;
-        const auto max_h = source->height - 1;
+            queue.pop();
 
-        if (!is_open(x)) {
-            for (hi = x; hi < max_w && !is_open(hi + 1); ++hi);
-            return hi;
-        }
+            const auto srcRow = row_as_array_of<const simd::float4>(source, y);
+            const auto dstRow = row_as_array_of<uint8_t>(destination, y);
 
-        for (lo = x; lo > 0 && is_open(lo - 1); --lo);
-        for (hi = x; hi < max_w && is_open(hi + 1); ++hi);
+#define is_open(x) (!dstRow[x] && is_fillable(srcRow[x]))
 
-        for (auto x = lo; x <= hi; ++x) dstRow[x] = 255;
+            if (!is_open(x)) continue;
 
-        if (y > 0) {
-            for (auto x = lo; x <= hi; ++x) {
-                x = using_predicate(source, destination, x, y - 1, is_fillable);
+            const auto w = source->width - 1;
+            const auto h = source->height - 1;
+
+            vImagePixelCount lo = x, hi = x;
+
+            while (lo > 0 && is_open(lo - 1)) --lo;
+            while (hi < w && is_open(hi + 1)) ++hi;
+
+#undef is_open
+
+            memset(dstRow + lo, 255, (hi - lo) + 1);
+
+            if (y > 0) {
+                for (auto x = lo; x <= hi; ++x) {
+                    queue.emplace(x, y - 1);
+                }
+            }
+            if (y < h) {
+                for (auto x = lo; x <= hi; ++x) {
+                    queue.emplace(x, y + 1);
+                }
             }
         }
-        if (y < max_h) {
-            for (auto x = lo; x <= hi; ++x) {
-                x = using_predicate(source, destination, x, y + 1, is_fillable);
-            }
-        }
-
-        return hi;
     }
 
     static void using_alpha(const vImage_Buffer *source, const vImage_Buffer *destination, const vImagePixelCount x, const vImagePixelCount y) {
