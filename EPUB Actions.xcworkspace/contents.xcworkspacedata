@@ -2,12 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:ImagesToEPUBAction/ImagesToEPUBAction.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:ConvertMarkupToEPUBNavigationAction/ConvertMarkupToEPUBNavigationAction.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/rgm/Source/EPUB-Actions/ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
+      location = "group:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
    </FileRef>
 </Workspace>

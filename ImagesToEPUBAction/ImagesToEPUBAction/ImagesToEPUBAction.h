@@ -13,10 +13,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+const char * const EPUB_REGION_XATTR = "com.the-wabe.regions";
+
 @interface ImagesToEPUBAction : AMBundleAction
 
 typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
-    maximizeInternalSpace = 0, distributeInternalSpace = 1, minimizeInternalSpace = 2
+    maximizeInternalSpace = 0,
+    distributeInternalSpace = 1,
+    minimizeInternalSpace = 2
 };
 
 @property (nonatomic, readonly) NSString *outputFolder;
@@ -33,80 +37,85 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 @property (nonatomic, readonly) NSURL *outputURL;
 
 /*!
- * @abstract Separate the image files into an array of chapter directories.
+ * @abstract Load all of the XML templates required.
+ *
+ * @description This creates XML documents that are updated
+ *   continuously throughout the workflow.
+ *
+ * @param url The destination URL.
+ * @param error If there is an error generating the data, upon return
+ *   contains an NSError object that describes the problem.
+ *
+ * @throw NSException if any of the templates are missing or damaged.
+ */
+- (NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error;
+
+/*!
+ * @abstract Partition the image files into a dictionary keyed by
+ *  chapter directory name.
  *
  * @description The enclosing folder of the image file is used to name
- *   the chapter. If the images are out-of-order, multiple chapters
- *   may be created with the same preferred name. Each image will be
- *   renamed according to its order in the input.
+ *   the chapter.  If the images are out-of-order, multiple chapters
+ *   may be created with the same preferred name.  Each image will be
+ *   renamed according to its order in the input.  If during copying,
+ *   it is found that an image does not match its path extension, the
+ *   path extension will be updated.  (This keeps certain EPUB
+ *   validators happy, even though the type of the image is formally
+ *   specified in the container file.)
+ *
+ * Each chapter encoutered will have its preferred name added to the
+ *   navigation document/table of contents.  While the chapter
+ *   directory has a unique name, the chapters themselves may not.
  *
  * @param paths A list of absolute paths to images.
  * @param error If there is an error generating the data, upon return
  *   contains an NSError object that describes the problem.
  *
- * @returns An array of @c NSFileWrapper objects representing the
- *   chapters created.
+ * @returns A mapping from chapter directory names to image names.
  */
-- (nullable NSArray<NSFileWrapper *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error;
+- (NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error;
+
+/*!
+ * @abstract Create a single page from an array of image frames.
+ *
+ * @param path The path to the page relative to the content directory.
+ * @param frames An array of dictionaries describing the frames.
+ * @param error If there is an error generating the data, upon return
+ *   contains an NSError object that describes the problem.
+ *
+ * @returns @c YES on success; @c NO if an error occurred.
+ */
+- (BOOL)createPage:(NSString *)path fromFrames:(NSArray<Frame *> *)frames error:(NSError **)error;
 
 /*!
  * @abstract Create the pages for the chapters.
  *
  * @discussion This method assumes that each chapter wrapper contains
- *   the images used for page layout. If during analysis, it is found
- *   that an image does not match its path extension, the path
- *   extension will be renamed. (This keeps certain EPUB validators
- *   happy, even though the type of the image is formally specified in
- *   the container file.)
+ *   the images used for page layout
  *
- * @param chapters An array of @c NSFileWrapper objects representing chapters.
+ * @param chapters A dictionary of arrays of Frame objects
+ *   representing chapters.
  * @param error If there is an error generating the data, upon return
  *   contains an NSError object that describes the problem.
  *
- * @returns An array of paths to the pages generated, in order. The
- *   paths are relative to the enclosing folder of the chapter; that
- *   is, they contain the name of the @c NSFileWrapper containing the
- *   page.
+ * @returns @c YES on success; @c NO if an error occurred.
  */
-- (nullable NSArray<NSString *> *)createPagesForChapters:(NSArray<NSFileWrapper *> *)chapters error:(NSError **)error;
-
-/*!
- * @abstract Create a single page from a set of image frames.
-
- * @param page An array of dictionaries describing the frames.
- * @param number The number of the page.
- * @param directory Where to write the page file.
- * @param error If there is an error generating the data, upon return
- *   contains an NSError object that describes the problem.
- *
- * @returns The relative path of the generated page, or @c nil if an
- *   error occurred.
- */
-- (nullable NSString *)createPage:(NSArray<Frame *> *)page number:(NSUInteger)number inDirectory:(NSFileWrapper *)directory error:(NSError **)error;
+- (BOOL)createPagesForChapters:(NSDictionary<NSString *, NSArray<Frame *> *> *)chapters error:(NSError **)error;
 
 /*!
  * @abstract Create the metadata files in the EPUB wrapper.
  *
- * @discussion Aside from the title, authors, and other identifiers,
- *   the main component of the package file is the manifest, which
- *   lists the files in the container, and the spine, which lists the
- *   order in which pages are read. The manifest template already has
- *   entries for the metadata files themselves, so the only thing
- *   missing is the images copied and the pages generated.
+ * @discussion Updates the title, authors, and other identifiers in
+ *   the package file, then writes the package file, the table of
+ *   contents, and the region-based navigation file to the “Contents”
+ *   subdirectory of the output folder.
  *
- * @param directory The root directory of the container.
- * @param chapters An array of directory wrappers representing the
- *   chapters.
- * @param spineItems An array of path strings to the pages, in the
- *   order that they should be read.
  * @param error If there is an error generating the data, upon return
  *   contains an NSError object that describes the problem.
  *
- * @returns @c YES on success.
+ * @returns @c YES on success; @c NO if an error occurred.
  */
-- (BOOL)addMetadataToDirectory:(NSFileWrapper *)directory chapters:(NSArray<NSFileWrapper *> *)chapters spineItems:(NSArray<NSString *> *)spineItems error:(NSError **)error;
-
-- (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
+- (BOOL)writeMetadataFilesAndReturnError:(NSError **)error;
 
 @end
 

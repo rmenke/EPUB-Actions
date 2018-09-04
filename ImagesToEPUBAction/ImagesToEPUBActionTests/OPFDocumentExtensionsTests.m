@@ -172,7 +172,7 @@
 
     NSArray<NSXMLElement *> *elements = [packageDocument objectsForXQuery:Q("/package/manifest/item") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 6);
+    XCTAssertEqual(elements.count, 7);
 }
 
 - (void)testAddSpine {
@@ -182,14 +182,14 @@
 
     NSArray<NSXMLElement *> *elements = [packageDocument objectsForXQuery:Q("/package/manifest/item") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 3);
+    XCTAssertEqual(elements.count, 4);
 
     [packageDocument addSpineItem:@"foo.xhtml" properties:nil];
     [packageDocument addSpineItem:@"bar.xhtml" properties:@"double-spread"];
 
     elements = [packageDocument objectsForXQuery:Q("/package/manifest/item") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 4);
+    XCTAssertEqual(elements.count, 5);
 
     elements = [packageDocument objectsForXQuery:Q("/package/spine/itemref") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);

@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E102B5412133BECD00E8ED9D /* data-nav.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E102B5402133BECD00E8ED9D /* data-nav.xhtml */; };
 		E12161831E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */; };
 		E121618A1E1DFD7A002C6F1F /* Images to EPUB.action in Resources */ = {isa = PBXBuildFile; fileRef = E1FB9A9D1E1DCA0600DEAE0F /* Images to EPUB.action */; };
 		E147B7881F26A6BE0010009F /* image01.png in Resources */ = {isa = PBXBuildFile; fileRef = E147B77E1F26A66E0010009F /* image01.png */; };
 		E147B7891F26A6BE0010009F /* image02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E147B77F1F26A66E0010009F /* image02.jpg */; };
 		E147B78A1F26A6BE0010009F /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E147B7801F26A66E0010009F /* image03.gif */; };
 		E147B78B1F26A6BE0010009F /* image04.png in Resources */ = {isa = PBXBuildFile; fileRef = E147B7811F26A66E0010009F /* image04.png */; };
-		E147B78C1F26A6BE0010009F /* image05.png in Resources */ = {isa = PBXBuildFile; fileRef = E147B7821F26A66E0010009F /* image05.png */; };
 		E197427E1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */; };
 		E19742801EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */; };
 		E1EE3C6A1E4EFB5600184583 /* container.xml in Resources */ = {isa = PBXBuildFile; fileRef = E1EE3C651E4EFB5600184583 /* container.xml */; };
@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E102B5402133BECD00E8ED9D /* data-nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "data-nav.xhtml"; sourceTree = "<group>"; };
 		E12161801E1DFCD3002C6F1F /* Images to EPUB Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Images to EPUB Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12161821E1DFCD3002C6F1F /* ImagesToEPUBActionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesToEPUBActionTests.m; sourceTree = "<group>"; };
 		E12161841E1DFCD3002C6F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,7 +44,6 @@
 		E147B77F1F26A66E0010009F /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image02.jpg; sourceTree = "<group>"; };
 		E147B7801F26A66E0010009F /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image03.gif; sourceTree = "<group>"; };
 		E147B7811F26A66E0010009F /* image04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image04.png; sourceTree = "<group>"; };
-		E147B7821F26A66E0010009F /* image05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image05.png; sourceTree = "<group>"; };
 		E197427C1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLDocument+OPFDocumentExtensions.h"; sourceTree = "<group>"; };
 		E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLDocument+OPFDocumentExtensions.m"; sourceTree = "<group>"; };
 		E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPFDocumentExtensionsTests.m; sourceTree = "<group>"; };
@@ -87,7 +87,6 @@
 				E147B77F1F26A66E0010009F /* image02.jpg */,
 				E147B7801F26A66E0010009F /* image03.gif */,
 				E147B7811F26A66E0010009F /* image04.png */,
-				E147B7821F26A66E0010009F /* image05.png */,
 				E12161841E1DFCD3002C6F1F /* Info.plist */,
 			);
 			path = ImagesToEPUBActionTests;
@@ -98,6 +97,7 @@
 			children = (
 				E1EE3C651E4EFB5600184583 /* container.xml */,
 				E1EE3C661E4EFB5600184583 /* contents.css */,
+				E102B5402133BECD00E8ED9D /* data-nav.xhtml */,
 				E1EE3C671E4EFB5600184583 /* nav.xhtml */,
 				E1EE3C681E4EFB5600184583 /* package.opf */,
 				E1EE3C691E4EFB5600184583 /* page.xhtml */,
@@ -225,7 +225,6 @@
 				E147B7891F26A6BE0010009F /* image02.jpg in Resources */,
 				E147B78A1F26A6BE0010009F /* image03.gif in Resources */,
 				E147B78B1F26A6BE0010009F /* image04.png in Resources */,
-				E147B78C1F26A6BE0010009F /* image05.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +235,7 @@
 				E1FB9AA51E1DCA0700DEAE0F /* main.xib in Resources */,
 				E1EE3C6A1E4EFB5600184583 /* container.xml in Resources */,
 				E1EE3C6B1E4EFB5600184583 /* contents.css in Resources */,
+				E102B5412133BECD00E8ED9D /* data-nav.xhtml in Resources */,
 				E1EE3C6C1E4EFB5600184583 /* nav.xhtml in Resources */,
 				E1EE3C6D1E4EFB5600184583 /* package.opf in Resources */,
 				E1EE3C6E1E4EFB5600184583 /* page.xhtml in Resources */,
