@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>classNames</key>
+	<dict>
+		<key>VImageBufferTests</key>
+		<dict>
+			<key>testExtractAlpha</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.014748</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Sep 3, 2018, 10:41:07 PM</string>
+				</dict>
+			</dict>
+			<key>testExtractNoAlpha</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.023209</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Sep 3, 2018, 10:41:07 PM</string>
+				</dict>
+			</dict>
+			<key>testPolylineDetectionWithCrop</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.033659</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Sep 3, 2018, 10:41:07 PM</string>
+				</dict>
+			</dict>
+			<key>testRegionDetectionWithCrop</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0323</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Sep 3, 2018, 10:41:07 PM</string>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

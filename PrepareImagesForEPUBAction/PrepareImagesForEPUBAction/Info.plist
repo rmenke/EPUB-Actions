@@ -39,6 +39,8 @@
 		<false/>
 		<key>maxGap</key>
 		<integer>3</integer>
+		<key>minSegLen</key>
+		<integer>10</integer>
 		<key>openKernel</key>
 		<integer>1</integer>
 		<key>sensitivity</key>

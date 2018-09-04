@@ -47,9 +47,10 @@ struct user_parameters {
     const double sensitivity;
     const int maxGap;
     const int closeGap;
+    const int minSegLen;
 
 #define PARAM(X,...) X(cf::get<std::remove_cv<decltype(X)>::type>(dictionary, CFSTR(#X)) __VA_ARGS__)
-    user_parameters(CFDictionaryRef dictionary) : PARAM(sensitivity), PARAM(maxGap), PARAM(closeGap) { }
+    user_parameters(CFDictionaryRef dictionary) : PARAM(sensitivity), PARAM(maxGap), PARAM(closeGap), PARAM(minSegLen) { }
 #undef PARAM
 };
 
@@ -106,26 +107,27 @@ namespace hough {
         std::valarray<hough::state> image;
         std::valarray<register_t> accumulator;
 
-        double threshold;
-        unsigned max_gap;
+        const double threshold;
+        const unsigned max_gap;
+        const double min_seg_len;
 
         queue_t queue;
-        int voted;
+        int voted = 0;
 
         std::default_random_engine rng { std::random_device{}() };
 
-        static inline auto param(const vImage_Buffer *buffer, const user_parameters &p) {
+        static inline auto param(const vImage_Buffer *buffer) {
             const double   diagonal  = std::ceil(std::hypot(buffer->width, buffer->height));
             const double   rho_scale = std::exp2(std::round(std::log2(max_theta) - std::log2(diagonal)));
             const uint32_t max_rho   = std::ceil(diagonal * rho_scale);
 
-            return std::make_tuple(buffer->width, buffer->height, rho_scale, max_rho, p.sensitivity * -M_LN10, p.maxGap);
+            return std::make_tuple(buffer->width, buffer->height, rho_scale, max_rho);
         }
 
-        template <typename Param> analyzer(const Param &param) : width(std::get<0>(param)), height(std::get<1>(param)), rho_scale(std::get<2>(param)), max_rho(std::get<3>(param)), image(width * height), accumulator(max_theta * max_rho), threshold(std::get<4>(param)), max_gap(std::get<5>(param)) { }
+        template <typename Param> analyzer(const Param &param, const user_parameters &p) : width(std::get<0>(param)), height(std::get<1>(param)), rho_scale(std::get<2>(param)), max_rho(std::get<3>(param)), image(width * height), accumulator(max_theta * max_rho), threshold(p.sensitivity * -M_LN10), max_gap(p.maxGap), min_seg_len(p.minSegLen) { }
 
     public:
-        analyzer(const vImage_Buffer *buffer, const user_parameters &p) : analyzer(param(buffer, p)) {
+        analyzer(const vImage_Buffer *buffer, const user_parameters &p) : analyzer(param(buffer), p) {
             auto iter = std::begin(image);
 
             for (uint32_t y = 0; y < buffer->height; ++y) {
@@ -249,6 +251,8 @@ namespace hough {
 
         std::vector<segment_t> analyze() {
             std::vector<segment_t> result;
+
+            const double min_seg_len_squared = min_seg_len * min_seg_len;
 
             const auto begin = queue.begin();
             auto end = queue.end();
@@ -397,7 +401,7 @@ namespace hough {
                 const auto p1 = p0 + delta * segment.z_lo;
                 const auto p2 = p0 + delta * segment.z_hi;
 
-                if (simd::distance_squared(p1, p2) > 100.0) {
+                if (simd::distance_squared(p1, p2) >= min_seg_len_squared) {
                     result.emplace_back(p1, p2);
                 }
             }
