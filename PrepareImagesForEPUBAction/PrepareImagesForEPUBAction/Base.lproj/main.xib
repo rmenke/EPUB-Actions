@@ -49,15 +49,15 @@
                             <rect key="frame" x="0.0" y="104" width="149" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xhl-OS-7VI">
-                                    <rect key="frame" x="-2" y="4" width="102" height="14"/>
+                                    <rect key="frame" x="-2" y="4" width="104" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Background Color:" id="gyF-cM-QPM">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="gYW-3e-DnI" userLabel="Background Color Well">
-                                    <rect key="frame" x="102" y="0.0" width="47" height="22"/>
+                                <colorWell toolTip="If “Ignore Alpha” is set and the image has an alpha channel, this color will be used for a background." translatesAutoresizingMaskIntoConstraints="NO" id="gYW-3e-DnI" userLabel="Background Color Well">
+                                    <rect key="frame" x="104" y="0.0" width="45" height="22"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="22" id="cJd-N5-cQd"/>
                                     </constraints>
@@ -88,15 +88,15 @@
                             <rect key="frame" x="0.0" y="78" width="149" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FOG-99-1nN">
-                                    <rect key="frame" x="-2" y="4" width="102" height="14"/>
+                                    <rect key="frame" x="-2" y="4" width="104" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Open Kernel Size:" id="JwS-hk-Xgq">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qTq-vR-dfU" userLabel="Open Kernel Size Field">
-                                    <rect key="frame" x="102" y="2" width="30" height="19"/>
+                                <textField toolTip="If greater than 1, a morphological open will be performed on the image. This will remove some noise." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qTq-vR-dfU" userLabel="Open Kernel Size Field">
+                                    <rect key="frame" x="104" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="wmx-F5-WO7"/>
                                     </constraints>
@@ -108,10 +108,11 @@
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.openKernel" id="LFL-2r-vOe"/>
                                         <outlet property="formatter" destination="MeX-6A-jfG" id="qz6-te-bss"/>
+                                        <outlet property="nextKeyView" destination="4Yi-Fh-Y2u" id="QSw-om-YQN"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lxq-oo-jGU" userLabel="Open Kernel Size Stepper">
-                                    <rect key="frame" x="134" y="0.0" width="17" height="22"/>
+                                    <rect key="frame" x="136" y="0.0" width="15" height="22"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" increment="2" minValue="1" maxValue="9" doubleValue="1" id="bLy-ag-ru1"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.openKernel" id="odG-eZ-hQr"/>
@@ -146,6 +147,7 @@
                                 </textField>
                                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W5h-QC-RQy" userLabel="Sensitivity Slider">
                                     <rect key="frame" x="62" y="1" width="87" height="20"/>
+                                    <string key="toolTip">Higher sensitivity requires more points to trigger a channel scan. The algorithm will run slower but have fewer false positives.</string>
                                     <sliderCell key="cell" controlSize="small" state="on" alignment="left" minValue="6" maxValue="18" doubleValue="12" tickMarkPosition="below" numberOfTickMarks="13" allowsTickMarkValuesOnly="YES" sliderType="linear" id="g2P-BN-xbB"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.sensitivity" id="O91-d8-qrL"/>
@@ -175,7 +177,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Yi-Fh-Y2u" userLabel="Max Gap Field">
+                                <textField toolTip="The distance between distinct segment endpoints. Segments that are this or closer will be merged." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Yi-Fh-Y2u" userLabel="Max Gap Field">
                                     <rect key="frame" x="104" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="8U7-O7-iTI"/>
@@ -224,7 +226,7 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="M5H-at-OmQ" userLabel="Close Gap Field">
+                                <textField toolTip="The distance between the beginning and end of a path which will cause the path to close." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="M5H-at-OmQ" userLabel="Close Gap Field">
                                     <rect key="frame" x="104" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="Zuj-LO-yoV"/>
@@ -237,6 +239,7 @@
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.closeGap" id="M6E-Ik-zsy"/>
                                         <outlet property="formatter" destination="MeX-6A-jfG" id="eXp-H3-WCR"/>
+                                        <outlet property="nextKeyView" destination="p6f-M8-3zo" id="HXd-0r-U1B"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1mt-k8-olt" userLabel="Close Gap Stepper">
@@ -267,9 +270,11 @@
                         <constraint firstItem="b8c-87-rNk" firstAttribute="leading" secondItem="AK0-IS-6Dx" secondAttribute="leading" id="E1R-aH-dsv"/>
                         <constraint firstItem="ZM2-5L-VDu" firstAttribute="leading" secondItem="AK0-IS-6Dx" secondAttribute="leading" id="IGe-7h-Bzv"/>
                         <constraint firstItem="gYW-3e-DnI" firstAttribute="leading" secondItem="qTq-vR-dfU" secondAttribute="leading" id="KJj-Ea-zE5"/>
+                        <constraint firstItem="4Yi-Fh-Y2u" firstAttribute="leading" secondItem="qTq-vR-dfU" secondAttribute="leading" id="OK9-zZ-aAy"/>
                         <constraint firstItem="tCl-6T-Wq3" firstAttribute="leading" secondItem="AK0-IS-6Dx" secondAttribute="leading" id="OgP-wz-m5s"/>
                         <constraint firstItem="bD5-lF-For" firstAttribute="leading" secondItem="AK0-IS-6Dx" secondAttribute="leading" id="T1u-SN-0Ln"/>
                         <constraint firstItem="tCl-6T-Wq3" firstAttribute="trailing" secondItem="AK0-IS-6Dx" secondAttribute="trailing" id="Wii-3c-pg0"/>
+                        <constraint firstItem="M5H-at-OmQ" firstAttribute="leading" secondItem="qTq-vR-dfU" secondAttribute="leading" id="cA5-NX-1TF"/>
                         <constraint firstItem="ZM2-5L-VDu" firstAttribute="trailing" secondItem="AK0-IS-6Dx" secondAttribute="trailing" id="gzb-iX-88H"/>
                         <constraint firstItem="hUe-fz-Tp6" firstAttribute="trailing" secondItem="AK0-IS-6Dx" secondAttribute="trailing" id="ra8-AH-7vy"/>
                         <constraint firstItem="hUe-fz-Tp6" firstAttribute="leading" secondItem="AK0-IS-6Dx" secondAttribute="leading" id="vk9-SG-EOQ"/>
@@ -296,13 +301,13 @@
                     <rect key="frame" x="163" y="0.0" width="5" height="168"/>
                 </box>
                 <stackView distribution="fillEqually" orientation="vertical" alignment="leading" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gcM-g6-Pkg" userLabel="Margins Stack View">
-                    <rect key="frame" x="174" y="34" width="99" height="126"/>
+                    <rect key="frame" x="174" y="34" width="91" height="126"/>
                     <subviews>
                         <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sxc-4c-aN4">
-                            <rect key="frame" x="0.0" y="104" width="99" height="22"/>
+                            <rect key="frame" x="0.0" y="104" width="91" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KOu-nw-oDW">
-                                    <rect key="frame" x="-2" y="4" width="103" height="14"/>
+                                    <rect key="frame" x="-2" y="4" width="95" height="14"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Content Margins:" id="PcR-Nd-41o">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -320,8 +325,8 @@
                                 <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
-                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pdl-eu-9Qs">
-                            <rect key="frame" x="0.0" y="78" width="99" height="22"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pdl-eu-9Qs">
+                            <rect key="frame" x="0.0" y="78" width="91" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6YD-ZO-THS">
                                     <rect key="frame" x="-2" y="4" width="46" height="14"/>
@@ -331,8 +336,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="p6f-M8-3zo" userLabel="Top Text Field">
-                                    <rect key="frame" x="50" y="2" width="30" height="19"/>
+                                <textField toolTip="How many pixels to ignore off the top edge of an image." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="p6f-M8-3zo" userLabel="Top Text Field">
+                                    <rect key="frame" x="46" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="iYO-6L-TPG"/>
                                     </constraints>
@@ -343,10 +348,11 @@
                                     </textFieldCell>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropTop" id="sQu-fu-B0l"/>
+                                        <outlet property="nextKeyView" destination="zo7-wn-NJx" id="iut-IP-cUA"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fbe-2z-LZf" userLabel="Top Stepper">
-                                    <rect key="frame" x="86" y="0.0" width="15" height="22"/>
+                                    <rect key="frame" x="78" y="0.0" width="15" height="22"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="cEF-Ox-OTo"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropTop" id="fbS-V7-SKZ"/>
@@ -367,8 +373,8 @@
                                 <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
-                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bBm-iH-Y6V">
-                            <rect key="frame" x="0.0" y="52" width="99" height="22"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bBm-iH-Y6V">
+                            <rect key="frame" x="0.0" y="52" width="91" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7mo-5o-blF">
                                     <rect key="frame" x="-2" y="4" width="46" height="14"/>
@@ -378,8 +384,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zo7-wn-NJx" userLabel="Bottom Text Field">
-                                    <rect key="frame" x="50" y="2" width="30" height="19"/>
+                                <textField toolTip="How many pixels to ignore off the bottom edge of an image." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zo7-wn-NJx" userLabel="Bottom Text Field">
+                                    <rect key="frame" x="46" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="G9O-ig-Lea"/>
                                     </constraints>
@@ -390,10 +396,11 @@
                                     </textFieldCell>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropBottom" id="Rjc-2H-DYg"/>
+                                        <outlet property="nextKeyView" destination="pdY-67-ILw" id="cae-YL-gU3"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PIK-cT-5aA" userLabel="Bottom Stepper">
-                                    <rect key="frame" x="86" y="0.0" width="15" height="22"/>
+                                    <rect key="frame" x="78" y="0.0" width="15" height="22"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="vLE-n1-Hvh"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropBottom" id="nFs-PK-2pa"/>
@@ -414,8 +421,8 @@
                                 <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
-                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2eg-xd-wq9">
-                            <rect key="frame" x="0.0" y="26" width="99" height="22"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2eg-xd-wq9">
+                            <rect key="frame" x="0.0" y="26" width="91" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IFT-vM-DeC">
                                     <rect key="frame" x="-2" y="4" width="46" height="14"/>
@@ -425,8 +432,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pdY-67-ILw" userLabel="Left Text Field">
-                                    <rect key="frame" x="50" y="2" width="30" height="19"/>
+                                <textField toolTip="How many pixels to ignore off the left edge of an image." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pdY-67-ILw" userLabel="Left Text Field">
+                                    <rect key="frame" x="46" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="BLt-0k-rDR"/>
                                     </constraints>
@@ -437,10 +444,11 @@
                                     </textFieldCell>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropLeft" id="UjS-KQ-Mke"/>
+                                        <outlet property="nextKeyView" destination="Ir6-bX-CuY" id="Q61-eg-2n0"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yXz-IY-P58" userLabel="Left Stepper">
-                                    <rect key="frame" x="86" y="0.0" width="15" height="22"/>
+                                    <rect key="frame" x="78" y="0.0" width="15" height="22"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="JXp-dc-Qmv"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropLeft" id="Pop-YG-hu7"/>
@@ -461,8 +469,8 @@
                                 <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
-                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DiP-yW-Ku7">
-                            <rect key="frame" x="0.0" y="0.0" width="99" height="22"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DiP-yW-Ku7">
+                            <rect key="frame" x="0.0" y="0.0" width="91" height="22"/>
                             <subviews>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EDE-8q-aHu">
                                     <rect key="frame" x="-2" y="4" width="46" height="14"/>
@@ -472,8 +480,8 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ir6-bX-CuY" userLabel="Right Text Field">
-                                    <rect key="frame" x="50" y="2" width="30" height="19"/>
+                                <textField toolTip="How many pixels to ignore off the right edge of an image." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ir6-bX-CuY" userLabel="Right Text Field">
+                                    <rect key="frame" x="46" y="2" width="30" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="30" id="cJd-Wo-ZTp"/>
                                     </constraints>
@@ -487,7 +495,7 @@
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F3u-c0-kZ4" userLabel="Right Stepper">
-                                    <rect key="frame" x="86" y="0.0" width="15" height="22"/>
+                                    <rect key="frame" x="78" y="0.0" width="15" height="22"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="ieM-a0-yiV"/>
                                     <connections>
                                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.cropRight" id="m2j-gP-D7P"/>
