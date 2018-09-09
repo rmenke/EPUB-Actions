@@ -76,6 +76,18 @@ static NSRegularExpression *expr = NULL;
 
 @end
 
+@implementation NSURL (ExtendedFileAttributeExtension)
+
+- (BOOL)setData:(NSData *)data forAttribute:(NSString *)attribute error:(NSError **)error {
+    if (setxattr(self.fileSystemRepresentation, attribute.UTF8String, data.bytes, data.length, 0, 0) != 0) {
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:self}];
+        return NO;
+    }
+    return YES;
+}
+
+@end
+
 @interface ImagesToEPUBActionTests : XCTestCase
 
 @property (strong, nonatomic) id action;
@@ -88,18 +100,6 @@ static NSRegularExpression *expr = NULL;
     NSFileManager *fileManager;
     NSURL *tmpDirectory;
     NSURL *inDirectory, *outDirectory;
-}
-
-- (BOOL)setRegion:(id)region onURL:(NSURL *)url error:(NSError **)error {
-    NSData *data = [NSPropertyListSerialization dataWithPropertyList:region format:NSPropertyListBinaryFormat_v1_0 options:0 error:error];
-    if (!data) return NO;
-
-    if (setxattr(url.fileSystemRepresentation, EPUB_REGION_XATTR, data.bytes, data.length, 0, 0) != 0) {
-        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey:url}];
-        return NO;
-    }
-
-    return YES;
 }
 
 - (void)setUp {
@@ -149,12 +149,8 @@ static NSRegularExpression *expr = NULL;
         [bundle URLForImageResource:@"image04"]
     ];
 
-    if (![self setRegion:@[@[@20,@20,@200,@200],@[@240,@20,@200,@200],@[@460,@20,@200,@200]] onURL:_images[0] error:&error]) {
-        XCTFail(@"error - %@", error);
-    }
-    if (![self setRegion:@[@[@20,@20,@200,@200],@[@240,@20,@200,@90],@[@240,@130,@200,@90],@[@460,@20,@200,@200]] onURL:_images[1] error:&error]) {
-        XCTFail(@"error - %@", error);
-    }
+    XCTAssert([_images[0] setData:[@"((20,20,200,200),(240,20,200,200),(460,20,200,200))" dataUsingEncoding:NSUTF8StringEncoding] forAttribute:@(EPUB_REGION_XATTR) error:&error], @"%@", error);
+    XCTAssert([_images[1] setData:[@"((20,20,200,200),(240,20,200,90),(240,130,200,90),(460,20,200,200))" dataUsingEncoding:NSUTF8StringEncoding] forAttribute:@(EPUB_REGION_XATTR) error:&error], @"%@", error);
 }
 
 - (void)tearDown {
@@ -244,6 +240,10 @@ static NSRegularExpression *expr = NULL;
     NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:tmpDirectory];
     NSURL *file3 = [NSURL fileURLWithPath:@"file56.txt" relativeToURL:tmpDirectory];
 
+    [fileManager removeItemAtURL:file1 error:NULL];
+    [fileManager removeItemAtURL:file2 error:NULL];
+    [fileManager removeItemAtURL:file3 error:NULL];
+
     @try {
         XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
         XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
@@ -279,6 +279,9 @@ static NSRegularExpression *expr = NULL;
 
     NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
+
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
 
     [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
     [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
@@ -326,6 +329,9 @@ static NSRegularExpression *expr = NULL;
     NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
+
     [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
     [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
 
@@ -370,6 +376,9 @@ static NSRegularExpression *expr = NULL;
 
     NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
+
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
 
     [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
     [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
@@ -420,6 +429,9 @@ static NSRegularExpression *expr = NULL;
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
     NSURL *destinationURL = nil;
+
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
 
     @try {
         [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
@@ -510,6 +522,9 @@ static NSRegularExpression *expr = NULL;
     NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
 
     NSURL *destinationURL = nil;
+
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
 
     @try {
         [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];

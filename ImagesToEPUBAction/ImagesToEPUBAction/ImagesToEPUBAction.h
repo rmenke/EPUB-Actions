@@ -48,7 +48,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
  *
  * @throw NSException if any of the templates are missing or damaged.
  */
-- (NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error;
+- (nullable NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error;
 
 /*!
  * @abstract Partition the image files into a dictionary keyed by
@@ -73,7 +73,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
  *
  * @returns A mapping from chapter directory names to image names.
  */
-- (NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error;
+- (nullable NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error;
 
 /*!
  * @abstract Create a single page from an array of image frames.

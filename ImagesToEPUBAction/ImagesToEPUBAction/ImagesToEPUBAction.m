@@ -98,7 +98,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @implementation NSURL (Regions)
 
-- (NSArray<NSArray<NSNumber *> *> *)regions {
+- (NSArray<NSArray *> *)regions {
     ssize_t size = getxattr(self.fileSystemRepresentation, EPUB_REGION_XATTR, NULL, 0, 0, 0);
     if (size < 0 && errno == ENOATTR) return @[];
 
@@ -216,7 +216,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return document;
 }
 
-- (NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error {
+- (nullable NSURL *)prepareDestinationDirectoryForURL:(NSURL *)url error:(NSError **)error {
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSURL *destinationURL = [fileManager URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:url create:YES error:error];
@@ -240,7 +240,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return destinationURL;
 }
 
-- (NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error {
+- (nullable NSDictionary<NSString *, NSArray<Frame *> *> *)createChaptersFromPaths:(NSArray<NSString *> *)paths error:(NSError **)error {
     const CGFloat contentWidth  = self.pageWidth  - 2 * self.pageMargin;
     const CGFloat contentHeight = self.pageHeight - 2 * self.pageMargin;
 
@@ -334,8 +334,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
             CGAffineTransform pixelToFraction = CGAffineTransformMakeScale(1.0 / w, 1.0 / h);
 
-            for (NSArray<NSNumber *> *region in inputURL.regions) {
-                CGRect r = CGRectMake(region[0].doubleValue, region[1].doubleValue, region[2].doubleValue, region[3].doubleValue);
+            for (NSArray *region in inputURL.regions) {
+                CGRect r = CGRectMake([region[0] doubleValue], [region[1] doubleValue], [region[2] doubleValue], [region[3] doubleValue]);
                 [regions addObject:[NSValue valueWithRect:NSRectFromCGRect(CGRectApplyAffineTransform(r, pixelToFraction))]];
             }
 
