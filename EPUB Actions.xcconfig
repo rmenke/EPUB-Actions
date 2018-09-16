@@ -1,5 +1,5 @@
 //
 // The common version for all actions in this workspace.
 //
-CURRENT_PROJECT_VERSION = 3.0
+CURRENT_PROJECT_VERSION = 3.1
 VERSIONING_SYSTEM = apple-generic
