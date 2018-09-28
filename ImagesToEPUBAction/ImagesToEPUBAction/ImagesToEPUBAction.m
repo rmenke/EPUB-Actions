@@ -593,12 +593,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     NSURL *destinationURL = [self prepareDestinationDirectoryForURL:self.outputURL error:error];
     if (!destinationURL) return nil;
 
-    [progress becomeCurrentWithPendingUnitCount:47];
+    [progress becomeCurrentWithPendingUnitCount:65];
     NSDictionary<NSString *, NSArray<Frame *> *> *chapters = [self createChaptersFromPaths:input error:error];
     if (!chapters) return nil;
     [progress resignCurrent];
 
-    [progress becomeCurrentWithPendingUnitCount:47];
+    [progress becomeCurrentWithPendingUnitCount:30];
     if (![self createPagesForChapters:chapters error:error]) return nil;
     [progress resignCurrent];
 
@@ -608,7 +608,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     NSURL * __autoreleasing resultingItemURL;
 
-    [progress becomeCurrentWithPendingUnitCount:2];
+    [progress becomeCurrentWithPendingUnitCount:1];
     if (![[NSFileManager defaultManager] replaceItemAtURL:self.outputURL withItemAtURL:destinationURL backupItemName:nil options:0 resultingItemURL:&resultingItemURL error:error]) return nil;
     [progress resignCurrent];
 
