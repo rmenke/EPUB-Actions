@@ -694,7 +694,9 @@ namespace region {
         return region;
     }
 
-    std::vector<region_t> detect_regions(const std::vector<polyline::polyline_t> &polylines) {
+    std::vector<region_t> detect_regions(const std::vector<polyline::polyline_t> &polylines, vImagePixelCount width, vImagePixelCount height) {
+        region_t bounds { 0, 0, static_cast<float>(width), static_cast<float>(height) };
+
         std::vector<region_t> regions;
 
         for (const auto &polyline : polylines) {
@@ -709,7 +711,7 @@ namespace region {
                 region.hi = simd::max(region.hi, p);
             }
 
-            regions.push_back(region);
+            regions.push_back(intersect_region(region, bounds));
         }
 
         auto begin = regions.begin();
@@ -889,14 +891,25 @@ CFArrayRef _Nullable detectRegions(const vImage_Buffer *buffer, CFDictionaryRef 
 
         const auto segments = hough::analyzer<uint32_t>(buffer, params).analyze();
         const auto polylines = polyline::link_segments(segments, params.closeGap);
-        const auto regions = region::detect_regions(polylines);
+        const auto regions = region::detect_regions(polylines, buffer->width, buffer->height);
 
         CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, regions.size(), &kCFTypeArrayCallBacks);
 
         for (const auto &region : regions) {
             const auto size = region.hi - region.lo;
 
-            const auto array = cf::array(cf::number(region.x), cf::number(region.y), cf::number(size.x), cf::number(size.y));
+            int32_t x = region.x;
+            int32_t y = region.y;
+            int32_t w = size.x;
+            int32_t h = size.y;
+
+#ifndef NDEBUG
+            if (x < 0 || y < 0 || (x + w) > buffer->width || (y + h) > buffer->height) {
+                throw std::logic_error { "Region not clipped to image bounds" };
+            }
+#endif
+
+            const auto array = cf::array(cf::number(x), cf::number(y), cf::number(w), cf::number(h));
 
             CFArrayAppendValue(result, array.get());
         }
