@@ -96,7 +96,7 @@ NSArray *shuffle(NSArray *array) {
 
     _imageURLs = imageURLs;
 
-    _parameters = @{@"sensitivity":@12, @"maxGap":@3, @"closeGap":@5, @"minSegLen":@25};
+    _parameters = @{@"sensitivity":@12, @"maxGap":@3, @"closeGap":@5, @"minSegLen":@25, @"minRegionSize":@1};
 }
 
 - (void)tearDown {

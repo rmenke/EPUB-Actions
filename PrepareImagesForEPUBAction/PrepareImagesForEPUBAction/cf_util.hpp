@@ -154,8 +154,8 @@ namespace cf {
      * @param number The number to unwrap as a managed pointer.
      * @return The value contained by the CoreFoundation number.
      */
-    template <typename Number> static inline Number get(const managed<CFNumberRef> &number) {
-        return get<Number>(number.get());
+    template <typename Number> static inline Number get(const managed<CFNumberRef> &number, bool allow_lossy = true) {
+        return get<Number>(number.get(), allow_lossy);
     }
 
     /*!

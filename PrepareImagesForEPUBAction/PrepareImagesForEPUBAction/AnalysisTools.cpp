@@ -48,9 +48,10 @@ struct user_parameters {
     const int maxGap;
     const int closeGap;
     const int minSegLen;
+    const int minRegionSize;
 
 #define PARAM(X,...) X(cf::get<std::remove_cv<decltype(X)>::type>(dictionary, CFSTR(#X)) __VA_ARGS__)
-    user_parameters(CFDictionaryRef dictionary) : PARAM(sensitivity), PARAM(maxGap), PARAM(closeGap), PARAM(minSegLen) { }
+    user_parameters(CFDictionaryRef dictionary) : PARAM(sensitivity), PARAM(maxGap), PARAM(closeGap), PARAM(minSegLen), PARAM(minRegionSize) { }
 #undef PARAM
 };
 
@@ -592,8 +593,8 @@ namespace polyline {
         return end;
     }
 
-    std::vector<polyline_t> link_segments(const std::vector<segment_t> &segments, float close_gap) {
-        const float close_gap_squared = close_gap * close_gap;
+    std::vector<polyline_t> link_segments(const std::vector<segment_t> &segments, const user_parameters& param) {
+        const float close_gap_squared = param.closeGap * param.closeGap;
 
         std::vector<polyline_t> result;
 
@@ -694,8 +695,8 @@ namespace region {
         return region;
     }
 
-    std::vector<region_t> detect_regions(const std::vector<polyline::polyline_t> &polylines, vImagePixelCount width, vImagePixelCount height) {
-        region_t bounds { 0, 0, static_cast<float>(width), static_cast<float>(height) };
+    std::vector<region_t> detect_regions(const std::vector<polyline::polyline_t> &polylines, const user_parameters &param, vImagePixelCount width, vImagePixelCount height) {
+        const region_t bounds { 0, 0, static_cast<float>(width), static_cast<float>(height) };
 
         std::vector<region_t> regions;
 
@@ -703,7 +704,7 @@ namespace region {
             auto begin = polyline.begin();
             auto end   = polyline.end();
 
-            simd::float4 region = simd::rint(vector4(*begin, *begin));
+            region_t region = simd::rint(vector4(*begin, *begin));
 
             while (++begin != end) {
                 auto p = simd::rint(*begin);
@@ -714,8 +715,13 @@ namespace region {
             regions.push_back(intersect_region(region, bounds));
         }
 
+        const simd::float2 min_region_size = param.minRegionSize;
+
+        // Remove all regions that have a side with length less than min_region_size pixels.
         auto begin = regions.begin();
-        auto end   = regions.end();
+        auto end   = std::remove_if(begin, regions.end(), [&min_region_size] (const region_t &region) -> bool {
+            return simd::any((region.hi - region.lo) < min_region_size);
+        });
 
         for (auto i = begin; i != end; ++i) {
             auto a = *i;
@@ -852,7 +858,7 @@ CFArrayRef _Nullable detectPolylines(const vImage_Buffer *buffer, CFDictionaryRe
         user_parameters params { parameters };
 
         auto segments = hough::analyzer<uint32_t>(buffer, params).analyze();
-        auto polylines = polyline::link_segments(segments, params.closeGap);
+        auto polylines = polyline::link_segments(segments, params);
 
         CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
 
@@ -887,11 +893,11 @@ CFArrayRef _Nullable detectPolylines(const vImage_Buffer *buffer, CFDictionaryRe
 
 CFArrayRef _Nullable detectRegions(const vImage_Buffer *buffer, CFDictionaryRef parameters, CFErrorRef *error) _NOEXCEPT {
     try {
-        user_parameters params { parameters };
+        const user_parameters params { parameters };
 
         const auto segments = hough::analyzer<uint32_t>(buffer, params).analyze();
-        const auto polylines = polyline::link_segments(segments, params.closeGap);
-        const auto regions = region::detect_regions(polylines, buffer->width, buffer->height);
+        const auto polylines = polyline::link_segments(segments, params);
+        const auto regions = region::detect_regions(polylines, params, buffer->width, buffer->height);
 
         CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, regions.size(), &kCFTypeArrayCallBacks);
 
