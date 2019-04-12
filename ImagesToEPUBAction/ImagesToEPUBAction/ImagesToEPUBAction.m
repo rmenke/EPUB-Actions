@@ -294,8 +294,10 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
             if (![title isEqualToString:pendingChapter]) {
                 title = pendingChapter;
 
-                NSMutableArray<NSString *> *components = [pendingChapter componentsSeparatedByCharactersInSet:NSCharacterSet.URLPathAllowedCharacterSet.invertedSet].mutableCopy;
+                NSMutableArray<NSString *> *components = [pendingChapter componentsSeparatedByCharactersInSet:NSCharacterSet.alphanumericCharacterSet.invertedSet].mutableCopy;
                 [components filterUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.length > 0"]];
+                if ([components count] == 0) components = @[@"untitled"].mutableCopy;
+
                 chapter = [NSString stringWithFormat:@"%02lu.%@", (unsigned long)(++chapterIndex), [components componentsJoinedByString:@"-"].lowercaseString];
 
                 if (![fileManager createDirectoryAtURL:[self.contentsURL URLByAppendingPathComponent:chapter] withIntermediateDirectories:YES attributes:nil error:error]) return nil;

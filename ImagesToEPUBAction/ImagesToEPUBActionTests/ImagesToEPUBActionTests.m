@@ -320,6 +320,55 @@ static NSRegularExpression *expr = NULL;
     }
 }
 
+- (void)testCopyItemsChapteringWithColon {
+    NSError * __autoreleasing error = nil;
+
+    NSString *title1 = @"Alpha: One";
+    NSString *title2 = @"Beta  Two";
+
+    NSURL *ch1 = [NSURL fileURLWithPath:title1 isDirectory:YES relativeToURL:tmpDirectory];
+    NSURL *ch2 = [NSURL fileURLWithPath:title2 isDirectory:YES relativeToURL:tmpDirectory];
+
+    [fileManager removeItemAtURL:ch1 error:NULL];
+    [fileManager removeItemAtURL:ch2 error:NULL];
+
+    [fileManager createDirectoryAtURL:ch1 withIntermediateDirectories:YES attributes:nil error:NULL];
+    [fileManager createDirectoryAtURL:ch2 withIntermediateDirectories:YES attributes:nil error:NULL];
+
+    @try {
+        NSURL *file1 = [NSURL fileURLWithPath:@"img12.png" relativeToURL:ch1];
+        NSURL *file2 = [NSURL fileURLWithPath:@"img34.jpg" relativeToURL:ch1];
+        NSURL *file3 = [NSURL fileURLWithPath:@"img56.jpg" relativeToURL:ch2];
+        NSURL *file4 = [NSURL fileURLWithPath:@"file78.txt" relativeToURL:ch2];
+
+        XCTAssert([fileManager copyItemAtURL:_images[0] toURL:file1 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file2 error:&error], "%@", error);
+        XCTAssert([fileManager copyItemAtURL:_images[1] toURL:file3 error:&error], "%@", error);
+        XCTAssert([@"not an image" writeToURL:file4 atomically:YES encoding:NSASCIIStringEncoding error:&error], "%@", error);
+
+        NSArray<NSString *> *paths = @[file1.path, file2.path, file3.path, file4.path];
+
+        XCTAssert([_action prepareDestinationDirectoryForURL:outDirectory error:&error], @"%@", error);
+
+        NSDictionary<NSString *, NSArray<Frame *> *> *result = [_action createChaptersFromPaths:paths error:&error];
+
+        XCTAssertNotNil(result, @"%@", error);
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects([result.allKeys sortedArrayUsingSelector:@selector(compare:)], (@[@"01.alpha-one", @"02.beta-two"]));
+        XCTAssertEqual(result[@"01.alpha-one"].count, 2);
+        XCTAssertEqualObjects([result[@"01.alpha-one"] valueForKey:@"name"], (@[@"im0001.png", @"im0002.jpeg"]));
+        XCTAssertEqual(result[@"02.beta-two"].count, 1);
+        XCTAssertEqualObjects([result[@"02.beta-two"] valueForKey:@"name"], (@[@"im0001.jpeg"]));
+
+        // Verify a warning was created for the ignored file.
+        XCTAssertPredicate(_messages, @"ANY message CONTAINS 'file78.txt'");
+    }
+    @finally {
+        [fileManager removeItemAtURL:ch1 error:NULL];
+        [fileManager removeItemAtURL:ch2 error:NULL];
+    }
+}
+
 - (void)testCopyItemsCoverImage {
     NSError * __autoreleasing error = nil;
 
