@@ -106,6 +106,15 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
+            BuildableName = "Prepare Images for EPUB.action"
+            BlueprintName = "Prepare Images for EPUB"
+            ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

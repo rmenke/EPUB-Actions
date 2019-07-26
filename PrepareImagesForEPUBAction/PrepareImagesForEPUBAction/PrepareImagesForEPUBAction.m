@@ -9,10 +9,9 @@
 #import "PrepareImagesForEPUBAction.h"
 
 @import AppKit;
+@import ImageAnalysisKit;
 @import CoreImage;
 @import Darwin.POSIX.sys.xattr;
-
-#import "VImageBuffer.h"
 
 #define DEF_DOUBLE_PARAM(X) CGFloat X = [self.parameters[@#X] doubleValue]
 
@@ -49,16 +48,19 @@ NS_ASSUME_NONNULL_BEGIN
 
     if (kernel < 1) {
         self.parameters[@"openKernel"] = @1;
+        [self performSelectorOnMainThread:@selector(parametersUpdated) withObject:nil waitUntilDone:NO];
         [self logMessageWithLevel:AMLogLevelWarn format:@"kernel size of %lu too small; setting to 1", kernel];
         return 1;
     }
     else if (kernel > 9) {
         self.parameters[@"openKernel"] = @9;
+        [self performSelectorOnMainThread:@selector(parametersUpdated) withObject:nil waitUntilDone:NO];
         [self logMessageWithLevel:AMLogLevelWarn format:@"kernel size of %lu too large; setting to 9", kernel];
         return 9;
     }
     else if ((kernel & 1) != 1) {
         self.parameters[@"openKernel"] = @(kernel | 1);
+        [self performSelectorOnMainThread:@selector(parametersUpdated) withObject:nil waitUntilDone:NO];
         [self logMessageWithLevel:AMLogLevelWarn format:@"kernel size of %ld not odd; setting to %ld", kernel, kernel | 1];
         return kernel | 1;
     }
@@ -118,36 +120,24 @@ NS_ASSUME_NONNULL_BEGIN
             continue;
         }
 
-        CIImage *image = [CIImage imageWithContentsOfURL:url];
+        IABuffer *buffer = [[IABuffer alloc] initWithContentsOfURL:url error:error];
+        if (!buffer) return nil;
 
         if (self.ignoreAlpha) {
             [self logMessageWithLevel:AMLogLevelDebug format:@"Flattening image prior to analysis"];
-            CIColor *backgroundColor = [[CIColor alloc] initWithColor:self.backgroundColor];
-            CIImage *background = [CIImage imageWithColor:backgroundColor];
-
-            CGRect extent = image.extent;
-            image = [image imageByCompositingOverImage:background];
-            image = [image imageByCroppingToRect:extent];
+            buffer = [buffer flattenAgainstColor:self.backgroundColor error:error];
+            if (!buffer) return nil;
         }
 
-        CGImageRef cgImage = [[CIContext context] createCGImage:image fromRect:image.extent];
-        VImageBuffer *buffer = [[VImageBuffer alloc] initWithCGImage:cgImage error:error];
-        CGImageRelease(cgImage);
+        CGRect ROI = [self cropRectangle:CGRectMake(0, 0, buffer.width, buffer.height)];
+        NSSize openKernelSize = NSMakeSize(self.openKernelSize, self.openKernelSize);
 
-        CGRect rect = [self cropRectangle:CGRectMake(0, 0, buffer.width, buffer.height)];
-
-        buffer = [buffer extractBorderMaskInRect:rect error:error];
-
-        NSUInteger openKernel = self.openKernelSize;
-
-        if (openKernel > 1) {
-            buffer = [buffer openWithWidth:openKernel height:openKernel error:error];
-        }
+        buffer = [buffer extractBorderMaskWithROI:ROI error:error];
+        buffer = [[buffer erodeWithKernelSize:openKernelSize error:error] dilateWithKernelSize:openKernelSize error:error];
+        buffer = [[buffer dilateWithKernelSize:NSMakeSize(3.0, 3.0) error:error] subtractBuffer:buffer error:error];
         if (!buffer) return nil;
 
-        if (![buffer detectEdgesAndReturnError:error]) return nil;
-
-        NSArray<NSArray<NSNumber *> *> *regions = [buffer detectRegionsWithOptions:self.parameters error:error];
+        NSArray<NSArray<NSNumber *> *> *regions = [buffer extractRegionsWithParameters:self.parameters error:error];
         if (!regions) return nil;
 
         if (![url setRegions:regions error:error]) return nil;

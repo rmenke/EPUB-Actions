@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E109C4B620F667F800FFD8BF /* cf_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E109C4B420F667F800FFD8BF /* cf_util.cpp */; };
+		E12566C222E69A9500112AA9 /* ImageAnalysisKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */; };
+		E12566C822E69E8400112AA9 /* ImageAnalysisKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E14F64C3210E897E0076280D /* image06.png in Resources */ = {isa = PBXBuildFile; fileRef = E14F64C2210E897E0076280D /* image06.png */; };
 		E15AE4EB20D5DCD000A143D6 /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E820D5DCD000A143D6 /* image03.gif */; };
 		E15AE4EC20D5DCD000A143D6 /* image04.png in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E920D5DCD000A143D6 /* image04.png */; };
-		E15AE4F020D5DD7400A143D6 /* VImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */; };
-		E15AE4F220D5E4B700A143D6 /* VImageBufferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E15AE4F120D5E4B700A143D6 /* VImageBufferTests.m */; };
-		E19E535C20D6FB8C001444E3 /* AnalysisTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */; };
 		E1CEAC7520E0A14800F832A9 /* image05.png in Resources */ = {isa = PBXBuildFile; fileRef = E1CEAC7420E0A14800F832A9 /* image05.png */; };
 		E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */; };
 		E1D0DABC20D21C1A00EF7F35 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D0DABA20D21C1A00EF7F35 /* main.xib */; };
@@ -24,6 +22,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E12566BE22E69A8700112AA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E132CC4E22669D420021A732;
+			remoteInfo = ImageAnalysisKit;
+		};
+		E12566C022E69A8700112AA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E132CC5722669D430021A732;
+			remoteInfo = ImageAnalysisKitTests;
+		};
+		E12566C322E69A9D00112AA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E132CC4D22669D420021A732;
+			remoteInfo = ImageAnalysisKit;
+		};
 		E1D0DADE20D220E400EF7F35 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1D0DAAB20D21C1A00EF7F35 /* Project object */;
@@ -33,17 +52,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E12566C622E69E5100112AA9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E12566C822E69E8400112AA9 /* ImageAnalysisKit.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		E109C4B420F667F800FFD8BF /* cf_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cf_util.cpp; sourceTree = "<group>"; };
-		E109C4B520F667F800FFD8BF /* cf_util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cf_util.hpp; sourceTree = "<group>"; };
+		E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ImageAnalysisKit.xcodeproj; path = ImageAnalysisKit/ImageAnalysisKit.xcodeproj; sourceTree = "<group>"; };
 		E14F64C2210E897E0076280D /* image06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image06.png; sourceTree = "<group>"; };
 		E15AE4E820D5DCD000A143D6 /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = image03.gif; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image03.gif; sourceTree = "<group>"; };
 		E15AE4E920D5DCD000A143D6 /* image04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image04.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image04.png; sourceTree = "<group>"; };
-		E15AE4EE20D5DD7400A143D6 /* VImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = VImageBuffer.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VImageBuffer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		E15AE4F120D5E4B700A143D6 /* VImageBufferTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VImageBufferTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		E19E535A20D6FB02001444E3 /* AnalysisTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AnalysisTools.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = AnalysisTools.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		E1CEAC7420E0A14800F832A9 /* image05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image05.png; sourceTree = "<group>"; };
 		E1D0DAB420D21C1A00EF7F35 /* Prepare Images for EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Prepare Images for EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D0DAB720D21C1A00EF7F35 /* PrepareImagesForEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PrepareImagesForEPUBAction.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -63,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E12566C222E69A9500112AA9 /* ImageAnalysisKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,9 +103,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E12566BA22E69A8700112AA9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */,
+				E12566C122E69A8700112AA9 /* ImageAnalysisKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		E1D0DAAA20D21C1A00EF7F35 = {
 			isa = PBXGroup;
 			children = (
+				E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */,
 				E1DD57B620E8BA2C0073005F /* EPUB Actions.xcconfig */,
 				E1D0DAB620D21C1A00EF7F35 /* PrepareImagesForEPUBAction */,
 				E1D0DAD720D2202300EF7F35 /* PrepareImagesForEPUBActionTests */,
@@ -100,12 +137,6 @@
 			children = (
 				E1D0DAB720D21C1A00EF7F35 /* PrepareImagesForEPUBAction.h */,
 				E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */,
-				E15AE4EE20D5DD7400A143D6 /* VImageBuffer.h */,
-				E15AE4EF20D5DD7400A143D6 /* VImageBuffer.m */,
-				E19E535A20D6FB02001444E3 /* AnalysisTools.h */,
-				E19E535B20D6FB8C001444E3 /* AnalysisTools.cpp */,
-				E109C4B520F667F800FFD8BF /* cf_util.hpp */,
-				E109C4B420F667F800FFD8BF /* cf_util.cpp */,
 				E1D0DABA20D21C1A00EF7F35 /* main.xib */,
 				E1D0DABD20D21C1A00EF7F35 /* Info.plist */,
 			);
@@ -116,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				E1D0DAD820D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m */,
-				E15AE4F120D5E4B700A143D6 /* VImageBufferTests.m */,
 				E1D0DAE120D2283700EF7F35 /* image01.png */,
 				E1D0DAE320D2285000EF7F35 /* image02.jpg */,
 				E15AE4E820D5DCD000A143D6 /* image03.gif */,
@@ -135,6 +165,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1D0DAC320D21C1A00EF7F35 /* Build configuration list for PBXNativeTarget "Prepare Images for EPUB" */;
 			buildPhases = (
+				E12566C622E69E5100112AA9 /* CopyFiles */,
 				E1D0DAAF20D21C1A00EF7F35 /* Sources */,
 				E1D0DAB020D21C1A00EF7F35 /* Frameworks */,
 				E1D0DAB120D21C1A00EF7F35 /* Resources */,
@@ -143,6 +174,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E12566C422E69A9D00112AA9 /* PBXTargetDependency */,
 			);
 			name = "Prepare Images for EPUB";
 			productName = PrepareImagesForEPUBAction;
@@ -197,6 +229,12 @@
 			mainGroup = E1D0DAAA20D21C1A00EF7F35;
 			productRefGroup = E1D0DAB520D21C1A00EF7F35 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E12566BA22E69A8700112AA9 /* Products */;
+					ProjectRef = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E1D0DAB320D21C1A00EF7F35 /* Prepare Images for EPUB */,
@@ -204,6 +242,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ImageAnalysisKit.framework;
+			remoteRef = E12566BE22E69A8700112AA9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E12566C122E69A8700112AA9 /* ImageAnalysisKitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ImageAnalysisKitTests.xctest;
+			remoteRef = E12566C022E69A8700112AA9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E1D0DAB120D21C1A00EF7F35 /* Resources */ = {
@@ -252,10 +307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E15AE4F020D5DD7400A143D6 /* VImageBuffer.m in Sources */,
 				E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */,
-				E109C4B620F667F800FFD8BF /* cf_util.cpp in Sources */,
-				E19E535C20D6FB8C001444E3 /* AnalysisTools.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,7 +315,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E15AE4F220D5E4B700A143D6 /* VImageBufferTests.m in Sources */,
 				E1D0DAD920D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +322,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		E12566C422E69A9D00112AA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ImageAnalysisKit;
+			targetProxy = E12566C322E69A9D00112AA9 /* PBXContainerItemProxy */;
+		};
 		E1D0DADF20D220E400EF7F35 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E1D0DAB320D21C1A00EF7F35 /* Prepare Images for EPUB */;
@@ -385,6 +441,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PrepareImagesForEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.PrepareImagesForEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -398,6 +455,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = PrepareImagesForEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.PrepareImagesForEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";

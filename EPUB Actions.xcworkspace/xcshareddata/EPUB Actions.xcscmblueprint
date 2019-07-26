@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "ED42AB9F45BBD1844BFF5A1CFBEE7A8AC75C553C",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "ED42AB9F45BBD1844BFF5A1CFBEE7A8AC75C553C" : 9223372036854775807,
+    "571F3FB9BFA0892DD18B189895BEB046EE0B2D8D" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "6C7DC968-23B3-4634-94E2-871A3987EB63",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "ED42AB9F45BBD1844BFF5A1CFBEE7A8AC75C553C" : "EPUB-Actions\/",
+    "571F3FB9BFA0892DD18B189895BEB046EE0B2D8D" : "EPUB-Actions\/PrepareImagesForEPUBAction\/ImageAnalysisKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "EPUB Actions",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "EPUB Actions.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/rmenke\/ImageAnalysisKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "571F3FB9BFA0892DD18B189895BEB046EE0B2D8D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:rmenke\/EPUB-Actions.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ED42AB9F45BBD1844BFF5A1CFBEE7A8AC75C553C"
+    }
+  ]
+}

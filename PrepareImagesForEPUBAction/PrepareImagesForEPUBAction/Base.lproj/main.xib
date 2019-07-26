@@ -286,7 +286,7 @@
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                     <connections>
-                                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.minSegLen" id="hPS-Ju-5YY"/>
+                                        <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.minSegmentLength" id="Hi7-fY-5eT"/>
                                         <outlet property="formatter" destination="MeX-6A-jfG" id="XKk-ha-Yid"/>
                                         <outlet property="nextKeyView" destination="p6f-M8-3zo" id="jrt-NK-DHa"/>
                                     </connections>

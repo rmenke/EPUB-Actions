@@ -1,0 +1,3 @@
+[submodule "PrepareImagesForEPUBAction/ImageAnalysisKit"]
+	path = PrepareImagesForEPUBAction/ImageAnalysisKit
+	url = https://github.com/rmenke/ImageAnalysisKit.git

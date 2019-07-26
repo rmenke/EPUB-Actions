@@ -41,12 +41,14 @@
 		<integer>3</integer>
 		<key>minRegionSize</key>
 		<integer>50</integer>
-		<key>minSegLen</key>
+		<key>minSegmentLength</key>
 		<integer>15</integer>
 		<key>openKernel</key>
 		<integer>1</integer>
 		<key>sensitivity</key>
 		<integer>12</integer>
+		<key>channelWidth</key>
+		<integer>3</integer>
 	</dict>
 	<key>AMDescription</key>
 	<dict>
