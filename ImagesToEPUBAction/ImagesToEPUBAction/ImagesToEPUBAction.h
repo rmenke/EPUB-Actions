@@ -117,6 +117,13 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
  */
 - (BOOL)writeMetadataFilesAndReturnError:(NSError **)error;
 
+/*!
+ * @abstract Generate a new identifier using a UUID.
+ *
+ * @param sender Ignored.
+ */
+- (IBAction)generateNewPublicationID:(nullable id)sender;
+
 @end
 
 NS_ASSUME_NONNULL_END

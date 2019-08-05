@@ -64,6 +64,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1B4C3BC1F491D1500CDC7C0 /* Build configuration list for PBXNativeTarget "Convert EPUB Folder to Container" */;
 			buildPhases = (
+				E141886022F8BF2F0052F962 /* Update Build Number */,
 				E1B4C3A91F491D1300CDC7C0 /* Sources */,
 				E1B4C3AA1F491D1300CDC7C0 /* Frameworks */,
 				E1B4C3AB1F491D1300CDC7C0 /* Resources */,
@@ -124,6 +125,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		E141886022F8BF2F0052F962 /* Update Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git xcode-tag";
+			showEnvVarsInLog = 0;
+		};
 		E1B4C3AC1F491D1300CDC7C0 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

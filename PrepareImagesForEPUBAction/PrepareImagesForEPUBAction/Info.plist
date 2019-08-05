@@ -24,7 +24,12 @@
 	<key>AMDefaultParameters</key>
 	<dict>
 		<key>backgroundColor</key>
-		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEBAYY=</data>
+		<data>
+		BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAQEBAYY=
+		</data>
+		<key>channelWidth</key>
+		<integer>3</integer>
 		<key>closeGap</key>
 		<integer>5</integer>
 		<key>cropBottom</key>
@@ -47,8 +52,6 @@
 		<integer>1</integer>
 		<key>sensitivity</key>
 		<integer>12</integer>
-		<key>channelWidth</key>
-		<integer>3</integer>
 	</dict>
 	<key>AMDescription</key>
 	<dict>
@@ -111,9 +114,9 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>3.2.3</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>3</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2018 Rob Menke. All rights reserved.</string>
 	<key>NSPrincipalClass</key>

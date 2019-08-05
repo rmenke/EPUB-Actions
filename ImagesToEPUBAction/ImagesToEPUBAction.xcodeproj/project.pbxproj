@@ -163,6 +163,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1FB9AAC1E1DCA0700DEAE0F /* Build configuration list for PBXNativeTarget "Images to EPUB" */;
 			buildPhases = (
+				E141885F22F8BF000052F962 /* Update Build Number */,
 				E1FB9A981E1DCA0600DEAE0F /* Sources */,
 				E1FB9A991E1DCA0600DEAE0F /* Frameworks */,
 				E1FB9A9A1E1DCA0600DEAE0F /* Resources */,
@@ -245,6 +246,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		E141885F22F8BF000052F962 /* Update Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git xcode-tag\n";
+			showEnvVarsInLog = 0;
+		};
 		E1FB9A9B1E1DCA0600DEAE0F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

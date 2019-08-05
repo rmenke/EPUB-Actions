@@ -200,6 +200,12 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return _outputURL;
 }
 
+- (IBAction)generateNewPublicationID:(nullable id)sender {
+    NSString *newID = NSUUID.UUID.UUIDString;
+    [self.parameters setValue:newID forKey:@"publicationID"];
+    [self parametersUpdated];
+}
+
 - (BOOL)copyResource:(NSString *)resource toDirectoryURL:(NSURL *)directoryURL error:(NSError **)error {
     NSURL *url = [self.bundle URLForResource:resource.stringByDeletingPathExtension withExtension:resource.pathExtension];
     NSAssert(url, @"The “%@” resource is missing from the action.", resource);
