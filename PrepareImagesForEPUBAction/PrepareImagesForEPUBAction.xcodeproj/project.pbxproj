@@ -81,7 +81,6 @@
 		E1D0DADA20D2202300EF7F35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E1D0DAE120D2283700EF7F35 /* image01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image01.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image01.png; sourceTree = "<group>"; };
 		E1D0DAE320D2285000EF7F35 /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = image02.jpg; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image02.jpg; sourceTree = "<group>"; };
-		E1DD57B620E8BA2C0073005F /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,7 +115,6 @@
 			isa = PBXGroup;
 			children = (
 				E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */,
-				E1DD57B620E8BA2C0073005F /* EPUB Actions.xcconfig */,
 				E1D0DAB620D21C1A00EF7F35 /* PrepareImagesForEPUBAction */,
 				E1D0DAD720D2202300EF7F35 /* PrepareImagesForEPUBActionTests */,
 				E1D0DAB520D21C1A00EF7F35 /* Products */,
@@ -364,7 +362,6 @@
 /* Begin XCBuildConfiguration section */
 		E1D0DAC120D21C1A00EF7F35 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1DD57B620E8BA2C0073005F /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -412,7 +409,6 @@
 		};
 		E1D0DAC220D21C1A00EF7F35 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1DD57B620E8BA2C0073005F /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

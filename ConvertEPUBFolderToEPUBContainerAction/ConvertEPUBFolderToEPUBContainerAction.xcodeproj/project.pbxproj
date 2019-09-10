@@ -16,7 +16,6 @@
 		E1B4C3B11F491D1400CDC7C0 /* main.command */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.command; sourceTree = "<group>"; };
 		E1B4C3B41F491D1400CDC7C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/main.xib; sourceTree = "<group>"; };
 		E1B4C3B61F491D1400CDC7C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +32,6 @@
 		E1B4C3A41F491D1300CDC7C0 = {
 			isa = PBXGroup;
 			children = (
-				E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */,
 				E1B4C3B01F491D1400CDC7C0 /* ConvertEPUBFolderToEPUBContainerAction */,
 				E1B4C3AF1F491D1300CDC7C0 /* Products */,
 			);
@@ -180,7 +178,6 @@
 /* Begin XCBuildConfiguration section */
 		E1B4C3BA1F491D1500CDC7C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -229,7 +226,6 @@
 		};
 		E1B4C3BB1F491D1500CDC7C0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1B4C3BF1F49251500CDC7C0 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

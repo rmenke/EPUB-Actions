@@ -47,7 +47,6 @@
 		E197427C1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSXMLDocument+OPFDocumentExtensions.h"; sourceTree = "<group>"; };
 		E197427D1EEEF8EF00CE6CF7 /* NSXMLDocument+OPFDocumentExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSXMLDocument+OPFDocumentExtensions.m"; sourceTree = "<group>"; };
 		E197427F1EEEFE5C00CE6CF7 /* OPFDocumentExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPFDocumentExtensionsTests.m; sourceTree = "<group>"; };
-		E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "EPUB Actions.xcconfig"; path = "../EPUB Actions.xcconfig"; sourceTree = "<group>"; };
 		E1EE3C651E4EFB5600184583 /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
 		E1EE3C661E4EFB5600184583 /* contents.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = contents.css; sourceTree = "<group>"; };
 		E1EE3C671E4EFB5600184583 /* nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = nav.xhtml; sourceTree = "<group>"; };
@@ -108,7 +107,6 @@
 		E1FB9A931E1DCA0600DEAE0F = {
 			isa = PBXGroup;
 			children = (
-				E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */,
 				E1FB9A9F1E1DCA0600DEAE0F /* ImagesToEPUBAction */,
 				E12161811E1DFCD3002C6F1F /* ImagesToEPUBActionTests */,
 				E1FB9A9E1E1DCA0600DEAE0F /* Products */,
@@ -342,7 +340,6 @@
 		};
 		E1FB9AAA1E1DCA0700DEAE0F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -390,7 +387,6 @@
 		};
 		E1FB9AAB1E1DCA0700DEAE0F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1A724A91EE7665A000284A2 /* EPUB Actions.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
