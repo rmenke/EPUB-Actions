@@ -129,8 +129,8 @@
 - (void)testAddAuthor {
     NSError * __autoreleasing error;
 
-    [packageDocument addAuthor:@"Bob Smith" role:@"aut"];
-    [packageDocument addAuthor:@"Jane Doe" role:nil];
+    [packageDocument addCreator:@"Bob Smith" fileAs:nil role:@"aut"];
+    [packageDocument addCreator:@"Jane Doe" fileAs:nil role:nil];
 
     NSArray<NSXMLElement *> *elements = [packageDocument objectsForXQuery:Q("/package/metadata/dc:creator") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
@@ -140,7 +140,7 @@
 
     elements = [packageDocument objectsForXQuery:Q("/package/metadata/meta[@refines='#creator-1']") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 2, @"Expected two refinements of first creator.");
+    XCTAssertEqual(elements.count, 1, @"Expected single refinement of first creator.");
 
     elements = [packageDocument objectsForXQuery:Q("/package/metadata/meta[@refines='#creator-1' and @property='role']") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
@@ -150,16 +150,6 @@
     elements = [packageDocument objectsForXQuery:Q("/package/metadata/meta[@refines='#creator-2' and @property='role']") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);
     XCTAssertEqual(elements.count, 0, @"Expected no role of second creator");
-
-    elements = [packageDocument objectsForXQuery:Q("/package/metadata/meta[@refines='#creator-1' and @property='display-seq']") error:&error];
-    XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 1);
-    XCTAssertEqualObjects(elements.firstObject.stringValue, @"1");
-
-    elements = [packageDocument objectsForXQuery:Q("/package/metadata/meta[@refines='#creator-2' and @property='display-seq']") error:&error];
-    XCTAssertNotNil(elements, @"xquery - %@", error);
-    XCTAssertEqual(elements.count, 1);
-    XCTAssertEqualObjects(elements.firstObject.stringValue, @"2");
 }
 
 - (void)testAddManifest {

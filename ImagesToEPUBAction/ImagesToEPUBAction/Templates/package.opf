@@ -6,6 +6,8 @@
         <dc:language>en-US</dc:language>
         <meta property="dcterms:modified"/>
         <meta property="rendition:layout">pre-paginated</meta>
+        <meta property="rendition:orientation">auto</meta>
+        <meta property="rendition:spread">auto</meta>
     </metadata>
     <manifest>
         <item id="contents-css" href="contents.css" media-type="text/css"/>

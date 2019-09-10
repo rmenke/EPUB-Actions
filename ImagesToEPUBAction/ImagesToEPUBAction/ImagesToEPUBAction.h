@@ -25,14 +25,18 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 
 @property (nonatomic, readonly) NSString *outputFolder;
 @property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSString *publicationID;
+@property (nonatomic, readonly) NSDate *publicationDate;
+@property (nonatomic, readonly) NSArray *creators;
 @property (nonatomic, readonly) NSUInteger pageWidth, pageHeight, pageMargin;
 @property (nonatomic, readonly) BOOL disableUpscaling;
 @property (nonatomic, readonly) NSColor *backgroundColor;
-@property (nonatomic, readonly) enum PageLayoutStyle layoutStyle;
+@property (nonatomic, readonly) PageLayoutStyle layoutStyle;
 @property (nonatomic, readonly) BOOL doPanelAnalysis;
 @property (nonatomic, readonly) BOOL firstIsCover;
+@property (nonatomic, readonly) BOOL syntheticSpread;
+
+@property (nonatomic, readonly) NSArray *relators;
 
 @property (nonatomic, readonly) NSURL *outputURL;
 

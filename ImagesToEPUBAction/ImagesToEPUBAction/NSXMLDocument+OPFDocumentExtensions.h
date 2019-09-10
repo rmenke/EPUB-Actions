@@ -14,10 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSString *title;
+@property (nonatomic, nullable) NSDate *date;
 @property (nonatomic, nullable) NSString *subject;
 @property (nonatomic, nullable) NSDate *modified;
+@property (nonatomic) BOOL landscapeOrientation;
+@property (nonatomic) BOOL syntheticSpread;
 
-- (void)addAuthor:(NSString *)author role:(nullable NSString *)role;
+- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role;
 - (NSString *)addManifestItem:(NSString *)item properties:(nullable NSString *)properties;
 - (void)addSpineItem:(NSString *)item properties:(nullable NSString *)properties;
 

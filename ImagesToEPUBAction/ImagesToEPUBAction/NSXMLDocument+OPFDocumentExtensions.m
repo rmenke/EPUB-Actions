@@ -85,6 +85,51 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
     [[self objectsForXQuery:Q("/package/metadata/dc:title")].firstObject setStringValue:title];
 }
 
+- (nullable NSDate *)date {
+    NSString *dateString = [[self objectsForXQuery:Q("/package/metadata/dc:subject")].firstObject stringValue];
+    return dateString ? [DateFormatter dateFromString:dateString] : nil;
+}
+
+- (void)setDate:(nullable NSDate *)date {
+    NSXMLElement *metadataElement = [self objectsForXQuery:Q("/package/metadata")].firstObject;
+    NSAssert(metadataElement, @"Document is missing elements.");
+
+    NSXMLElement *element = [metadataElement elementsForLocalName:@"date" URI:NS_DC].firstObject;
+
+    if (element) {
+        if (date) {
+            element.stringValue = [DateFormatter stringFromDate:date];
+        }
+        else {
+            [element detach];
+        }
+    }
+    else if (date) {
+        element = [NSXMLElement elementWithName:@"dc:date" URI:NS_DC];
+        element.stringValue = [DateFormatter stringFromDate:date];
+
+        [metadataElement addChild:element];
+    }
+}
+
+- (BOOL)landscapeOrientation {
+    return [[[self objectsForXQuery:Q("/package/metadata/meta[@property='rendition:orientation']")].firstObject stringValue] isEqualToString:@"landscape"];
+}
+
+- (void)setLandscapeOrientation:(BOOL)landscapeOrientation {
+    NSString *stringValue = landscapeOrientation ? @"landscape" : @"portrait";
+    [[self objectsForXQuery:Q("/package/metadata/meta[@property='rendition:orientation']")].firstObject setStringValue:stringValue];
+}
+
+- (BOOL)syntheticSpread {
+    return [[[self objectsForXQuery:Q("/package/metadata/meta[@property='rendition:spread']")].firstObject stringValue] isEqualToString:@"auto"];
+}
+
+- (void)setSyntheticSpread:(BOOL)syntheticSpread {
+    NSString *stringValue = syntheticSpread ? @"auto" : @"none";
+    [[self objectsForXQuery:Q("/package/metadata/meta[@property='rendition:spread']")].firstObject setStringValue:stringValue];
+}
+
 - (nullable NSString *)subject {
     return [[self objectsForXQuery:Q("/package/metadata/dc:subject")].firstObject stringValue];
 }
@@ -103,16 +148,11 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
             [element detach];
         }
     }
-    else {
-        if (subject) {
-            NSXMLElement *titleElement = [metadataElement elementsForLocalName:@"title" URI:NS_DC].firstObject;
-            NSAssert(titleElement, @"Document is missing elements.");
+    else if (subject) {
+        element = [NSXMLElement elementWithName:@"dc:subject" URI:NS_DC];
+        element.stringValue = subject;
 
-            element = [NSXMLElement elementWithName:@"dc:subject" URI:NS_DC];
-            element.stringValue = subject;
-
-            [metadataElement insertChild:element atIndex:(titleElement.index + 1)];
-        }
+        [metadataElement addChild:element];
     }
 }
 
@@ -144,7 +184,7 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
     return manifest;
 }
 
-- (void)addAuthor:(NSString *)author role:(nullable NSString *)role {
+- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role {
     NSXMLElement *metadataElement = [self.rootElement elementsForLocalName:@"metadata" URI:NS_OPF].firstObject;
     NSAssert(metadataElement, @"Document is missing elements.");
 
@@ -162,29 +202,24 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
     NSString *identRef = [@"#" stringByAppendingString:ident];
 
     NSXMLElement *element = [NSXMLElement elementWithName:@"dc:creator" URI:NS_DC];
-    element.stringValue = author;
+    element.stringValue = creator;
 
     [element addAttribute:[NSXMLNode attributeWithName:@"id" stringValue:ident]];
 
     [metadataElement addChild:element];
 
-    element = nil;
+    if (fileAs) {
+        NSXMLElement *element = [NSXMLElement elementWithName:@"meta" URI:NS_OPF];
+        element.stringValue = fileAs;
 
-    for (NSUInteger displaySeq = 1; !element; ++displaySeq) {
-        NSNumber *result = [metadataElement objectsForXQuery:Q("count(meta[@property='display-seq' and text()=$seq])") constants:@{@"seq":@(displaySeq)}].firstObject;
-        if (result.unsignedIntegerValue == 0) {
-            element = [NSXMLElement elementWithName:@"meta" URI:NS_OPF];
-            element.stringValue = [NSString stringWithFormat:@"%lu", (unsigned long)(displaySeq)];
+        [element addAttribute:[NSXMLNode attributeWithName:@"refines" stringValue:identRef]];
+        [element addAttribute:[NSXMLNode attributeWithName:@"property" stringValue:@"file-as"]];
 
-            [element addAttribute:[NSXMLNode attributeWithName:@"refines" stringValue:identRef]];
-            [element addAttribute:[NSXMLNode attributeWithName:@"property" stringValue:@"display-seq"]];
-        }
+        [metadataElement addChild:element];
     }
 
-    [metadataElement addChild:element];
-
     if (role) {
-        element = [NSXMLElement elementWithName:@"meta" URI:NS_OPF];
+        NSXMLElement *element = [NSXMLElement elementWithName:@"meta" URI:NS_OPF];
         element.stringValue = role;
 
         [element addAttribute:[NSXMLNode attributeWithName:@"refines" stringValue:identRef]];

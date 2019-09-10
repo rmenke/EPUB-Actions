@@ -23,13 +23,13 @@
 	<string>AMCategoryUtilities</string>
 	<key>AMDefaultParameters</key>
 	<dict>
-		<key>authors</key>
-		<string></string>
 		<key>backgroundColor</key>
 		<data>
 		BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
 		AWMBhARmZmZmAQEBAYY=
 		</data>
+		<key>creators</key>
+		<array/>
 		<key>disableUpscaling</key>
 		<false/>
 		<key>firstIsCover</key>
@@ -44,10 +44,8 @@
 		<integer>0</integer>
 		<key>pageWidth</key>
 		<integer>768</integer>
-		<key>publicationID</key>
-		<string></string>
-		<key>title</key>
-		<string>Untitled</string>
+		<key>syntheticSpread</key>
+		<true/>
 	</dict>
 	<key>AMDescription</key>
 	<dict>
@@ -108,9 +106,9 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.2.5</string>
+	<string>3.2.6</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>49</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2017 Rob Menke. All rights reserved.</string>
 	<key>NSPrincipalClass</key>

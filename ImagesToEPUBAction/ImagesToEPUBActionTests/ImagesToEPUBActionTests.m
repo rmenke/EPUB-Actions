@@ -643,7 +643,8 @@ static NSRegularExpression *expr = NULL;
 }
 
 - (void)testAddMetadata {
-    [_action parameters][@"authors"] = @"Bob  Smith (aut) ;; ; Jack Brown  (ill);Bill Jones ";
+    [_action parameters][@"creators"] = @[@{@"displayName":@"Bob Smith", @"role":@"aut"}, @{@"displayName":@"Jack Brown", @"role":@"ill"}, @{@"displayName":@"Bill Jones"}];
+    [_action parameters][@"publicationID"] = @"urn:uuid:2A7F7867-213A-4847-BAC7-E622012A5C47";
 
     NSError * __autoreleasing error;
 
@@ -670,7 +671,7 @@ static NSRegularExpression *expr = NULL;
     NSUInteger itemsWithMediaType = values[1].unsignedIntegerValue;
     XCTAssertEqual(itemsInManifest, itemsWithMediaType, @"items in manifest are missing the media-type attribute");
 
-    elements = [package objectsForXQuery:@"for $creator in /package/metadata/*:creator let $display-seq := number(/package/metadata/meta[@refines = concat('#', $creator/@id) and @property = 'display-seq']) order by $display-seq return $creator" error:&error];
+    elements = [package objectsForXQuery:@"/package/metadata/*:creator" error:&error];
     XCTAssertNotNil(elements, @"%@", error);
 
     XCTAssertEqualObjects(([elements valueForKey:@"stringValue"]), (@[@"Bob Smith", @"Jack Brown", @"Bill Jones"]));
@@ -834,7 +835,7 @@ static NSRegularExpression *expr = NULL;
 
     parameters[@"outputFolder"] = outDirectory.URLByDeletingLastPathComponent.path;
     parameters[@"title"] = outDirectory.lastPathComponent;
-    parameters[@"authors"] = @"Anonymous";
+    parameters[@"creators"] = @[@{@"displayName":@"Anonymous", @"role":@"aut"}];
     parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
     parameters[@"doPanelAnalysis"] = @NO;
     parameters[@"firstIsCover"] = @NO;

@@ -16,8 +16,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSString * const AMFractionCompletedBinding = @"fractionCompleted";
-
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
     static NSSet<NSString *> *imageTypes;
 
@@ -51,6 +49,8 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     return [extensions[typeIdentifier] containsObject:extension];
 }
+
+static NSArray *relators = nil;
 
 @implementation NSColor (WebColorExtension)
 
@@ -131,8 +131,18 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 @implementation ImagesToEPUBAction
 
-- (void)dealloc {
-    [self unbind:AMFractionCompletedBinding];
++ (void)load {
+    NSError * __autoreleasing error;
+
+    NSBundle *bundle = [NSBundle bundleForClass:self];
+    NSURL *plistURL = [bundle URLForResource:@"MARC" withExtension:@"plist"];
+    NSAssert(plistURL, @"“MARC.plist” not found.");
+
+    NSData *data = [NSData dataWithContentsOfURL:plistURL options:NSDataReadingMappedIfSafe error:&error];
+    NSAssert(data, @"%@", error.localizedDescription);
+
+    relators = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+    NSAssert(relators, @"%@", error.localizedDescription);
 }
 
 - (NSString *)outputFolder {
@@ -148,17 +158,19 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return title;
 }
 
-- (NSString *)authors {
-    return self.parameters[@"authors"];
-}
-
 - (NSString *)publicationID {
     NSString *publicationID = self.parameters[@"publicationID"];
-    if (publicationID.length == 0) {
-        self.parameters[@"publicationID"] = publicationID = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
-        [self logMessageWithLevel:AMLogLevelWarn format:@"Publication ID unset; setting to '%@'", publicationID];
-    }
-    return publicationID;
+    return publicationID ? publicationID : @"";
+}
+
+- (NSDate *)publicationDate {
+    NSDate *publicationDate = self.parameters[@"publicationDate"];
+    return publicationDate ? publicationDate : [NSDate date];
+}
+
+- (NSArray *)creators {
+    NSArray *creators = self.parameters[@"creators"];
+    return creators ? creators : @[];
 }
 
 - (NSUInteger)pageWidth {
@@ -188,6 +200,14 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
 - (BOOL)firstIsCover {
     return [self.parameters[@"firstIsCover"] boolValue];
+}
+
+- (BOOL)syntheticSpread {
+    return [self.parameters[@"syntheticSpread"] boolValue];
+}
+
+- (NSArray *)relators {
+    return relators;
 }
 
 - (NSURL *)outputURL {
@@ -505,8 +525,6 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (BOOL)createPagesForChapters:(NSDictionary<NSString *, NSArray<Frame *> *> *)chapters error:(NSError **)error {
     const CGFloat contentHeight = self.pageHeight - 2 * self.pageMargin;
 
-    NSAssert(contentHeight > 0, @"Content height incorrect");
-
     NSUInteger count = [[chapters.allValues valueForKeyPath:@"@unionOfArrays.self"] count];
 
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:count];
@@ -548,31 +566,18 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 
     packageDocument.identifier = self.publicationID;
     packageDocument.title = self.title;
+    packageDocument.date = self.publicationDate;
     packageDocument.subject = @"Comic books";
     packageDocument.modified = [NSDate date];
+    packageDocument.landscapeOrientation = self.pageWidth > self.pageHeight;
+    packageDocument.syntheticSpread = self.syntheticSpread;
 
-    for (NSString *component in [self.authors componentsSeparatedByString:@";"]) {
-        NSMutableArray<NSString *> *components = [component componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].mutableCopy;
+    for (id creator in self.creators) {
+        NSString *displayName = [creator valueForKey:@"displayName"];
+        NSString *fileAsName = [creator valueForKey:@"fileAsName"];
+        NSString *role = [creator valueForKey:@"role"];
 
-        for (NSUInteger index = 0; index < components.count; ++index) {
-            if (components[index].length == 0) {
-                [components removeObjectAtIndex:(index--)];
-            }
-        }
-
-        if (components.count == 0) continue;
-
-        NSString *role = components.lastObject;
-
-        if ([role hasPrefix:@"("] && [role hasSuffix:@")"]) {
-            role = [role substringWithRange:NSMakeRange(1, role.length - 2)];
-            [components removeLastObject];
-        }
-        else {
-            role = nil;
-        }
-
-        [packageDocument addAuthor:[components componentsJoinedByString:@" "] role:role];
+        [packageDocument addCreator:displayName fileAs:fileAsName role:role];
     }
 
     ++progress.completedUnitCount;
@@ -593,41 +598,54 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     if (!input || input.count == 0) return @[];
 
+    if (self.pageHeight <= 2 * self.pageMargin) {
+        @throw [NSException exceptionWithName:NSGenericException reason:@"Content height is too small." userInfo:nil];
+    }
+    if (self.pageWidth <= 2 * self.pageMargin) {
+        @throw [NSException exceptionWithName:NSGenericException reason:@"Content width is too small." userInfo:nil];
+    }
+    if (self.publicationID.length == 0) {
+        @throw [NSException exceptionWithName:NSGenericException reason:@"Publication ID is required." userInfo:nil];
+    }
+
     self.outputURL = nil;
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
-    [self bind:AMFractionCompletedBinding toObject:progress withKeyPath:@"fractionCompleted" options:nil];
+    [progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionInitial context:NULL];
 
     NSURL *destinationURL = [self prepareDestinationDirectoryForURL:self.outputURL error:error];
+
     if (!destinationURL) return nil;
 
     [progress becomeCurrentWithPendingUnitCount:65];
     NSDictionary<NSString *, NSArray<Frame *> *> *chapters = [self createChaptersFromPaths:input error:error];
-    if (!chapters) return nil;
     [progress resignCurrent];
+
+    if (!chapters) return nil;
 
     [progress becomeCurrentWithPendingUnitCount:30];
-    if (![self createPagesForChapters:chapters error:error]) return nil;
+    BOOL success = [self createPagesForChapters:chapters error:error];
     [progress resignCurrent];
 
+    if (!success) return nil;
+
     [progress becomeCurrentWithPendingUnitCount:4];
-    if (![self writeMetadataFilesAndReturnError:error]) return nil;
+    success = [self writeMetadataFilesAndReturnError:error];
     [progress resignCurrent];
+
+    if (!success) return nil;
 
     NSURL * __autoreleasing resultingItemURL;
 
     [progress becomeCurrentWithPendingUnitCount:1];
-    if (![[NSFileManager defaultManager] replaceItemAtURL:self.outputURL withItemAtURL:destinationURL backupItemName:nil options:0 resultingItemURL:&resultingItemURL error:error]) return nil;
+    success = [[NSFileManager defaultManager] replaceItemAtURL:self.outputURL withItemAtURL:destinationURL backupItemName:nil options:0 resultingItemURL:&resultingItemURL error:error];
     [progress resignCurrent];
 
-    return @[resultingItemURL.path];
+    return success ? @[resultingItemURL.path] : nil;
 }
 
-- (CGFloat)fractionCompleted {
-    return self.progressValue;
-}
-
-- (void)setFractionCompleted:(CGFloat)fractionCompleted {
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey,id> *)change context:(nullable void *)context {
+    const double fractionCompleted = [object fractionCompleted];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressValue = fractionCompleted;
     });
