@@ -23,68 +23,24 @@
 	<string>AMCategoryUtilities</string>
 	<key>AMDefaultParameters</key>
 	<dict>
-		<key>backgroundColor</key>
-		<data>
-		BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
-		AWMBhARmZmZmAQEBAYY=
-		</data>
-		<key>channelWidth</key>
-		<integer>3</integer>
-		<key>closeGap</key>
-		<integer>5</integer>
-		<key>cropBottom</key>
-		<integer>0</integer>
-		<key>cropLeft</key>
-		<integer>0</integer>
-		<key>cropRight</key>
-		<integer>0</integer>
-		<key>cropTop</key>
-		<integer>0</integer>
-		<key>ignoreAlpha</key>
-		<false/>
-		<key>maxGap</key>
-		<integer>3</integer>
-		<key>minRegionSize</key>
-		<integer>50</integer>
-		<key>minSegmentLength</key>
-		<integer>15</integer>
-		<key>openKernel</key>
-		<integer>1</integer>
-		<key>sensitivity</key>
-		<integer>12</integer>
+		<key>creators</key>
+		<array/>
+		<key>outputFolder</key>
+		<string>~/Desktop</string>
 	</dict>
 	<key>AMDescription</key>
 	<dict>
-		<key>AMDInput</key>
-		<string>Image Files</string>
-		<key>AMDNote</key>
-		<string>This action adds extended attributes to the files, which does not change their content.</string>
 		<key>AMDRelatedActions</key>
-		<string>com.the-wabe.ImagesToEPUBAction</string>
-		<key>AMDResult</key>
-		<string>Image Files</string>
+		<string>com.the-wabe.ConvertEPUBFolderToEPUBContainerAction</string>
 		<key>AMDSummary</key>
-		<string>Automatically add metadata to files to aid in laying out EPUBs.</string>
+		<string>Bundle a set of XHTML and associated files into an EPUB document.</string>
 		<key>AMDWebsite</key>
 		<string>http://www.the-wabe.com/epub-automator/</string>
 	</dict>
 	<key>AMKeywords</key>
-	<array>
-		<string>File</string>
-		<string>Create</string>
-		<string>Make</string>
-		<string>iBooks</string>
-		<string>EPUB</string>
-		<string>Comic</string>
-		<string>Book</string>
-		<string>Images</string>
-		<string>JPEG</string>
-		<string>PNG</string>
-		<string>GIF</string>
-		<string>TIFF</string>
-	</array>
+	<array/>
 	<key>AMName</key>
-	<string>Prepare Images for EPUB</string>
+	<string>Bundle XHTML as EPUB</string>
 	<key>AMProvides</key>
 	<dict>
 		<key>Container</key>
@@ -116,10 +72,10 @@
 	<key>CFBundleShortVersionString</key>
 	<string>3.4</string>
 	<key>CFBundleVersion</key>
-	<string>14</string>
+	<string>58</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2018 Rob Menke. All rights reserved.</string>
+	<string>Copyright © 2019 Rob Menke. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
-	<string>PrepareImagesForEPUBAction</string>
+	<string>CreateEPUBAction</string>
 </dict>
 </plist>

@@ -14,24 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-               BuildableName = "Prepare Images for EPUB.action"
-               BlueprintName = "Prepare Images for EPUB"
-               ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D0DAD520D2202300EF7F35"
-               BuildableName = "Prepare Images for EPUB Tests.xctest"
-               BlueprintName = "Prepare Images for EPUB Tests"
-               ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
+               BlueprintIdentifier = "E16543D5232AC58000D837F0"
+               BuildableName = "Bundle XHTML as EPUB.action"
+               BlueprintName = "Bundle XHTML as EPUB"
+               ReferencedContainer = "container:CreateEPUBAction.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -40,29 +26,9 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D0DAD520D2202300EF7F35"
-               BuildableName = "Prepare Images for EPUB Tests.xctest"
-               BlueprintName = "Prepare Images for EPUB Tests"
-               ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-            BuildableName = "Prepare Images for EPUB.action"
-            BlueprintName = "Prepare Images for EPUB"
-            ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -85,10 +51,10 @@
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-                     BuildableName = "Prepare Images for EPUB.action"
-                     BlueprintName = "Prepare Images for EPUB"
-                     ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
+                     BlueprintIdentifier = "E16543D5232AC58000D837F0"
+                     BuildableName = "Bundle XHTML as EPUB.action"
+                     BlueprintName = "Bundle XHTML as EPUB"
+                     ReferencedContainer = "container:CreateEPUBAction.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
             </ActionContent>
@@ -101,10 +67,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-            BuildableName = "Prepare Images for EPUB.action"
-            BlueprintName = "Prepare Images for EPUB"
-            ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
+            BlueprintIdentifier = "E16543D5232AC58000D837F0"
+            BuildableName = "Bundle XHTML as EPUB.action"
+            BlueprintName = "Bundle XHTML as EPUB"
+            ReferencedContainer = "container:CreateEPUBAction.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -119,10 +85,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E1D0DAB320D21C1A00EF7F35"
-            BuildableName = "Prepare Images for EPUB.action"
-            BlueprintName = "Prepare Images for EPUB"
-            ReferencedContainer = "container:PrepareImagesForEPUBAction.xcodeproj">
+            BlueprintIdentifier = "E16543D5232AC58000D837F0"
+            BuildableName = "Bundle XHTML as EPUB.action"
+            BlueprintName = "Bundle XHTML as EPUB"
+            ReferencedContainer = "container:CreateEPUBAction.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

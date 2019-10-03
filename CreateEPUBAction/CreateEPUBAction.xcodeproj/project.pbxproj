@@ -7,19 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1B4C3B21F491D1400CDC7C0 /* main.command in Resources */ = {isa = PBXBuildFile; fileRef = E1B4C3B11F491D1400CDC7C0 /* main.command */; };
-		E1B4C3B51F491D1400CDC7C0 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1B4C3B31F491D1400CDC7C0 /* main.xib */; };
+		E12DDADE232AD1BA00A742E5 /* MARC.plist in Resources */ = {isa = PBXBuildFile; fileRef = E12DDADD232AD1BA00A742E5 /* MARC.plist */; };
+		E162001D23314D46005FF8AD /* container.xml in Resources */ = {isa = PBXBuildFile; fileRef = E162001A23314D45005FF8AD /* container.xml */; };
+		E162001E23314D46005FF8AD /* nav.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E162001B23314D45005FF8AD /* nav.xhtml */; };
+		E162001F23314D46005FF8AD /* package.opf in Resources */ = {isa = PBXBuildFile; fileRef = E162001C23314D45005FF8AD /* package.opf */; };
+		E16543DB232AC58000D837F0 /* CreateEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E16543DA232AC58000D837F0 /* CreateEPUBAction.m */; };
+		E16543DE232AC58000D837F0 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E16543DC232AC58000D837F0 /* main.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Convert EPUB Folder to Container.action"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1B4C3B11F491D1400CDC7C0 /* main.command */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.command; sourceTree = "<group>"; };
-		E1B4C3B41F491D1400CDC7C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/main.xib; sourceTree = "<group>"; };
-		E1B4C3B61F491D1400CDC7C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E12DDADD232AD1BA00A742E5 /* MARC.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MARC.plist; path = ../MARC.plist; sourceTree = SOURCE_ROOT; };
+		E162001A23314D45005FF8AD /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
+		E162001B23314D45005FF8AD /* nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = nav.xhtml; sourceTree = "<group>"; };
+		E162001C23314D45005FF8AD /* package.opf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = package.opf; sourceTree = "<group>"; };
+		E16543D6232AC58000D837F0 /* Bundle XHTML as EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bundle XHTML as EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E16543D9232AC58000D837F0 /* CreateEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateEPUBAction.h; sourceTree = "<group>"; };
+		E16543DA232AC58000D837F0 /* CreateEPUBAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateEPUBAction.m; sourceTree = "<group>"; };
+		E16543DD232AC58000D837F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/main.xib; sourceTree = "<group>"; };
+		E16543DF232AC58000D837F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E1B4C3AA1F491D1300CDC7C0 /* Frameworks */ = {
+		E16543D2232AC58000D837F0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,70 +38,83 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E1B4C3A41F491D1300CDC7C0 = {
+		E162001923314D02005FF8AD /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				E1B4C3B01F491D1400CDC7C0 /* ConvertEPUBFolderToEPUBContainerAction */,
-				E1B4C3AF1F491D1300CDC7C0 /* Products */,
+				E162001A23314D45005FF8AD /* container.xml */,
+				E162001B23314D45005FF8AD /* nav.xhtml */,
+				E162001C23314D45005FF8AD /* package.opf */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		E16543CC232AC58000D837F0 = {
+			isa = PBXGroup;
+			children = (
+				E16543D8232AC58000D837F0 /* CreateEPUBAction */,
+				E16543D7232AC58000D837F0 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		E1B4C3AF1F491D1300CDC7C0 /* Products */ = {
+		E16543D7232AC58000D837F0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */,
+				E16543D6232AC58000D837F0 /* Bundle XHTML as EPUB.action */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E1B4C3B01F491D1400CDC7C0 /* ConvertEPUBFolderToEPUBContainerAction */ = {
+		E16543D8232AC58000D837F0 /* CreateEPUBAction */ = {
 			isa = PBXGroup;
 			children = (
-				E1B4C3B11F491D1400CDC7C0 /* main.command */,
-				E1B4C3B31F491D1400CDC7C0 /* main.xib */,
-				E1B4C3B61F491D1400CDC7C0 /* Info.plist */,
+				E16543D9232AC58000D837F0 /* CreateEPUBAction.h */,
+				E16543DA232AC58000D837F0 /* CreateEPUBAction.m */,
+				E16543DC232AC58000D837F0 /* main.xib */,
+				E16543DF232AC58000D837F0 /* Info.plist */,
+				E12DDADD232AD1BA00A742E5 /* MARC.plist */,
+				E162001923314D02005FF8AD /* Templates */,
 			);
-			path = ConvertEPUBFolderToEPUBContainerAction;
+			path = CreateEPUBAction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E1B4C3AD1F491D1300CDC7C0 /* Convert EPUB Folder to Container */ = {
+		E16543D5232AC58000D837F0 /* Bundle XHTML as EPUB */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E1B4C3BC1F491D1500CDC7C0 /* Build configuration list for PBXNativeTarget "Convert EPUB Folder to Container" */;
+			buildConfigurationList = E16543E5232AC58000D837F0 /* Build configuration list for PBXNativeTarget "Bundle XHTML as EPUB" */;
 			buildPhases = (
-				E141886022F8BF2F0052F962 /* Update Build Number */,
-				E1B4C3A91F491D1300CDC7C0 /* Sources */,
-				E1B4C3AA1F491D1300CDC7C0 /* Frameworks */,
-				E1B4C3AB1F491D1300CDC7C0 /* Resources */,
-				E1B4C3AC1F491D1300CDC7C0 /* Check for Automator Errors */,
+				E198AAB5232ACA9600166474 /* Update Build Number */,
+				E16543D1232AC58000D837F0 /* Sources */,
+				E16543D2232AC58000D837F0 /* Frameworks */,
+				E16543D3232AC58000D837F0 /* Resources */,
+				E16543D4232AC58000D837F0 /* Check for Automator Errors */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Convert EPUB Folder to Container";
-			productName = ConvertEPUBFolderToEPUBContainerAction;
-			productReference = E1B4C3AE1F491D1300CDC7C0 /* Convert EPUB Folder to Container.action */;
+			name = "Bundle XHTML as EPUB";
+			productName = CreateEPUBAction;
+			productReference = E16543D6232AC58000D837F0 /* Bundle XHTML as EPUB.action */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		E1B4C3A51F491D1300CDC7C0 /* Project object */ = {
+		E16543CD232AC58000D837F0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Rob Menke";
 				TargetAttributes = {
-					E1B4C3AD1F491D1300CDC7C0 = {
+					E16543D5232AC58000D837F0 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = E1B4C3A81F491D1300CDC7C0 /* Build configuration list for PBXProject "ConvertEPUBFolderToEPUBContainerAction" */;
+			buildConfigurationList = E16543D0232AC58000D837F0 /* Build configuration list for PBXProject "CreateEPUBAction" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -100,45 +122,33 @@
 				en,
 				Base,
 			);
-			mainGroup = E1B4C3A41F491D1300CDC7C0;
-			productRefGroup = E1B4C3AF1F491D1300CDC7C0 /* Products */;
+			mainGroup = E16543CC232AC58000D837F0;
+			productRefGroup = E16543D7232AC58000D837F0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E1B4C3AD1F491D1300CDC7C0 /* Convert EPUB Folder to Container */,
+				E16543D5232AC58000D837F0 /* Bundle XHTML as EPUB */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		E1B4C3AB1F491D1300CDC7C0 /* Resources */ = {
+		E16543D3232AC58000D837F0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1B4C3B51F491D1400CDC7C0 /* main.xib in Resources */,
-				E1B4C3B21F491D1400CDC7C0 /* main.command in Resources */,
+				E16543DE232AC58000D837F0 /* main.xib in Resources */,
+				E162001E23314D46005FF8AD /* nav.xhtml in Resources */,
+				E162001D23314D46005FF8AD /* container.xml in Resources */,
+				E162001F23314D46005FF8AD /* package.opf in Resources */,
+				E12DDADE232AD1BA00A742E5 /* MARC.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E141886022F8BF2F0052F962 /* Update Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Update Build Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "git xcode-tag";
-			showEnvVarsInLog = 0;
-		};
-		E1B4C3AC1F491D1300CDC7C0 /* Check for Automator Errors */ = {
+		E16543D4232AC58000D837F0 /* Check for Automator Errors */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -153,23 +163,39 @@
 			shellScript = "amlint \"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}\"";
 			showEnvVarsInLog = 0;
 		};
+		E198AAB5232ACA9600166474 /* Update Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git xcode-tag";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		E1B4C3A91F491D1300CDC7C0 /* Sources */ = {
+		E16543D1232AC58000D837F0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E16543DB232AC58000D837F0 /* CreateEPUBAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		E1B4C3B31F491D1400CDC7C0 /* main.xib */ = {
+		E16543DC232AC58000D837F0 /* main.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				E1B4C3B41F491D1400CDC7C0 /* Base */,
+				E16543DD232AC58000D837F0 /* Base */,
 			);
 			name = main.xib;
 			sourceTree = "<group>";
@@ -177,7 +203,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		E1B4C3BA1F491D1500CDC7C0 /* Debug */ = {
+		E16543E3232AC58000D837F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -221,11 +247,10 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
-		E1B4C3BB1F491D1500CDC7C0 /* Release */ = {
+		E16543E4232AC58000D837F0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -262,31 +287,30 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
-				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
-		E1B4C3BD1F491D1500CDC7C0 /* Debug */ = {
+		E16543E6232AC58000D837F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ConvertEPUBFolderToEPUBContainerAction/Info.plist;
+				INFOPLIST_FILE = CreateEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ConvertEPUBFolderToEPUBContainerAction";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.CreateEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = action;
 			};
 			name = Debug;
 		};
-		E1B4C3BE1F491D1500CDC7C0 /* Release */ = {
+		E16543E7232AC58000D837F0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ConvertEPUBFolderToEPUBContainerAction/Info.plist;
+				INFOPLIST_FILE = CreateEPUBAction/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Automator";
 				OTHER_OSAFLAGS = "-x -t 0 -c 0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.ConvertEPUBFolderToEPUBContainerAction";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.the-wabe.CreateEPUBAction";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = action;
 			};
@@ -295,25 +319,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E1B4C3A81F491D1300CDC7C0 /* Build configuration list for PBXProject "ConvertEPUBFolderToEPUBContainerAction" */ = {
+		E16543D0232AC58000D837F0 /* Build configuration list for PBXProject "CreateEPUBAction" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E1B4C3BA1F491D1500CDC7C0 /* Debug */,
-				E1B4C3BB1F491D1500CDC7C0 /* Release */,
+				E16543E3232AC58000D837F0 /* Debug */,
+				E16543E4232AC58000D837F0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E1B4C3BC1F491D1500CDC7C0 /* Build configuration list for PBXNativeTarget "Convert EPUB Folder to Container" */ = {
+		E16543E5232AC58000D837F0 /* Build configuration list for PBXNativeTarget "Bundle XHTML as EPUB" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E1B4C3BD1F491D1500CDC7C0 /* Debug */,
-				E1B4C3BE1F491D1500CDC7C0 /* Release */,
+				E16543E6232AC58000D837F0 /* Debug */,
+				E16543E7232AC58000D837F0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = E1B4C3A51F491D1300CDC7C0 /* Project object */;
+	rootObject = E16543CD232AC58000D837F0 /* Project object */;
 }

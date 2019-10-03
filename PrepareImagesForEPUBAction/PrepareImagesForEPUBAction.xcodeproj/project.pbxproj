@@ -168,7 +168,7 @@
 				E1D0DAAF20D21C1A00EF7F35 /* Sources */,
 				E1D0DAB020D21C1A00EF7F35 /* Frameworks */,
 				E1D0DAB120D21C1A00EF7F35 /* Resources */,
-				E1D0DAB220D21C1A00EF7F35 /* ShellScript */,
+				E1D0DAB220D21C1A00EF7F35 /* Check for Automator Errors */,
 			);
 			buildRules = (
 			);
@@ -300,13 +300,14 @@
 			shellScript = "git xcode-tag";
 			showEnvVarsInLog = 0;
 		};
-		E1D0DAB220D21C1A00EF7F35 /* ShellScript */ = {
+		E1D0DAB220D21C1A00EF7F35 /* Check for Automator Errors */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Check for Automator Errors";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

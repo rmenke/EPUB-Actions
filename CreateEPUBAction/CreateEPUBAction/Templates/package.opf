@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="yes"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="pub-id" prefix="rendition: http://www.idpf.org/vocab/rendition/# ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+        <dc:identifier id="pub-id"/>
+        <dc:title id="main-title"/>
+        <dc:date id="publication-date"/>
+        <dc:language>en-US</dc:language>
+        <meta property="dcterms:modified"/>
+        <meta property="ibooks:specified-fonts">true</meta>
+    </metadata>
+    <manifest>
+        <item id="nav" href="nav.xhtml" properties="nav" media-type="application/xhtml+xml"/>
+    </manifest>
+    <spine>
+        <itemref idref="nav"/>
+    </spine>
+</package>

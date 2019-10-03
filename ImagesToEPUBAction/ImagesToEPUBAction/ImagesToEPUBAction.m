@@ -50,7 +50,7 @@ static inline BOOL isExtensionCorrectForType(NSString *extension, NSString *type
     return [extensions[typeIdentifier] containsObject:extension];
 }
 
-static NSArray *relators = nil;
+static id relators = nil;
 
 @implementation NSColor (WebColorExtension)
 
@@ -206,7 +206,7 @@ static NSArray *relators = nil;
     return [self.parameters[@"syntheticSpread"] boolValue];
 }
 
-- (NSArray *)relators {
+- (id)relators {
     return relators;
 }
 
@@ -274,7 +274,7 @@ static NSArray *relators = nil;
 
     NSProgress *progress = [NSProgress progressWithTotalUnitCount:paths.count];
 
-    NSXMLElement *olElement = [[self.navDocument nodesForXPath:@"//ol" error:NULL] objectAtIndex:0];
+    NSXMLElement *olElement = [self.navDocument nodesForXPath:@"//nav[@epub:type='toc']/ol" error:NULL].firstObject;
     NSAssert(olElement, @"The “nav.xhtml” resource is damaged.");
 
     if (self.firstIsCover) {
@@ -299,6 +299,7 @@ static NSArray *relators = nil;
 
     NSString *chapter = nil;
     NSString *title = @"";
+    NSString *bodymatter = nil;
 
     NSUInteger chapterIndex = 0;
     NSUInteger index = 0;
@@ -398,6 +399,20 @@ static NSArray *relators = nil;
         }
 
         ++progress.completedUnitCount;
+    }
+
+    if (bodymatter) {
+        NSXMLElement *olElement = [self.navDocument nodesForXPath:@"//nav[@epub:type='landmarks']/ol" error:NULL].firstObject;
+        NSAssert(olElement, @"The “nav.xhtml” resource is damaged.");
+
+        NSXMLNode *typeAttr = [NSXMLNode attributeWithName:@"epub:type" stringValue:@"bodymatter"];
+        NSXMLNode *hrefAttr = [NSXMLNode attributeWithName:@"href" stringValue:bodymatter];
+        NSXMLNode *textNode = [NSXMLNode textWithStringValue:@"Start of Content"];
+
+        NSXMLElement *aElement = [NSXMLElement elementWithName:@"a" children:@[textNode] attributes:@[typeAttr, hrefAttr]];
+        NSXMLElement *liElement = [NSXMLElement elementWithName:@"li" children:@[aElement] attributes:nil];
+
+        [olElement addChild:liElement];
     }
 
     return chapters;

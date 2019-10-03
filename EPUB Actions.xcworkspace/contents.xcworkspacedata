@@ -8,6 +8,9 @@
       location = "group:ImagesToEPUBAction/ImagesToEPUBAction.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:CreateEPUBAction/CreateEPUBAction.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
    </FileRef>
 </Workspace>

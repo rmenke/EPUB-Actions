@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, PageLayoutStyle) {
 @property (nonatomic, readonly) BOOL firstIsCover;
 @property (nonatomic, readonly) BOOL syntheticSpread;
 
-@property (nonatomic, readonly) NSArray *relators;
+@property (nonatomic, readonly) id relators;
 
 @property (nonatomic, readonly) NSURL *outputURL;
 

@@ -76,6 +76,20 @@
                ReferencedContainer = "container:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E16543D5232AC58000D837F0"
+               BuildableName = "Bundle XHTML as EPUB.action"
+               BlueprintName = "Bundle XHTML as EPUB"
+               ReferencedContainer = "container:CreateEPUBAction/CreateEPUBAction.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -132,7 +146,7 @@
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
-               title = "Run Script"
+               title = "Install Images to EPUB"
                scriptText = "ditto &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; &quot;${INSTALL_PATH}/${FULL_PRODUCT_NAME}&quot;&#10;touch &quot;${INSTALL_PATH}&quot;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
@@ -148,7 +162,7 @@
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
-               title = "Run Script"
+               title = "Install Prepare Images for EPUB"
                scriptText = "ditto &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; &quot;${INSTALL_PATH}/${FULL_PRODUCT_NAME}&quot;&#10;touch &quot;${INSTALL_PATH}&quot;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
@@ -164,7 +178,7 @@
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
-               title = "Run Script"
+               title = "Install Convert EPUB Folder to Container"
                scriptText = "ditto &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; &quot;${INSTALL_PATH}/${FULL_PRODUCT_NAME}&quot;&#10;touch &quot;${INSTALL_PATH}&quot;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
@@ -173,6 +187,22 @@
                      BuildableName = "Convert EPUB Folder to Container.action"
                      BlueprintName = "Convert EPUB Folder to Container"
                      ReferencedContainer = "container:ConvertEPUBFolderToEPUBContainerAction/ConvertEPUBFolderToEPUBContainerAction.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Install Bundle XHTML as EPUB"
+               scriptText = "ditto &quot;${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}&quot; &quot;${INSTALL_PATH}/${FULL_PRODUCT_NAME}&quot;&#10;touch &quot;${INSTALL_PATH}&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "E16543D5232AC58000D837F0"
+                     BuildableName = "Bundle XHTML as EPUB.action"
+                     BlueprintName = "Bundle XHTML as EPUB"
+                     ReferencedContainer = "container:CreateEPUBAction/CreateEPUBAction.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
             </ActionContent>
