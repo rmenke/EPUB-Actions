@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 NSString * const EPUBOutputFolderProperty = @"outputFolder";
 NSString * const EPUBIdentifierProperty = @"publicationID";
 NSString * const EPUBTitleProperty = @"title";
+NSString * const EPUBCollectionProperty = @"collection";
 NSString * const EPUBDateProperty = @"publicationDate";
 NSString * const EPUBCreatorsProperty = @"creators";
 
@@ -69,12 +70,16 @@ NSString * const EPUBCreatorRoleKey = @"role";
 
 @property (nonatomic, readonly) NSString *outputFolder;
 @property (nonatomic, nullable, readonly) NSString *title;
+@property (nonatomic, nullable, readonly) NSString *collection;
+@property (nonatomic, nullable, readonly) NSString *groupPosition;
 @property (nonatomic, nullable, readonly) NSString *publicationIdentifier;
 @property (nonatomic, readonly) NSString *publicationDate;
 @property (nonatomic, readonly) NSArray *creators;
 
 @property (nonatomic, readonly) NSURL *outputURL;
 @property (nonatomic, readonly) NSDateFormatter *dateFormatter;
+
+@property (nonatomic, readonly) NSRegularExpression *collectionRegularExpression;
 
 @property (nonatomic, readwrite) double fractionCompleted;
 
@@ -126,6 +131,22 @@ NSString * const EPUBCreatorRoleKey = @"role";
     return self.parameters[EPUBTitleProperty];
 }
 
+- (nullable NSString *)collection {
+    NSString * _Nullable collection = self.parameters[EPUBCollectionProperty];
+    return [_collectionRegularExpression stringByReplacingMatchesInString:collection options:0 range:NSMakeRange(0, collection.length) withTemplate:@""];
+}
+
+- (nullable NSString *)groupPosition {
+    NSString * _Nullable collection = self.parameters[EPUBCollectionProperty];
+    NSTextCheckingResult * _Nullable result = [_collectionRegularExpression firstMatchInString:collection options:0 range:NSMakeRange(0, collection.length)];
+
+    if (result && result.range.location != NSNotFound) {
+        return [collection substringWithRange:[result rangeAtIndex:1]];
+    }
+
+    return nil;
+}
+
 - (NSString *)publicationDate {
     NSDate *publicationDate = self.parameters[EPUBDateProperty];
     if (!publicationDate) publicationDate = [NSDate date];
@@ -139,14 +160,15 @@ NSString * const EPUBCreatorRoleKey = @"role";
 }
 
 - (NSURL *)outputURL {
-    NSString *outputFolder = self.outputFolder;
     NSString *title = [self.title stringByReplacingOccurrencesOfString:@"/" withString:@":"];
 
-    return [NSURL fileURLWithPath:[[outputFolder stringByAppendingPathComponent:title] stringByAppendingPathExtension:@"epub"] isDirectory:YES];
+    return [NSURL fileURLWithPath:[title stringByAppendingPathExtension:@"epub"]
+                      isDirectory:YES
+                    relativeToURL:[NSURL fileURLWithPath:self.outputFolder]];
 }
 
-- (IBAction)generateIdentifier:(nullable id)sender {
-    NSString *newID = NSUUID.UUID.UUIDString;
+- (IBAction)generateNewPublicationID:(nullable id)sender {
+    NSString *newID = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
     [self.parameters setValue:newID forKey:EPUBIdentifierProperty];
     [self parametersUpdated];
 }
@@ -300,6 +322,23 @@ NSString * const EPUBCreatorRoleKey = @"role";
 
     modifiedElement.stringValue = [self.dateFormatter stringFromDate:[NSDate date]];
 
+    NSString * _Nullable collection = self.collection;
+
+    if (collection) {
+        NSXMLElement *metaElement = [NSXMLElement elementWithName:@"meta" children:@[T(collection)] attributes:@[A(id, @"collection"), A(property, @"belongs-to-collection")]];
+        [metadataElement addChild:metaElement];
+
+        metaElement = [NSXMLElement elementWithName:@"meta" children:@[T(@"series")] attributes:@[A(refines, @"#collection"), A(property, @"collection-type")]];
+        [metadataElement addChild:metaElement];
+
+        NSString * _Nullable groupPosition = self.groupPosition;
+
+        if (groupPosition) {
+            metaElement = [NSXMLElement elementWithName:@"meta" children:@[T(groupPosition)] attributes:@[A(refines, @"#collection"), A(property, @"group-position")]];
+            [metadataElement addChild:metaElement];
+        }
+    }
+
     NSXMLElement *manifestElement = [packageDocument objectsForXQuery:PACKAGE_QUERY("/package/manifest")].firstObject;
     NSAssert(manifestElement, @"“package.opf” file damaged.");
 
@@ -361,6 +400,9 @@ NSString * const EPUBCreatorRoleKey = @"role";
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {
     if (input.count == 0) return @[];
+
+    _collectionRegularExpression = [NSRegularExpression regularExpressionWithPattern:@":(\\d+(?:\\.\\d+)*)$" options:0 error:error];
+    if (!_collectionRegularExpression) return nil;
 
     if (self.title.length == 0) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"The EPUB title is required." userInfo:nil];

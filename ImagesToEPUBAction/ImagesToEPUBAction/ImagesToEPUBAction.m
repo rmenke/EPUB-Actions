@@ -221,7 +221,7 @@ static id relators = nil;
 }
 
 - (IBAction)generateNewPublicationID:(nullable id)sender {
-    NSString *newID = NSUUID.UUID.UUIDString;
+    NSString *newID = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
     [self.parameters setValue:newID forKey:@"publicationID"];
     [self parametersUpdated];
 }
@@ -473,6 +473,8 @@ static id relators = nil;
     NSXMLNode *panelTypeAttr = [NSXMLNode attributeWithName:@"epub:type" stringValue:@"panel"];
 
     for (Frame *frame in frames) {
+        if (self.stopped) return NO;
+
         NSString *name = [frame valueForKey:@"name"];
 
         CGFloat width = [[frame valueForKey:@"width"] doubleValue];
@@ -607,7 +609,9 @@ static id relators = nil;
 
     if (![[self.dataNavDocument XMLDataWithOptions:NSXMLNodePrettyPrint|NSXMLNodeCompactEmptyElement] writeToURL:[self.contentsURL URLByAppendingPathComponent:@"data-nav.xhtml"] options:NSDataWritingAtomic error:error]) return NO;
 
-    return !self.stopped;
+    ++progress.completedUnitCount;
+
+    return YES;
 }
 
 - (nullable NSArray<NSString *> *)runWithInput:(nullable NSArray<NSString *> *)input error:(NSError **)error {

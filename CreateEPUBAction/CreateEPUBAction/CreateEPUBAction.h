@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 
-- (IBAction)generateIdentifier:(nullable id)sender;
+- (IBAction)generateNewPublicationID:(nullable id)sender;
 
 @end
 

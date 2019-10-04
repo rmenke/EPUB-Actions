@@ -16,11 +16,14 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView wantsLayer="YES" id="47Y-Ci-255" userLabel="View">
-            <rect key="frame" x="0.0" y="0.0" width="451" height="301"/>
+            <rect key="frame" x="0.0" y="0.0" width="451" height="300"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <userGuides>
+                <userLayoutGuide location="88" affinity="minY"/>
+            </userGuides>
             <subviews>
                 <stackView distribution="fill" orientation="vertical" alignment="trailing" spacing="13" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" fixedFrame="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HRN-ol-zlT">
-                    <rect key="frame" x="10" y="86" width="90" height="203"/>
+                    <rect key="frame" x="10" y="85" width="90" height="203"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pth-tE-yX9">
@@ -110,8 +113,8 @@
                     </customSpacing>
                 </stackView>
                 <amPathPopUpButton verticalHuggingPriority="750" fixedFrame="YES" canChooseDirectories="YES" canChooseNewPaths="YES" canChooseExistingPaths="YES" showStandardPaths="YES" placeholder="No Selection" translatesAutoresizingMaskIntoConstraints="NO" id="A5k-bm-eYQ" userLabel="Output Folder">
-                    <rect key="frame" x="105" y="270" width="181" height="22"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="105" y="269" width="181" height="22"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <amVariablePopUpButtonCell key="cell" type="push" title="Desktop" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1001" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="dqY-CB-4nH">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -122,8 +125,8 @@
                     </connections>
                 </amPathPopUpButton>
                 <amTokenField toolTip="The title of the publication." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5rl-I6-Wad" userLabel="Title Field">
-                    <rect key="frame" x="108" y="245" width="175" height="19"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="108" y="244" width="175" height="19"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <amTokenFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" allowsEditingTextAttributes="YES" id="ths-m8-ZUf">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -138,11 +141,12 @@
                                 <string key="NSNullPlaceholder">Untitled</string>
                             </dictionary>
                         </binding>
+                        <outlet property="nextKeyView" destination="H5F-h2-H5b" id="fo9-77-4Qy"/>
                     </connections>
                 </amTokenField>
                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wOd-Ia-Wrq">
-                    <rect key="frame" x="108" y="218" width="175" height="19"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="108" y="217" width="175" height="19"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <string key="toolTip">The date of the first publication. This should remain constant over the lifetime of this publication. The modified date is updated automatically.</string>
                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" datePickerStyle="textField" id="aAd-6q-Rsj">
                         <font key="font" metaFont="smallSystem"/>
@@ -165,8 +169,8 @@
                     </connections>
                 </datePicker>
                 <amTokenField toolTip="The unique ID for this publication. Using a URN is advised." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H5F-h2-H5b" userLabel="Publication ID Field">
-                    <rect key="frame" x="108" y="191" width="175" height="19"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="108" y="190" width="157" height="19"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <amTokenFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" allowsEditingTextAttributes="YES" id="FkZ-JM-6qg">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -182,7 +186,7 @@
                     </connections>
                 </amTokenField>
                 <textField toolTip="The width of the page in pixels." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1bB-d1-Di8" userLabel="Width Field">
-                    <rect key="frame" x="108" y="164" width="60" height="19"/>
+                    <rect key="frame" x="108" y="163" width="60" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="sPW-59-AWI">
                         <font key="font" metaFont="smallSystem"/>
@@ -196,7 +200,7 @@
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8cM-qP-ZKU">
-                    <rect key="frame" x="174" y="167" width="43" height="14"/>
+                    <rect key="frame" x="174" y="166" width="43" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Height:" id="YtM-UT-Nkd">
                         <font key="font" metaFont="smallSystem"/>
@@ -205,7 +209,7 @@
                     </textFieldCell>
                 </textField>
                 <textField toolTip="The height of the page in pixels." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RRV-Eh-s8h" userLabel="Height Field">
-                    <rect key="frame" x="223" y="164" width="60" height="19"/>
+                    <rect key="frame" x="223" y="163" width="60" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="exf-OK-Sj9">
                         <font key="font" metaFont="smallSystem"/>
@@ -219,7 +223,7 @@
                     </connections>
                 </textField>
                 <textField toolTip="The size of the margin to add to each page edge." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wu9-mx-h8r" userLabel="Margin Field">
-                    <rect key="frame" x="108" y="137" width="60" height="19"/>
+                    <rect key="frame" x="108" y="136" width="60" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ol2-yX-c8S">
                         <font key="font" metaFont="smallSystem"/>
@@ -229,10 +233,11 @@
                     <connections>
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.pageMargin" id="SaW-QT-Um1"/>
                         <outlet property="formatter" destination="gxI-GR-Pf7" id="AQE-n4-QHv"/>
+                        <outlet property="nextKeyView" destination="kVw-H3-xfa" id="n3U-X2-uAz"/>
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m7Y-vE-eLd">
-                    <rect key="frame" x="174" y="140" width="36" height="14"/>
+                    <rect key="frame" x="174" y="139" width="36" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color:" id="Ga7-I7-D35">
                         <font key="font" metaFont="smallSystem"/>
@@ -241,7 +246,7 @@
                     </textFieldCell>
                 </textField>
                 <colorWell toolTip="The background color for each page." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RaF-Y6-esE">
-                    <rect key="frame" x="223" y="137" width="60" height="19"/>
+                    <rect key="frame" x="223" y="136" width="60" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <color key="color" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -253,8 +258,8 @@
                     </connections>
                 </colorWell>
                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dFl-vd-tll">
-                    <rect key="frame" x="288" y="138" width="154" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="288" y="191" width="154" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="First image is book cover" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="nqV-eg-f5l">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -263,8 +268,8 @@
                         <binding destination="aFj-Nx-tzi" name="value" keyPath="selection.firstIsCover" id="WC3-KB-9ZJ"/>
                     </connections>
                 </button>
-                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4jO-hF-yv4">
-                    <rect key="frame" x="108" y="111" width="234" height="18"/>
+                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4jO-hF-yv4">
+                    <rect key="frame" x="108" y="110" width="234" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <string key="toolTip">How much space to put between images. “Maximize” puts all white space between images on the same page, “minimize” places no space between images.</string>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -299,9 +304,9 @@
                     </connections>
                 </matrix>
                 <button toolTip="Create a UUID-based URN." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="91p-Qv-hkt" userLabel="Generate ID Button">
-                    <rect key="frame" x="290" y="193" width="14" height="16"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRefreshFreestandingTemplate" imagePosition="only" alignment="center" controlSize="small" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyUpOrDown" inset="2" id="5pG-rH-oUo">
+                    <rect key="frame" x="264" y="189" width="19" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRefreshTemplate" imagePosition="only" alignment="center" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="border" inset="2" id="5pG-rH-oUo">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -310,8 +315,8 @@
                     </connections>
                 </button>
                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BSf-2w-OeA">
-                    <rect key="frame" x="288" y="219" width="145" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="288" y="245" width="145" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Do not scale up images" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="k9D-nv-qM8">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -321,8 +326,8 @@
                     </connections>
                 </button>
                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZbN-Z8-k0U">
-                    <rect key="frame" x="288" y="165" width="156" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <rect key="frame" x="288" y="218" width="156" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Allow multi-page spreads" bezelStyle="regularSquare" imagePosition="left" controlSize="small" state="on" inset="2" id="kgm-jw-2yu">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -414,16 +419,19 @@
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="xoG-PO-z9W" name="contentValues" keyPath="arrangedObjects.key" previousBinding="F6A-Hh-xJG" id="l9Y-ZF-pve">
+                                            <binding destination="xoG-PO-z9W" name="contentValues" keyPath="arrangedObjects.key" previousBinding="F6A-Hh-xJG" id="7Rd-H7-WMA">
                                                 <dictionary key="options">
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
-                                                    <string key="NSNullPlaceholder">None</string>
+                                                    <string key="NSNullPlaceholder">Unspecified</string>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="9Me-H4-4Ux" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="l9Y-ZF-pve" id="8FD-kL-hyR"/>
+                                            <binding destination="9Me-H4-4Ux" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="7Rd-H7-WMA" id="8nW-2Y-gZE"/>
                                         </connections>
                                     </tableColumn>
                                 </tableColumns>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="5rl-I6-Wad" id="dK1-El-gyN"/>
+                                </connections>
                             </tableView>
                         </subviews>
                     </clipView>
@@ -488,7 +496,7 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSRefreshFreestandingTemplate" width="14" height="14"/>
+        <image name="NSRefreshTemplate" width="11" height="15"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>
 </document>
