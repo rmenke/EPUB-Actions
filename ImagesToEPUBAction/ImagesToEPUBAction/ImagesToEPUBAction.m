@@ -16,6 +16,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString * const EPUBCreatorDisplayNameKey = @"displayName";
+static NSString * const EPUBCreatorFileAsKey = @"fileAsName";
+static NSString * const EPUBCreatorRoleKeyPath = @"role.code";
+static NSString * const EPUBCreatorSchemeKeyPath = @"role.scheme";
+
 static inline BOOL typeIsImage(NSString *typeIdentifier) {
     static NSSet<NSString *> *imageTypes;
 
@@ -135,8 +140,8 @@ static id relators = nil;
     NSError * __autoreleasing error;
 
     NSBundle *bundle = [NSBundle bundleForClass:self];
-    NSURL *plistURL = [bundle URLForResource:@"MARC" withExtension:@"plist"];
-    NSAssert(plistURL, @"“MARC.plist” not found.");
+    NSURL *plistURL = [bundle URLForResource:@"Relators" withExtension:@"plist"];
+    NSAssert(plistURL, @"“Relators.plist” not found.");
 
     NSData *data = [NSData dataWithContentsOfURL:plistURL options:NSDataReadingMappedIfSafe error:&error];
     NSAssert(data, @"%@", error.localizedDescription);
@@ -590,11 +595,12 @@ static id relators = nil;
     packageDocument.syntheticSpread = self.syntheticSpread;
 
     for (id creator in self.creators) {
-        NSString *displayName = [creator valueForKey:@"displayName"];
-        NSString *fileAsName = [creator valueForKey:@"fileAsName"];
-        NSString *role = [creator valueForKey:@"role"];
+        NSString *displayName = [creator valueForKey:EPUBCreatorDisplayNameKey];
+        NSString *fileAsName = [creator valueForKey:EPUBCreatorFileAsKey];
+        NSString *role = [creator valueForKeyPath:EPUBCreatorRoleKeyPath];
+        NSString *scheme = [creator valueForKeyPath:EPUBCreatorSchemeKeyPath];
 
-        [packageDocument addCreator:displayName fileAs:fileAsName role:role];
+        [packageDocument addCreator:displayName fileAs:fileAsName role:role scheme:scheme];
     }
 
     ++progress.completedUnitCount;
@@ -625,6 +631,15 @@ static id relators = nil;
     }
     if (self.publicationID.length == 0) {
         @throw [NSException exceptionWithName:NSGenericException reason:@"Publication ID is required." userInfo:nil];
+    }
+    if (self.creators.count == 0) {
+        [self logMessageWithLevel:AMLogLevelWarn format:@"Some EPUB readers have problems if no creators are specified."];
+    }
+
+    for (id creator in self.creators) {
+        if ([[creator valueForKey:EPUBCreatorDisplayNameKey] length] == 0) {
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Every creator must have a display name." userInfo:nil];
+        }
     }
 
     self.outputURL = nil;

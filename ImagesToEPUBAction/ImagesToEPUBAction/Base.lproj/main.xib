@@ -414,18 +414,18 @@
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="xoG-PO-z9W" name="contentObjects" keyPath="arrangedObjects.value.code" previousBinding="ArD-xa-7nc" id="F6A-Hh-xJG">
+                                            <binding destination="xoG-PO-z9W" name="contentObjects" keyPath="arrangedObjects.value" previousBinding="ArD-xa-7nc" id="2bg-8O-M9j">
                                                 <dictionary key="options">
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="xoG-PO-z9W" name="contentValues" keyPath="arrangedObjects.key" previousBinding="F6A-Hh-xJG" id="7Rd-H7-WMA">
+                                            <binding destination="xoG-PO-z9W" name="contentValues" keyPath="arrangedObjects.key" previousBinding="2bg-8O-M9j" id="j2O-I3-OnR">
                                                 <dictionary key="options">
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                     <string key="NSNullPlaceholder">Unspecified</string>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="9Me-H4-4Ux" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="7Rd-H7-WMA" id="8nW-2Y-gZE"/>
+                                            <binding destination="9Me-H4-4Ux" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="j2O-I3-OnR" id="Fj5-qC-sTD"/>
                                         </connections>
                                     </tableColumn>
                                 </tableColumns>

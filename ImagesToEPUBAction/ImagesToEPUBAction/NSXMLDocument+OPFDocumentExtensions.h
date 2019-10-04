@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL landscapeOrientation;
 @property (nonatomic) BOOL syntheticSpread;
 
-- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role;
+- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role scheme:(nullable NSString *)scheme;
 - (NSString *)addManifestItem:(NSString *)item properties:(nullable NSString *)properties;
 - (void)addSpineItem:(NSString *)item properties:(nullable NSString *)properties;
 

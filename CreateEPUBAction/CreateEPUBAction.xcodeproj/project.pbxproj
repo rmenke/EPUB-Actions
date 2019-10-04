@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E12DDADE232AD1BA00A742E5 /* MARC.plist in Resources */ = {isa = PBXBuildFile; fileRef = E12DDADD232AD1BA00A742E5 /* MARC.plist */; };
+		E12DDADE232AD1BA00A742E5 /* Relators.plist in Resources */ = {isa = PBXBuildFile; fileRef = E12DDADD232AD1BA00A742E5 /* Relators.plist */; };
 		E162001D23314D46005FF8AD /* container.xml in Resources */ = {isa = PBXBuildFile; fileRef = E162001A23314D45005FF8AD /* container.xml */; };
 		E162001E23314D46005FF8AD /* nav.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = E162001B23314D45005FF8AD /* nav.xhtml */; };
 		E162001F23314D46005FF8AD /* package.opf in Resources */ = {isa = PBXBuildFile; fileRef = E162001C23314D45005FF8AD /* package.opf */; };
@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E12DDADD232AD1BA00A742E5 /* MARC.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MARC.plist; path = ../MARC.plist; sourceTree = SOURCE_ROOT; };
+		E12DDADD232AD1BA00A742E5 /* Relators.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Relators.plist; path = ../Relators.plist; sourceTree = SOURCE_ROOT; };
 		E162001A23314D45005FF8AD /* container.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = container.xml; sourceTree = "<group>"; };
 		E162001B23314D45005FF8AD /* nav.xhtml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = nav.xhtml; sourceTree = "<group>"; };
 		E162001C23314D45005FF8AD /* package.opf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = package.opf; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 				E16543DA232AC58000D837F0 /* CreateEPUBAction.m */,
 				E16543DC232AC58000D837F0 /* main.xib */,
 				E16543DF232AC58000D837F0 /* Info.plist */,
-				E12DDADD232AD1BA00A742E5 /* MARC.plist */,
+				E12DDADD232AD1BA00A742E5 /* Relators.plist */,
 				E162001923314D02005FF8AD /* Templates */,
 			);
 			path = CreateEPUBAction;
@@ -141,7 +141,7 @@
 				E162001E23314D46005FF8AD /* nav.xhtml in Resources */,
 				E162001D23314D46005FF8AD /* container.xml in Resources */,
 				E162001F23314D46005FF8AD /* package.opf in Resources */,
-				E12DDADE232AD1BA00A742E5 /* MARC.plist in Resources */,
+				E12DDADE232AD1BA00A742E5 /* Relators.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

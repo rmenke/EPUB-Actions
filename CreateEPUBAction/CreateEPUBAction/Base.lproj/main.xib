@@ -245,18 +245,18 @@
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="Plu-eM-zaY" name="contentObjects" keyPath="arrangedObjects.value.code" previousBinding="Qr5-eo-uiB" id="pfk-go-TVd">
-                                                <dictionary key="options">
-                                                    <bool key="NSInsertsNullPlaceholder" value="YES"/>
-                                                </dictionary>
-                                            </binding>
-                                            <binding destination="Plu-eM-zaY" name="contentValues" keyPath="arrangedObjects.key" previousBinding="pfk-go-TVd" id="zf8-Az-dzN">
+                                            <binding destination="Plu-eM-zaY" name="contentValues" keyPath="arrangedObjects.key" previousBinding="Bmk-QP-4Ym" id="VWP-JO-43S">
                                                 <dictionary key="options">
                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                     <string key="NSNullPlaceholder">Unspecified</string>
                                                 </dictionary>
                                             </binding>
-                                            <binding destination="2OQ-17-3xV" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="zf8-Az-dzN" id="mE9-FQ-etX"/>
+                                            <binding destination="2OQ-17-3xV" name="selectedObject" keyPath="arrangedObjects.role" previousBinding="VWP-JO-43S" id="EQp-z9-eDR"/>
+                                            <binding destination="Plu-eM-zaY" name="contentObjects" keyPath="arrangedObjects.value" previousBinding="Qr5-eo-uiB" id="Bmk-QP-4Ym">
+                                                <dictionary key="options">
+                                                    <bool key="NSInsertsNullPlaceholder" value="YES"/>
+                                                </dictionary>
+                                            </binding>
                                         </connections>
                                     </tableColumn>
                                 </tableColumns>

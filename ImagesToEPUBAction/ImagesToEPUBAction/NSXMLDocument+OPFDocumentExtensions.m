@@ -184,7 +184,10 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
     return manifest;
 }
 
-- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role {
+- (void)addCreator:(NSString *)creator fileAs:(nullable NSString *)fileAs role:(nullable NSString *)role scheme:(nullable NSString *)scheme {
+    NSAssert((role == nil) || (scheme != nil), @"Cannot have a role without a scheme.");
+    NSAssert((scheme == nil) || (role != nil), @"Cannot have a scheme without a role.");
+
     NSXMLElement *metadataElement = [self.rootElement elementsForLocalName:@"metadata" URI:NS_OPF].firstObject;
     NSAssert(metadataElement, @"Document is missing elements.");
 
@@ -224,7 +227,7 @@ static inline NSString *mediaTypeForExtension(NSString *extension) {
 
         [element addAttribute:[NSXMLNode attributeWithName:@"refines" stringValue:identRef]];
         [element addAttribute:[NSXMLNode attributeWithName:@"property" stringValue:@"role"]];
-        [element addAttribute:[NSXMLNode attributeWithName:@"scheme" stringValue:@"marc:relators"]];
+        [element addAttribute:[NSXMLNode attributeWithName:@"scheme" stringValue:scheme]];
 
         [metadataElement addChild:element];
     }

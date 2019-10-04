@@ -8,6 +8,8 @@
 		<string>abr</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by shortening or condensing the original work but leaving the nature and content of the original work substantially unchanged. For substantial modifications that result in the creation of a new work, see author</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Actor</key>
 	<dict>
@@ -15,6 +17,8 @@
 		<string>act</string>
 		<key>description</key>
 		<string>A performer contributing to an expression of a work by acting as a cast member or player in a musical or dramatic presentation, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Adapter</key>
 	<dict>
@@ -22,6 +26,8 @@
 		<string>adp</string>
 		<key>description</key>
 		<string>A person or organization who 1) reworks a musical composition, usually for a different medium, or 2) rewrites novels or stories for motion pictures or other audiovisual medium.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Addressee</key>
 	<dict>
@@ -29,6 +35,8 @@
 		<string>rcp</string>
 		<key>description</key>
 		<string>A person, family, or organization to whom the correspondence in a work is addressed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Analyst</key>
 	<dict>
@@ -36,6 +44,8 @@
 		<string>anl</string>
 		<key>description</key>
 		<string>A person or organization that reviews, examines and interprets data or information in a specific area</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Animator</key>
 	<dict>
@@ -43,6 +53,8 @@
 		<string>anm</string>
 		<key>description</key>
 		<string>A person contributing to a moving image work or computer program by giving apparent movement to inanimate objects or drawings. For the creator of the drawings that are animated, see artist</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Annotator</key>
 	<dict>
@@ -50,13 +62,17 @@
 		<string>ann</string>
 		<key>description</key>
 		<string>A person who makes manuscript annotations on an item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Appellant</key>
 	<dict>
 		<key>code</key>
 		<string>apl</string>
 		<key>description</key>
-		<string>A person or organization who appeals a lower court&apos;s decision</string>
+		<string>A person or organization who appeals a lower court's decision</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Appellee</key>
 	<dict>
@@ -64,6 +80,8 @@
 		<string>ape</string>
 		<key>description</key>
 		<string>A person or organization against whom an appeal is taken</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Applicant</key>
 	<dict>
@@ -71,6 +89,8 @@
 		<string>app</string>
 		<key>description</key>
 		<string>A person or organization responsible for the submission of an application or who is named as eligible for the results of the processing of the application (e.g., bestowing of rights, reward, title, position)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Architect</key>
 	<dict>
@@ -78,6 +98,8 @@
 		<string>arc</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating an architectural design, including a pictorial representation intended to show how a building, etc., will look when completed. It also oversees the construction of structures</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Arranger</key>
 	<dict>
@@ -85,6 +107,8 @@
 		<string>arr</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a musical work by rewriting the composition for a medium of performance different from that for which the work was originally intended, or modifying the work for the same medium of performance, etc., such that the musical substance of the original composition remains essentially unchanged. For extensive modification that effectively results in the creation of a new musical work, see composer</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Art copyist</key>
 	<dict>
@@ -92,6 +116,8 @@
 		<string>acp</string>
 		<key>description</key>
 		<string>A person (e.g., a painter or sculptor) who makes copies of works of visual art</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Art director</key>
 	<dict>
@@ -99,6 +125,8 @@
 		<string>adi</string>
 		<key>description</key>
 		<string>A person contributing to a motion picture or television production by overseeing the artists and craftspeople who build the sets</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Artist</key>
 	<dict>
@@ -106,6 +134,8 @@
 		<string>art</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a work by conceiving, and implementing, an original graphic design, drawing, painting, etc. For book illustrators, prefer Illustrator [ill]</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Artistic director</key>
 	<dict>
@@ -113,6 +143,8 @@
 		<string>ard</string>
 		<key>description</key>
 		<string>A person responsible for controlling the development of the artistic style of an entire production, including the choice of works to be presented and selection of senior production staff</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Assignee</key>
 	<dict>
@@ -120,6 +152,8 @@
 		<string>asg</string>
 		<key>description</key>
 		<string>A person or organization to whom a license for printing or publishing has been transferred</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Associated name</key>
 	<dict>
@@ -127,6 +161,8 @@
 		<string>asn</string>
 		<key>description</key>
 		<string>A person or organization associated with or found in an item or collection, which cannot be determined to be that of a Former owner [fmo] or other designated relationship indicative of provenance</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Attributed name</key>
 	<dict>
@@ -134,6 +170,8 @@
 		<string>att</string>
 		<key>description</key>
 		<string>An author, artist, etc., relating him/her to a resource for which there is or once was substantial authority for designating that person as author, creator, etc. of the work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Auctioneer</key>
 	<dict>
@@ -141,6 +179,8 @@
 		<string>auc</string>
 		<key>description</key>
 		<string>A person or organization in charge of the estimation and public auctioning of goods, particularly books, artistic works, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Author</key>
 	<dict>
@@ -148,6 +188,8 @@
 		<string>aut</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a work that is primarily textual in content, regardless of media type (e.g., printed text, spoken word, electronic text, tactile text) or genre (e.g., poems, novels, screenplays, blogs). Use also for persons, etc., creating a new work by paraphrasing, rewriting, or adapting works by another creator such that the modification has substantially changed the nature and content of the original or changed the medium of expression</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Author in quotations or text abstracts</key>
 	<dict>
@@ -155,6 +197,8 @@
 		<string>aqt</string>
 		<key>description</key>
 		<string>A person or organization whose work is largely quoted or extracted in works to which he or she did not contribute directly. Such quotations are found particularly in exhibition catalogs, collections of photographs, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Author of afterword, colophon, etc.</key>
 	<dict>
@@ -162,6 +206,8 @@
 		<string>aft</string>
 		<key>description</key>
 		<string>A person or organization responsible for an afterword, postface, colophon, etc. but who is not the chief author of a work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Author of dialog</key>
 	<dict>
@@ -169,6 +215,8 @@
 		<string>aud</string>
 		<key>description</key>
 		<string>A person or organization responsible for the dialog or spoken commentary for a screenplay or sound recording</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Author of introduction, etc.</key>
 	<dict>
@@ -176,6 +224,8 @@
 		<string>aui</string>
 		<key>description</key>
 		<string>A person or organization responsible for an introduction, preface, foreword, or other critical introductory matter, but who is not the chief author</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Autographer</key>
 	<dict>
@@ -183,6 +233,8 @@
 		<string>ato</string>
 		<key>description</key>
 		<string>A person whose manuscript signature appears on an item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Bibliographic antecedent</key>
 	<dict>
@@ -190,6 +242,8 @@
 		<string>ant</string>
 		<key>description</key>
 		<string>A person or organization responsible for a resource upon which the resource represented by the bibliographic description is based. This may be appropriate for adaptations, sequels, continuations, indexes, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Binder</key>
 	<dict>
@@ -197,6 +251,8 @@
 		<string>bnd</string>
 		<key>description</key>
 		<string>A person who binds an item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Binding designer</key>
 	<dict>
@@ -204,6 +260,8 @@
 		<string>bdd</string>
 		<key>description</key>
 		<string>A person or organization responsible for the binding design of a book, including the type of binding, the type of materials used, and any decorative aspects of the binding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Blurb writer</key>
 	<dict>
@@ -211,6 +269,8 @@
 		<string>blw</string>
 		<key>description</key>
 		<string>A person or organization responsible for writing a commendation or testimonial for a work, which appears on or within the publication itself, frequently on the back or dust jacket of print publications or on advertising material for all media</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Book designer</key>
 	<dict>
@@ -218,6 +278,8 @@
 		<string>bkd</string>
 		<key>description</key>
 		<string>A person or organization involved in manufacturing a manifestation by being responsible for the entire graphic design of a book, including arrangement of type and illustration, choice of materials, and process used</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Book producer</key>
 	<dict>
@@ -225,6 +287,8 @@
 		<string>bkp</string>
 		<key>description</key>
 		<string>A person or organization responsible for the production of books and other print media</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Bookjacket designer</key>
 	<dict>
@@ -232,13 +296,17 @@
 		<string>bjd</string>
 		<key>description</key>
 		<string>A person or organization responsible for the design of flexible covers designed for or published with a book, including the type of materials used, and any decorative aspects of the bookjacket</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Bookplate designer</key>
 	<dict>
 		<key>code</key>
 		<string>bpd</string>
 		<key>description</key>
-		<string>A person or organization responsible for the design of a book owner&apos;s identification label that is most commonly pasted to the inside front cover of a book</string>
+		<string>A person or organization responsible for the design of a book owner's identification label that is most commonly pasted to the inside front cover of a book</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Bookseller</key>
 	<dict>
@@ -246,6 +314,8 @@
 		<string>bsl</string>
 		<key>description</key>
 		<string>A person or organization who makes books and other bibliographic materials available for purchase. Interest in the materials is primarily lucrative</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Braille embosser</key>
 	<dict>
@@ -253,6 +323,8 @@
 		<string>brl</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in manufacturing a resource by embossing Braille cells using a stylus, special embossing printer, or other device</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Broadcaster</key>
 	<dict>
@@ -260,6 +332,8 @@
 		<string>brd</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in broadcasting a resource to an audience via radio, television, webcast, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Calligrapher</key>
 	<dict>
@@ -267,6 +341,8 @@
 		<string>cll</string>
 		<key>description</key>
 		<string>A person or organization who writes in an artistic hand, usually as a copyist and or engrosser</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Cartographer</key>
 	<dict>
@@ -274,6 +350,8 @@
 		<string>ctg</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a map, atlas, globe, or other cartographic work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Caster</key>
 	<dict>
@@ -281,6 +359,8 @@
 		<string>cas</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in manufacturing a resource by pouring a liquid or molten substance into a mold and leaving it to solidify to take the shape of the mold</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Censor</key>
 	<dict>
@@ -288,6 +368,8 @@
 		<string>cns</string>
 		<key>description</key>
 		<string>A person or organization who examines bibliographic resources for the purpose of suppressing parts deemed objectionable on moral, political, military, or other grounds</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Choreographer</key>
 	<dict>
@@ -295,6 +377,8 @@
 		<string>chr</string>
 		<key>description</key>
 		<string>A person responsible for creating or contributing to a work of movement</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Cinematographer</key>
 	<dict>
@@ -302,6 +386,8 @@
 		<string>cng</string>
 		<key>description</key>
 		<string>A person in charge of photographing a motion picture, who plans the technical aspets of lighting and photographing of scenes, and often assists the director in the choice of angles, camera setups, and lighting moods. He or she may also supervise the further processing of filmed material up to the completion of the work print. Cinematographer is also referred to as director of photography. Do not confuse with videographer</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Client</key>
 	<dict>
@@ -309,6 +395,8 @@
 		<string>cli</string>
 		<key>description</key>
 		<string>A person or organization for whom another person or organization is acting</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Collection registrar</key>
 	<dict>
@@ -316,6 +404,8 @@
 		<string>cor</string>
 		<key>description</key>
 		<string>A curator who lists or inventories the items in an aggregate work such as a collection of items or works</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Collector</key>
 	<dict>
@@ -323,6 +413,8 @@
 		<string>col</string>
 		<key>description</key>
 		<string>A curator who brings together items from various sources that are then arranged, described, and cataloged as a collection. A collector is neither the creator of the material nor a person to whom manuscripts in the collection may have been addressed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Collotyper</key>
 	<dict>
@@ -330,6 +422,8 @@
 		<string>clt</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in manufacturing a manifestation of photographic prints from film or other colloid that has ink-receptive and ink-repellent surfaces</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Colorist</key>
 	<dict>
@@ -337,6 +431,8 @@
 		<string>clr</string>
 		<key>description</key>
 		<string>A person or organization responsible for applying color to drawings, prints, photographs, maps, moving images, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Commentator</key>
 	<dict>
@@ -344,6 +440,8 @@
 		<string>cmm</string>
 		<key>description</key>
 		<string>A performer contributing to a work by providing interpretation, analysis, or a discussion of the subject matter on a recording, film, or other audiovisual medium</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Commentator for written text</key>
 	<dict>
@@ -351,6 +449,8 @@
 		<string>cwt</string>
 		<key>description</key>
 		<string>A person or organization responsible for the commentary or explanatory notes about a text. For the writer of manuscript annotations in a printed book, use Annotator</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Compiler</key>
 	<dict>
@@ -358,6 +458,8 @@
 		<string>com</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a new work (e.g., a bibliography, a directory) through the act of compilation, e.g., selecting, arranging, aggregating, and editing data, information, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Complainant</key>
 	<dict>
@@ -365,6 +467,8 @@
 		<string>cpl</string>
 		<key>description</key>
 		<string>A person or organization who applies to the courts for redress, usually in an equity proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Complainant-appellant</key>
 	<dict>
@@ -372,6 +476,8 @@
 		<string>cpt</string>
 		<key>description</key>
 		<string>A complainant who takes an appeal from one court or jurisdiction to another to reverse the judgment, usually in an equity proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Complainant-appellee</key>
 	<dict>
@@ -379,6 +485,8 @@
 		<string>cpe</string>
 		<key>description</key>
 		<string>A complainant against whom an appeal is taken from one court or jurisdiction to another to reverse the judgment, usually in an equity proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Composer</key>
 	<dict>
@@ -386,6 +494,8 @@
 		<string>cmp</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating or contributing to a musical resource by adding music to a work that originally lacked it or supplements it</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Compositor</key>
 	<dict>
@@ -393,6 +503,8 @@
 		<string>cmt</string>
 		<key>description</key>
 		<string>A person or organization responsible for the creation of metal slug, or molds made of other materials, used to produce the text and images in printed matter</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Conceptor</key>
 	<dict>
@@ -400,6 +512,8 @@
 		<string>ccp</string>
 		<key>description</key>
 		<string>A person or organization responsible for the original idea on which a work is based, this includes the scientific author of an audio-visual item and the conceptor of an advertisement</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Conductor</key>
 	<dict>
@@ -407,6 +521,8 @@
 		<string>cnd</string>
 		<key>description</key>
 		<string>A performer contributing to a musical resource by leading a performing group (orchestra, chorus, opera, etc.) in a musical or dramatic presentation, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Conservator</key>
 	<dict>
@@ -414,6 +530,8 @@
 		<string>con</string>
 		<key>description</key>
 		<string>A person or organization responsible for documenting, preserving, or treating printed or manuscript material, works of art, artifacts, or other media</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Consultant</key>
 	<dict>
@@ -421,6 +539,8 @@
 		<string>csl</string>
 		<key>description</key>
 		<string>A person or organization relevant to a resource, who is called upon for professional advice or services in a specialized field of knowledge or training</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Consultant to a project</key>
 	<dict>
@@ -428,6 +548,8 @@
 		<string>csp</string>
 		<key>description</key>
 		<string>A person or organization relevant to a resource, who is engaged specifically to provide an intellectual overview of a strategic or operational task and by analysis, specification, or instruction, to create or propose a cost-effective course of action or solution</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestant</key>
 	<dict>
@@ -435,6 +557,8 @@
 		<string>cos</string>
 		<key>description</key>
 		<string>A person(s) or organization who opposes, resists, or disputes, in a court of law, a claim, decision, result, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestant-appellant</key>
 	<dict>
@@ -442,6 +566,8 @@
 		<string>cot</string>
 		<key>description</key>
 		<string>A contestant who takes an appeal from one court of law or jurisdiction to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestant-appellee</key>
 	<dict>
@@ -449,6 +575,8 @@
 		<string>coe</string>
 		<key>description</key>
 		<string>A contestant against whom an appeal is taken from one court of law or jurisdiction to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestee</key>
 	<dict>
@@ -456,6 +584,8 @@
 		<string>cts</string>
 		<key>description</key>
 		<string>A person(s) or organization defending a claim, decision, result, etc. being opposed, resisted, or disputed in a court of law</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestee-appellant</key>
 	<dict>
@@ -463,6 +593,8 @@
 		<string>ctt</string>
 		<key>description</key>
 		<string>A contestee who takes an appeal from one court or jurisdiction to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contestee-appellee</key>
 	<dict>
@@ -470,6 +602,8 @@
 		<string>cte</string>
 		<key>description</key>
 		<string>A contestee against whom an appeal is taken from one court or jurisdiction to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contractor</key>
 	<dict>
@@ -477,6 +611,8 @@
 		<string>ctr</string>
 		<key>description</key>
 		<string>A person or organization relevant to a resource, who enters into a contract with another person or organization to perform a specific</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Contributor</key>
 	<dict>
@@ -484,6 +620,8 @@
 		<string>ctb</string>
 		<key>description</key>
 		<string>A person, family or organization responsible for making contributions to the resource. This includes those whose work has been contributed to a larger work, such as an anthology, serial publication, or other compilation of individual works. If a more specific role is available, prefer that, e.g. editor, compiler, illustrator</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Copyright claimant</key>
 	<dict>
@@ -491,6 +629,8 @@
 		<string>cpc</string>
 		<key>description</key>
 		<string>A person or organization listed as a copyright owner at the time of registration. Copyright can be granted or later transferred to another person or organization, at which time the claimant becomes the copyright holder</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Copyright holder</key>
 	<dict>
@@ -498,6 +638,8 @@
 		<string>cph</string>
 		<key>description</key>
 		<string>A person or organization to whom copy and legal rights have been granted or transferred for the intellectual content of a work. The copyright holder, although not necessarily the creator of the work, usually has the exclusive right to benefit financially from the sale and use of the work to which the associated copyright protection applies</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Corrector</key>
 	<dict>
@@ -505,6 +647,8 @@
 		<string>crr</string>
 		<key>description</key>
 		<string>A person or organization who is a corrector of manuscripts, such as the scriptorium official who corrected the work of a scribe. For printed matter, use Proofreader</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Correspondent</key>
 	<dict>
@@ -512,6 +656,8 @@
 		<string>crp</string>
 		<key>description</key>
 		<string>A person or organization who was either the writer or recipient of a letter or other communication</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Costume designer</key>
 	<dict>
@@ -519,6 +665,8 @@
 		<string>cst</string>
 		<key>description</key>
 		<string>A person, family, or organization that designs the costumes for a moving image production or for a musical or dramatic presentation or entertainment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Court governed</key>
 	<dict>
@@ -526,13 +674,17 @@
 		<string>cou</string>
 		<key>description</key>
 		<string>A court governed by court rules, regardless of their official nature (e.g., laws, administrative regulations)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Court reporter</key>
 	<dict>
 		<key>code</key>
 		<string>crt</string>
 		<key>description</key>
-		<string>A person, family, or organization contributing to a resource by preparing a court&apos;s opinions for publication</string>
+		<string>A person, family, or organization contributing to a resource by preparing a court's opinions for publication</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Cover designer</key>
 	<dict>
@@ -540,6 +692,8 @@
 		<string>cov</string>
 		<key>description</key>
 		<string>A person or organization responsible for the graphic design of a book cover, album cover, slipcase, box, container, etc. For a person or organization responsible for the graphic design of an entire book, use Book designer; for book jackets, use Bookjacket designer</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Creator</key>
 	<dict>
@@ -547,6 +701,8 @@
 		<string>cre</string>
 		<key>description</key>
 		<string>A person or organization responsible for the intellectual or artistic content of a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Curator</key>
 	<dict>
@@ -554,6 +710,8 @@
 		<string>cur</string>
 		<key>description</key>
 		<string>A person, family, or organization conceiving, aggregating, and/or organizing an exhibition, collection, or other item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Dancer</key>
 	<dict>
@@ -561,6 +719,8 @@
 		<string>dnc</string>
 		<key>description</key>
 		<string>A performer who dances in a musical, dramatic, etc., presentation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Data contributor</key>
 	<dict>
@@ -568,6 +728,8 @@
 		<string>dtc</string>
 		<key>description</key>
 		<string>A person or organization that submits data for inclusion in a database or other collection of data</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Data manager</key>
 	<dict>
@@ -575,6 +737,8 @@
 		<string>dtm</string>
 		<key>description</key>
 		<string>A person or organization responsible for managing databases or other data sources</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Dedicatee</key>
 	<dict>
@@ -582,6 +746,8 @@
 		<string>dte</string>
 		<key>description</key>
 		<string>A person, family, or organization to whom a resource is dedicated</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Dedicator</key>
 	<dict>
@@ -589,6 +755,8 @@
 		<string>dto</string>
 		<key>description</key>
 		<string>A person who writes a dedication, which may be a formal statement or in epistolary or verse form</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Defendant</key>
 	<dict>
@@ -596,6 +764,8 @@
 		<string>dfd</string>
 		<key>description</key>
 		<string>A person or organization who is accused in a criminal proceeding or sued in a civil proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Defendant-appellant</key>
 	<dict>
@@ -603,6 +773,8 @@
 		<string>dft</string>
 		<key>description</key>
 		<string>A defendant who takes an appeal from one court or jurisdiction to another to reverse the judgment, usually in a legal action</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Defendant-appellee</key>
 	<dict>
@@ -610,6 +782,8 @@
 		<string>dfe</string>
 		<key>description</key>
 		<string>A defendant against whom an appeal is taken from one court or jurisdiction to another to reverse the judgment, usually in a legal action</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Degree granting institution</key>
 	<dict>
@@ -617,6 +791,8 @@
 		<string>dgg</string>
 		<key>description</key>
 		<string>A organization granting an academic degree</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Degree supervisor</key>
 	<dict>
@@ -624,13 +800,17 @@
 		<string>dgs</string>
 		<key>description</key>
 		<string>A person overseeing a higher level academic degree</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Delineator</key>
 	<dict>
 		<key>code</key>
 		<string>dln</string>
 		<key>description</key>
-		<string>A person or organization executing technical drawings from others&apos; designs</string>
+		<string>A person or organization executing technical drawings from others' designs</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Depicted</key>
 	<dict>
@@ -638,6 +818,8 @@
 		<string>dpc</string>
 		<key>description</key>
 		<string>An entity depicted or portrayed in a work, particularly in a work of art</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Depositor</key>
 	<dict>
@@ -645,6 +827,8 @@
 		<string>dpt</string>
 		<key>description</key>
 		<string>A current owner of an item who deposited the item into the custody of another person, family, or organization, while still retaining ownership</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Designer</key>
 	<dict>
@@ -652,6 +836,8 @@
 		<string>dsr</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a design for an object</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Director</key>
 	<dict>
@@ -659,6 +845,8 @@
 		<string>drt</string>
 		<key>description</key>
 		<string>A person responsible for the general management and supervision of a filmed performance, a radio or television program, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Dissertant</key>
 	<dict>
@@ -666,6 +854,8 @@
 		<string>dis</string>
 		<key>description</key>
 		<string>A person who presents a thesis for a university or higher-level educational degree</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Distribution place</key>
 	<dict>
@@ -673,6 +863,8 @@
 		<string>dbp</string>
 		<key>description</key>
 		<string>A place from which a resource, e.g., a serial, is distributed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Distributor</key>
 	<dict>
@@ -680,6 +872,8 @@
 		<string>dst</string>
 		<key>description</key>
 		<string>A person or organization that has exclusive or shared marketing rights for a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Donor</key>
 	<dict>
@@ -687,6 +881,8 @@
 		<string>dnr</string>
 		<key>description</key>
 		<string>A former owner of an item who donated that item to another owner</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Draftsman</key>
 	<dict>
@@ -694,6 +890,8 @@
 		<string>drm</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by an architect, inventor, etc., by making detailed plans or drawings for buildings, ships, aircraft, machines, objects, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Dubious author</key>
 	<dict>
@@ -701,6 +899,8 @@
 		<string>dub</string>
 		<key>description</key>
 		<string>A person or organization to which authorship has been dubiously or incorrectly ascribed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Editor</key>
 	<dict>
@@ -708,6 +908,8 @@
 		<string>edt</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by revising or elucidating the content, e.g., adding an introduction, notes, or other critical matter. An editor may also prepare a resource for production, publication, or distribution. For major revisions, adaptations, etc., that substantially change the nature and content of the original work, resulting in a new work, see author</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Editor of compilation</key>
 	<dict>
@@ -715,6 +917,8 @@
 		<string>edc</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a collective or aggregate work by selecting and putting together works, or parts of works, by one or more creators. For compilations of data, information, etc., that result in new works, see compiler</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Editor of moving image work</key>
 	<dict>
@@ -722,6 +926,8 @@
 		<string>edm</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for assembling, arranging, and trimming film, video, or other moving image formats, including both visual and audio aspects</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Electrician</key>
 	<dict>
@@ -729,6 +935,8 @@
 		<string>elg</string>
 		<key>description</key>
 		<string>A person responsible for setting up a lighting rig and focusing the lights for a production, and running the lighting at a performance</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Electrotyper</key>
 	<dict>
@@ -736,6 +944,8 @@
 		<string>elt</string>
 		<key>description</key>
 		<string>A person or organization who creates a duplicate printing surface by pressure molding and electrodepositing of metal that is then backed up with lead for printing</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Enacting jurisdiction</key>
 	<dict>
@@ -743,6 +953,8 @@
 		<string>enj</string>
 		<key>description</key>
 		<string>A jurisdiction enacting a law, regulation, constitution, court rule, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Engineer</key>
 	<dict>
@@ -750,6 +962,8 @@
 		<string>eng</string>
 		<key>description</key>
 		<string>A person or organization that is responsible for technical planning and design, particularly with construction</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Engraver</key>
 	<dict>
@@ -757,6 +971,8 @@
 		<string>egr</string>
 		<key>description</key>
 		<string>A person or organization who cuts letters, figures, etc. on a surface, such as a wooden or metal plate used for printing</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Etcher</key>
 	<dict>
@@ -764,6 +980,8 @@
 		<string>etr</string>
 		<key>description</key>
 		<string>A person or organization who produces text or images for printing by subjecting metal, glass, or some other surface to acid or the corrosive action of some other substance</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Event place</key>
 	<dict>
@@ -771,6 +989,8 @@
 		<string>evp</string>
 		<key>description</key>
 		<string>A place where an event such as a conference or a concert took place</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Expert</key>
 	<dict>
@@ -778,6 +998,8 @@
 		<string>exp</string>
 		<key>description</key>
 		<string>A person or organization in charge of the description and appraisal of the value of goods, particularly rare items, works of art, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Facsimilist</key>
 	<dict>
@@ -785,6 +1007,8 @@
 		<string>fac</string>
 		<key>description</key>
 		<string>A person or organization that executed the facsimile</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Field director</key>
 	<dict>
@@ -792,6 +1016,8 @@
 		<string>fld</string>
 		<key>description</key>
 		<string>A person or organization that manages or supervises the work done to collect raw data or do research in an actual setting or environment (typically applies to the natural and social sciences)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Film director</key>
 	<dict>
@@ -799,6 +1025,8 @@
 		<string>fmd</string>
 		<key>description</key>
 		<string>A director responsible for the general management and supervision of a filmed performance</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Film distributor</key>
 	<dict>
@@ -806,6 +1034,8 @@
 		<string>fds</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in distributing a moving image resource to theatres or other distribution channels</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Film editor</key>
 	<dict>
@@ -813,6 +1043,8 @@
 		<string>flm</string>
 		<key>description</key>
 		<string>A person who, following the script and in creative cooperation with the Director, selects, arranges, and assembles the filmed material, controls the synchronization of picture and sound, and participates in other post-production tasks such as sound mixing and visual effects processing. Today, picture editing is often performed digitally.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Film producer</key>
 	<dict>
@@ -820,6 +1052,8 @@
 		<string>fmp</string>
 		<key>description</key>
 		<string>A producer responsible for most of the business aspects of a film</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Filmmaker</key>
 	<dict>
@@ -827,6 +1061,8 @@
 		<string>fmk</string>
 		<key>description</key>
 		<string>A person, family or organization responsible for creating an independent or personal film. A filmmaker is individually responsible for the conception and execution of all aspects of the film</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>First party</key>
 	<dict>
@@ -834,6 +1070,8 @@
 		<string>fpy</string>
 		<key>description</key>
 		<string>A person or organization who is identified as the only party or the party of the first party. In the case of transfer of rights, this is the assignor, transferor, licensor, grantor, etc. Multiple parties can be named jointly as the first party</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Forger</key>
 	<dict>
@@ -841,6 +1079,8 @@
 		<string>frg</string>
 		<key>description</key>
 		<string>A person or organization who makes or imitates something of value or importance, especially with the intent to defraud</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Former owner</key>
 	<dict>
@@ -848,6 +1088,8 @@
 		<string>fmo</string>
 		<key>description</key>
 		<string>A person, family, or organization formerly having legal possession of an item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Funder</key>
 	<dict>
@@ -855,6 +1097,8 @@
 		<string>fnd</string>
 		<key>description</key>
 		<string>A person or organization that furnished financial support for the production of the work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Geographic information specialist</key>
 	<dict>
@@ -862,6 +1106,8 @@
 		<string>gis</string>
 		<key>description</key>
 		<string>A person responsible for geographic information system (GIS) development and integration with global positioning system data</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Honoree</key>
 	<dict>
@@ -869,6 +1115,8 @@
 		<string>hnr</string>
 		<key>description</key>
 		<string>A person, family, or organization honored by a work or item (e.g., the honoree of a festschrift, a person to whom a copy is presented)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Host</key>
 	<dict>
@@ -876,6 +1124,8 @@
 		<string>hst</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by leading a program (often broadcast) that includes other guests, performers, etc. (e.g., talk show host)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Host institution</key>
 	<dict>
@@ -883,6 +1133,8 @@
 		<string>his</string>
 		<key>description</key>
 		<string>An organization hosting the event, exhibit, conference, etc., which gave rise to a resource, but having little or no responsibility for the content of the resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Illuminator</key>
 	<dict>
@@ -890,6 +1142,8 @@
 		<string>ilu</string>
 		<key>description</key>
 		<string>A person providing decoration to a specific item using precious metals or color, often with elaborate designs and motifs</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Illustrator</key>
 	<dict>
@@ -897,6 +1151,8 @@
 		<string>ill</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by supplementing the primary content with drawings, diagrams, photographs, etc. If the work is primarily the artistic content created by this entity, use artist or photographer</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Inscriber</key>
 	<dict>
@@ -904,6 +1160,8 @@
 		<string>ins</string>
 		<key>description</key>
 		<string>A person who has written a statement of dedication or gift</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Instrumentalist</key>
 	<dict>
@@ -911,6 +1169,8 @@
 		<string>itr</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by playing a musical instrument</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Interviewee</key>
 	<dict>
@@ -918,6 +1178,8 @@
 		<string>ive</string>
 		<key>description</key>
 		<string>A person, family or organization responsible for creating or contributing to a resource by responding to an interviewer, usually a reporter, pollster, or some other information gathering agent</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Interviewer</key>
 	<dict>
@@ -925,6 +1187,8 @@
 		<string>ivr</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating or contributing to a resource by acting as an interviewer, reporter, pollster, or some other information gathering agent</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Inventor</key>
 	<dict>
@@ -932,6 +1196,8 @@
 		<string>inv</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a new device or process</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Issuing body</key>
 	<dict>
@@ -939,6 +1205,8 @@
 		<string>isb</string>
 		<key>description</key>
 		<string>A person, family or organization issuing a work, such as an official organ of the body</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Judge</key>
 	<dict>
@@ -946,6 +1214,8 @@
 		<string>jud</string>
 		<key>description</key>
 		<string>A person who hears and decides on legal matters in court.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Jurisdiction governed</key>
 	<dict>
@@ -953,6 +1223,8 @@
 		<string>jug</string>
 		<key>description</key>
 		<string>A jurisdiction governed by a law, regulation, etc., that was enacted by another jurisdiction</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Laboratory</key>
 	<dict>
@@ -960,6 +1232,8 @@
 		<string>lbr</string>
 		<key>description</key>
 		<string>An organization that provides scientific analyses of material samples</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Laboratory director</key>
 	<dict>
@@ -967,6 +1241,8 @@
 		<string>ldr</string>
 		<key>description</key>
 		<string>A person or organization that manages or supervises work done in a controlled setting or environment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Landscape architect</key>
 	<dict>
@@ -974,6 +1250,8 @@
 		<string>lsa</string>
 		<key>description</key>
 		<string>An architect responsible for creating landscape works. This work involves coordinating the arrangement of existing and proposed land features and structures</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Lead</key>
 	<dict>
@@ -981,6 +1259,8 @@
 		<string>led</string>
 		<key>description</key>
 		<string>A person or organization that takes primary responsibility for a particular activity or endeavor. May be combined with another relator term or code to show the greater importance this person or organization has regarding that particular role. If more than one relator is assigned to a heading, use the Lead relator only if it applies to all the relators</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Lender</key>
 	<dict>
@@ -988,6 +1268,8 @@
 		<string>len</string>
 		<key>description</key>
 		<string>A person or organization permitting the temporary use of a book, manuscript, etc., such as for photocopying or microfilming</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelant</key>
 	<dict>
@@ -995,6 +1277,8 @@
 		<string>lil</string>
 		<key>description</key>
 		<string>A person or organization who files a libel in an ecclesiastical or admiralty case</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelant-appellant</key>
 	<dict>
@@ -1002,6 +1286,8 @@
 		<string>lit</string>
 		<key>description</key>
 		<string>A libelant who takes an appeal from one ecclesiastical court or admiralty to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelant-appellee</key>
 	<dict>
@@ -1009,6 +1295,8 @@
 		<string>lie</string>
 		<key>description</key>
 		<string>A libelant against whom an appeal is taken from one ecclesiastical court or admiralty to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelee</key>
 	<dict>
@@ -1016,6 +1304,8 @@
 		<string>lel</string>
 		<key>description</key>
 		<string>A person or organization against whom a libel has been filed in an ecclesiastical court or admiralty</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelee-appellant</key>
 	<dict>
@@ -1023,6 +1313,8 @@
 		<string>let</string>
 		<key>description</key>
 		<string>A libelee who takes an appeal from one ecclesiastical court or admiralty to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Libelee-appellee</key>
 	<dict>
@@ -1030,6 +1322,8 @@
 		<string>lee</string>
 		<key>description</key>
 		<string>A libelee against whom an appeal is taken from one ecclesiastical court or admiralty to another to reverse the judgment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Librettist</key>
 	<dict>
@@ -1037,6 +1331,8 @@
 		<string>lbt</string>
 		<key>description</key>
 		<string>An author of a libretto of an opera or other stage work, or an oratorio</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Licensee</key>
 	<dict>
@@ -1044,6 +1340,8 @@
 		<string>lse</string>
 		<key>description</key>
 		<string>A person or organization who is an original recipient of the right to print or publish</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Licensor</key>
 	<dict>
@@ -1051,6 +1349,8 @@
 		<string>lso</string>
 		<key>description</key>
 		<string>A person or organization who is a signer of the license, imprimatur, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Lighting designer</key>
 	<dict>
@@ -1058,6 +1358,8 @@
 		<string>lgd</string>
 		<key>description</key>
 		<string>A person or organization who designs the lighting scheme for a theatrical presentation, entertainment, motion picture, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Lithographer</key>
 	<dict>
@@ -1065,6 +1367,8 @@
 		<string>ltg</string>
 		<key>description</key>
 		<string>A person or organization who prepares the stone or plate for lithographic printing, including a graphic artist creating a design directly on the surface from which printing will be done.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Lyricist</key>
 	<dict>
@@ -1072,6 +1376,8 @@
 		<string>lyr</string>
 		<key>description</key>
 		<string>An author of the words of a non-dramatic musical work (e.g. the text of a song), except for oratorios</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Manufacture place</key>
 	<dict>
@@ -1079,6 +1385,8 @@
 		<string>mfp</string>
 		<key>description</key>
 		<string>The place of manufacture (e.g., printing, duplicating, casting, etc.) of a resource in a published form</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Manufacturer</key>
 	<dict>
@@ -1086,6 +1394,8 @@
 		<string>mfr</string>
 		<key>description</key>
 		<string>A person or organization responsible for printing, duplicating, casting, etc. a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Marbler</key>
 	<dict>
@@ -1093,6 +1403,8 @@
 		<string>mrb</string>
 		<key>description</key>
 		<string>The entity responsible for marbling paper, cloth, leather, etc. used in construction of a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Markup editor</key>
 	<dict>
@@ -1100,6 +1412,8 @@
 		<string>mrk</string>
 		<key>description</key>
 		<string>A person or organization performing the coding of SGML, HTML, or XML markup of metadata, text, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Medium</key>
 	<dict>
@@ -1107,6 +1421,8 @@
 		<string>med</string>
 		<key>description</key>
 		<string>A person held to be a channel of communication between the earthly world and a world</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Metadata contact</key>
 	<dict>
@@ -1114,6 +1430,8 @@
 		<string>mdc</string>
 		<key>description</key>
 		<string>A person or organization primarily responsible for compiling and maintaining the original description of a metadata set (e.g., geospatial metadata set)</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Metal-engraver</key>
 	<dict>
@@ -1121,6 +1439,8 @@
 		<string>mte</string>
 		<key>description</key>
 		<string>An engraver responsible for decorations, illustrations, letters, etc. cut on a metal surface for printing or decoration</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Minute taker</key>
 	<dict>
@@ -1128,6 +1448,8 @@
 		<string>mtk</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for recording the minutes of a meeting</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Moderator</key>
 	<dict>
@@ -1135,6 +1457,8 @@
 		<string>mod</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by leading a program (often broadcast) where topics are discussed, usually with participation of experts in fields related to the discussion</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Monitor</key>
 	<dict>
@@ -1142,6 +1466,8 @@
 		<string>mon</string>
 		<key>description</key>
 		<string>A person or organization that supervises compliance with the contract and is responsible for the report and controls its distribution. Sometimes referred to as the grantee, or controlling agency</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Music copyist</key>
 	<dict>
@@ -1149,6 +1475,8 @@
 		<string>mcp</string>
 		<key>description</key>
 		<string>A person who transcribes or copies musical notation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Musical director</key>
 	<dict>
@@ -1156,6 +1484,8 @@
 		<string>msd</string>
 		<key>description</key>
 		<string>A person who coordinates the activities of the composer, the sound editor, and sound mixers for a moving image production or for a musical or dramatic presentation or entertainment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Musician</key>
 	<dict>
@@ -1163,6 +1493,8 @@
 		<string>mus</string>
 		<key>description</key>
 		<string>A person or organization who performs music or contributes to the musical content of a work when it is not possible or desirable to identify the function more precisely</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Narrator</key>
 	<dict>
@@ -1170,6 +1502,8 @@
 		<string>nrt</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by reading or speaking in order to give an account of an act, occurrence, course of events, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Onscreen presenter</key>
 	<dict>
@@ -1177,6 +1511,8 @@
 		<string>osp</string>
 		<key>description</key>
 		<string>A performer contributing to an expression of a work by appearing on screen in nonfiction moving image materials or introductions to fiction moving image materials to provide contextual or background information. Use when another term (e.g., narrator, host) is either not applicable or not desired</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Opponent</key>
 	<dict>
@@ -1184,6 +1520,8 @@
 		<string>opn</string>
 		<key>description</key>
 		<string>A person or organization responsible for opposing a thesis or dissertation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Organizer</key>
 	<dict>
@@ -1191,6 +1529,8 @@
 		<string>orm</string>
 		<key>description</key>
 		<string>A person, family, or organization organizing the exhibit, event, conference, etc., which gave rise to a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Originator</key>
 	<dict>
@@ -1198,6 +1538,8 @@
 		<string>org</string>
 		<key>description</key>
 		<string>A person or organization performing the work, i.e., the name of a person or organization associated with the intellectual content of the work. This category does not include the publisher or personal affiliation, or sponsor except where it is also the corporate author</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Other</key>
 	<dict>
@@ -1205,6 +1547,8 @@
 		<string>oth</string>
 		<key>description</key>
 		<string>A role that has no equivalent in the MARC list.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Owner</key>
 	<dict>
@@ -1212,6 +1556,8 @@
 		<string>own</string>
 		<key>description</key>
 		<string>A person, family, or organization that currently owns an item or collection, i.e.has legal possession of a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Panelist</key>
 	<dict>
@@ -1219,6 +1565,8 @@
 		<string>pan</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by participating in a program (often broadcast) where topics are discussed, usually with participation of experts in fields related to the discussion</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Papermaker</key>
 	<dict>
@@ -1226,6 +1574,8 @@
 		<string>ppm</string>
 		<key>description</key>
 		<string>A person or organization responsible for the production of paper, usually from wood, cloth, or other fibrous material</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Patent applicant</key>
 	<dict>
@@ -1233,6 +1583,8 @@
 		<string>pta</string>
 		<key>description</key>
 		<string>A person or organization that applied for a patent</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Patent holder</key>
 	<dict>
@@ -1240,6 +1592,8 @@
 		<string>pth</string>
 		<key>description</key>
 		<string>A person or organization that was granted the patent referred to by the item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Patron</key>
 	<dict>
@@ -1247,6 +1601,8 @@
 		<string>pat</string>
 		<key>description</key>
 		<string>A person or organization responsible for commissioning a work. Usually a patron uses his or her means or influence to support the work of artists, writers, etc. This includes those who commission and pay for individual works</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Performer</key>
 	<dict>
@@ -1254,6 +1610,8 @@
 		<string>prf</string>
 		<key>description</key>
 		<string>A person contributing to a resource by performing music, acting, dancing, speaking, etc., often in a musical or dramatic presentation, etc. If specific codes are used, [prf] is used for a person whose principal skill is not known or specified</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Permitting agency</key>
 	<dict>
@@ -1261,6 +1619,8 @@
 		<string>pma</string>
 		<key>description</key>
 		<string>An organization (usually a government agency) that issues permits under which work is accomplished</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Photographer</key>
 	<dict>
@@ -1268,6 +1628,8 @@
 		<string>pht</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a photographic work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Plaintiff</key>
 	<dict>
@@ -1275,6 +1637,8 @@
 		<string>ptf</string>
 		<key>description</key>
 		<string>A person or organization who brings a suit in a civil proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Plaintiff-appellant</key>
 	<dict>
@@ -1282,6 +1646,8 @@
 		<string>ptt</string>
 		<key>description</key>
 		<string>A plaintiff who takes an appeal from one court or jurisdiction to another to reverse the judgment, usually in a legal proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Plaintiff-appellee</key>
 	<dict>
@@ -1289,6 +1655,8 @@
 		<string>pte</string>
 		<key>description</key>
 		<string>A plaintiff against whom an appeal is taken from one court or jurisdiction to another to reverse the judgment, usually in a legal proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Platemaker</key>
 	<dict>
@@ -1296,6 +1664,8 @@
 		<string>plt</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in manufacturing a manifestation by preparing plates used in the production of printed images and/or text</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Praeses</key>
 	<dict>
@@ -1303,6 +1673,8 @@
 		<string>pra</string>
 		<key>description</key>
 		<string>A person who is the faculty moderator of an academic disputation, normally proposing a thesis and participating in the ensuing disputation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Presenter</key>
 	<dict>
@@ -1310,6 +1682,8 @@
 		<string>pre</string>
 		<key>description</key>
 		<string>A person or organization mentioned in an “presents” credit for moving image materials and who is associated with production, finance, or distribution in some way. A vanity credit; in early years, normally the head of a studio</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Printer</key>
 	<dict>
@@ -1317,6 +1691,8 @@
 		<string>prt</string>
 		<key>description</key>
 		<string>A person, family, or organization involved in manufacturing a manifestation of printed text, notated music, etc., from type or plates, such as a book, newspaper, magazine, broadside, score, etc</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Printer of plates</key>
 	<dict>
@@ -1324,6 +1700,8 @@
 		<string>pop</string>
 		<key>description</key>
 		<string>A person or organization who prints illustrations from plates.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Printmaker</key>
 	<dict>
@@ -1331,6 +1709,8 @@
 		<string>prm</string>
 		<key>description</key>
 		<string>A person or organization who makes a relief, intaglio, or planographic printing surface</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Process contact</key>
 	<dict>
@@ -1338,6 +1718,8 @@
 		<string>prc</string>
 		<key>description</key>
 		<string>A person or organization primarily responsible for performing or initiating a process, such as is done with the collection of metadata sets</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Producer</key>
 	<dict>
@@ -1345,6 +1727,8 @@
 		<string>pro</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for most of the business aspects of a production for screen, audio recording, television, webcast, etc. The producer is generally responsible for fund raising, managing the production, hiring key personnel, arranging for distributors, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Production company</key>
 	<dict>
@@ -1352,6 +1736,8 @@
 		<string>prn</string>
 		<key>description</key>
 		<string>An organization that is responsible for financial, technical, and organizational management of a production for stage, screen, audio recording, television, webcast, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Production designer</key>
 	<dict>
@@ -1359,6 +1745,8 @@
 		<string>prs</string>
 		<key>description</key>
 		<string>A person or organization responsible for designing the overall visual appearance of a moving image production</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Production manager</key>
 	<dict>
@@ -1366,6 +1754,8 @@
 		<string>pmn</string>
 		<key>description</key>
 		<string>A person responsible for all technical and business matters in a production</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Production personnel</key>
 	<dict>
@@ -1373,6 +1763,8 @@
 		<string>prd</string>
 		<key>description</key>
 		<string>A person or organization associated with the production (props, lighting, special effects, etc.) of a musical or dramatic presentation or entertainment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Production place</key>
 	<dict>
@@ -1380,6 +1772,8 @@
 		<string>prp</string>
 		<key>description</key>
 		<string>The place of production (e.g., inscription, fabrication, construction, etc.) of a resource in an unpublished form</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Programmer</key>
 	<dict>
@@ -1387,6 +1781,8 @@
 		<string>prg</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for creating a computer program</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Project director</key>
 	<dict>
@@ -1394,6 +1790,8 @@
 		<string>pdr</string>
 		<key>description</key>
 		<string>A person or organization with primary responsibility for all essential aspects of a project, has overall responsibility for managing projects, or provides overall direction to a project manager</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Proofreader</key>
 	<dict>
@@ -1401,6 +1799,8 @@
 		<string>pfr</string>
 		<key>description</key>
 		<string>A person who corrects printed matter. For manuscripts, use Corrector [crr]</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Provider</key>
 	<dict>
@@ -1408,6 +1808,8 @@
 		<string>prv</string>
 		<key>description</key>
 		<string>A person or organization who produces, publishes, manufactures, or distributes a resource if specific codes are not desired (e.g. [mfr], [pbl])</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Publication place</key>
 	<dict>
@@ -1415,6 +1817,8 @@
 		<string>pup</string>
 		<key>description</key>
 		<string>The place where a resource is published</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Publisher</key>
 	<dict>
@@ -1422,6 +1826,8 @@
 		<string>pbl</string>
 		<key>description</key>
 		<string>A person or organization responsible for publishing, releasing, or issuing a resource</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Publishing director</key>
 	<dict>
@@ -1429,6 +1835,8 @@
 		<string>pbd</string>
 		<key>description</key>
 		<string>A person or organization who presides over the elaboration of a collective work to ensure its coherence or continuity. This includes editors-in-chief, literary editors, editors of series, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Puppeteer</key>
 	<dict>
@@ -1436,6 +1844,8 @@
 		<string>ppt</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by manipulating, controlling, or directing puppets or marionettes in a moving image production or a musical or dramatic presentation or entertainment</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Radio director</key>
 	<dict>
@@ -1443,6 +1853,8 @@
 		<string>rdd</string>
 		<key>description</key>
 		<string>A director responsible for the general management and supervision of a radio program</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Radio producer</key>
 	<dict>
@@ -1450,6 +1862,8 @@
 		<string>rpc</string>
 		<key>description</key>
 		<string>A producer responsible for most of the business aspects of a radio program</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Recording engineer</key>
 	<dict>
@@ -1457,6 +1871,8 @@
 		<string>rce</string>
 		<key>description</key>
 		<string>A person contributing to a resource by supervising the technical aspects of a sound or video recording session</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Recordist</key>
 	<dict>
@@ -1464,6 +1880,8 @@
 		<string>rcd</string>
 		<key>description</key>
 		<string>A person or organization who uses a recording device to capture sounds and/or video during a recording session, including field recordings of natural sounds, folkloric events, music, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Redaktor</key>
 	<dict>
@@ -1471,6 +1889,8 @@
 		<string>red</string>
 		<key>description</key>
 		<string>A person or organization who writes or develops the framework for an item without being intellectually responsible for its content</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Renderer</key>
 	<dict>
@@ -1478,6 +1898,8 @@
 		<string>ren</string>
 		<key>description</key>
 		<string>A person or organization who prepares drawings of architectural designs (i.e., renderings) in accurate, representational perspective to show what the project will look like when completed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Reporter</key>
 	<dict>
@@ -1485,6 +1907,8 @@
 		<string>rpt</string>
 		<key>description</key>
 		<string>A person or organization who writes or presents reports of news or current events on air or in print</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Repository</key>
 	<dict>
@@ -1492,6 +1916,8 @@
 		<string>rps</string>
 		<key>description</key>
 		<string>An organization that hosts data or material culture objects and provides services to promote long term, consistent and shared use of those data or objects</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Research team head</key>
 	<dict>
@@ -1499,6 +1925,8 @@
 		<string>rth</string>
 		<key>description</key>
 		<string>A person who directed or managed a research project</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Research team member</key>
 	<dict>
@@ -1506,6 +1934,8 @@
 		<string>rtm</string>
 		<key>description</key>
 		<string>A person who participated in a research project but whose role did not involve direction or management of it</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Researcher</key>
 	<dict>
@@ -1513,6 +1943,8 @@
 		<string>res</string>
 		<key>description</key>
 		<string>A person or organization responsible for performing research</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Respondent</key>
 	<dict>
@@ -1520,6 +1952,8 @@
 		<string>rsp</string>
 		<key>description</key>
 		<string>A person or organization who makes an answer to the courts pursuant to an application for redress (usually in an equity proceeding) or a candidate for a degree who defends or opposes a thesis provided by the praeses in an academic disputation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Respondent-appellant</key>
 	<dict>
@@ -1527,6 +1961,8 @@
 		<string>rst</string>
 		<key>description</key>
 		<string>A respondent who takes an appeal from one court or jurisdiction to another to reverse the judgment, usually in an equity proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Respondent-appellee</key>
 	<dict>
@@ -1534,6 +1970,8 @@
 		<string>rse</string>
 		<key>description</key>
 		<string>A respondent against whom an appeal is taken from one court or jurisdiction to another to reverse the judgment, usually in an equity proceeding</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Responsible party</key>
 	<dict>
@@ -1541,6 +1979,8 @@
 		<string>rpy</string>
 		<key>description</key>
 		<string>A person or organization legally responsible for the content of the published material</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Restager</key>
 	<dict>
@@ -1548,6 +1988,8 @@
 		<string>rsg</string>
 		<key>description</key>
 		<string>A person or organization, other than the original choreographer or director, responsible for restaging a choreographic or dramatic work and who contributes minimal new content</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Restorationist</key>
 	<dict>
@@ -1555,6 +1997,8 @@
 		<string>rsr</string>
 		<key>description</key>
 		<string>A person, family, or organization responsible for the set of technical, editorial, and intellectual procedures aimed at compensating for the degradation of an item by bringing it back to a state as close as possible to its original condition</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Reviewer</key>
 	<dict>
@@ -1562,6 +2006,8 @@
 		<string>rev</string>
 		<key>description</key>
 		<string>A person or organization responsible for the review of a book, motion picture, performance, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Rubricator</key>
 	<dict>
@@ -1569,6 +2015,8 @@
 		<string>rbr</string>
 		<key>description</key>
 		<string>A person or organization responsible for parts of a work, often headings or opening parts of a manuscript, that appear in a distinctive color, usually red</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Scenarist</key>
 	<dict>
@@ -1576,6 +2024,8 @@
 		<string>sce</string>
 		<key>description</key>
 		<string>A person or organization who is the author of a motion picture screenplay, generally the person who wrote the scenarios for a motion picture during the silent era</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Scientific advisor</key>
 	<dict>
@@ -1583,6 +2033,8 @@
 		<string>sad</string>
 		<key>description</key>
 		<string>A person or organization who brings scientific, pedagogical, or historical competence to the conception and realization on a work, particularly in the case of audio-visual items</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Screenwriter</key>
 	<dict>
@@ -1590,6 +2042,8 @@
 		<string>aus</string>
 		<key>description</key>
 		<string>An author of a screenplay, script, or scene</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Scribe</key>
 	<dict>
@@ -1597,6 +2051,8 @@
 		<string>scr</string>
 		<key>description</key>
 		<string>A person who is an amanuensis and for a writer of manuscripts proper. For a person who makes pen-facsimiles, use Facsimilist [fac]</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Sculptor</key>
 	<dict>
@@ -1604,6 +2060,8 @@
 		<string>scl</string>
 		<key>description</key>
 		<string>An artist responsible for creating a three-dimensional work by modeling, carving, or similar technique</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Second party</key>
 	<dict>
@@ -1611,6 +2069,8 @@
 		<string>spy</string>
 		<key>description</key>
 		<string>A person or organization who is identified as the party of the second part. In the case of transfer of right, this is the assignee, transferee, licensee, grantee, etc. Multiple parties can be named jointly as the second party</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Secretary</key>
 	<dict>
@@ -1618,6 +2078,8 @@
 		<string>sec</string>
 		<key>description</key>
 		<string>A person or organization who is a recorder, redactor, or other person responsible for expressing the views of a organization</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Seller</key>
 	<dict>
@@ -1625,6 +2087,8 @@
 		<string>sll</string>
 		<key>description</key>
 		<string>A former owner of an item who sold that item to another owner</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Set designer</key>
 	<dict>
@@ -1632,6 +2096,8 @@
 		<string>std</string>
 		<key>description</key>
 		<string>A person who translates the rough sketches of the art director into actual architectural structures for a theatrical presentation, entertainment, motion picture, etc. Set designers draw the detailed guides and specifications for building the set</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Setting</key>
 	<dict>
@@ -1639,6 +2105,8 @@
 		<string>stg</string>
 		<key>description</key>
 		<string>An entity in which the activity or plot of a work takes place, e.g. a geographic place, a time period, a building, an event</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Signer</key>
 	<dict>
@@ -1646,13 +2114,17 @@
 		<string>sgn</string>
 		<key>description</key>
 		<string>A person whose signature appears without a presentation or other statement indicative of provenance. When there is a presentation statement, use Inscriber [ins].</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Singer</key>
 	<dict>
 		<key>code</key>
 		<string>sng</string>
 		<key>description</key>
-		<string>A performer contributing to a resource by using his/her/their voice, with or without instrumental accompaniment, to produce music. A singer&apos;s performance may or may not include actual words</string>
+		<string>A performer contributing to a resource by using his/her/their voice, with or without instrumental accompaniment, to produce music. A singer's performance may or may not include actual words</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Sound designer</key>
 	<dict>
@@ -1660,6 +2132,8 @@
 		<string>sds</string>
 		<key>description</key>
 		<string>A person who produces and reproduces the sound score (both live and recorded), the installation of microphones, the setting of sound levels, and the coordination of sources of sound for a production</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Speaker</key>
 	<dict>
@@ -1667,6 +2141,8 @@
 		<string>spk</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by speaking words, such as a lecture, speech, etc. </string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Sponsor</key>
 	<dict>
@@ -1674,6 +2150,8 @@
 		<string>spn</string>
 		<key>description</key>
 		<string>A person, family, or organization sponsoring some aspect of a resource, e.g., funding research, sponsoring an event</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Stage director</key>
 	<dict>
@@ -1681,6 +2159,8 @@
 		<string>sgd</string>
 		<key>description</key>
 		<string>A person or organization contributing to a stage resource through the overall management and supervision of a performance</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Stage manager</key>
 	<dict>
@@ -1688,6 +2168,8 @@
 		<string>stm</string>
 		<key>description</key>
 		<string>A person who is in charge of everything that occurs on a performance stage, and who acts as chief of all crews and assistant to a director during rehearsals</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Standards body</key>
 	<dict>
@@ -1695,6 +2177,8 @@
 		<string>stn</string>
 		<key>description</key>
 		<string>An organization responsible for the development or enforcement of a standard</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Stereotyper</key>
 	<dict>
@@ -1702,13 +2186,17 @@
 		<string>str</string>
 		<key>description</key>
 		<string>A person or organization who creates a new plate for printing by molding or copying another printing surface</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Storyteller</key>
 	<dict>
 		<key>code</key>
 		<string>stl</string>
 		<key>description</key>
-		<string>A performer contributing to a resource by relaying a creator&apos;s original story with dramatic or theatrical interpretation</string>
+		<string>A performer contributing to a resource by relaying a creator's original story with dramatic or theatrical interpretation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Supporting host</key>
 	<dict>
@@ -1716,6 +2204,8 @@
 		<string>sht</string>
 		<key>description</key>
 		<string>A person or organization that supports (by allocating facilities, staff, or other resources) a project, program, meeting, event, data objects, material culture objects, or other entities capable of support</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Surveyor</key>
 	<dict>
@@ -1723,6 +2213,8 @@
 		<string>srv</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a cartographic resource by providing measurements or dimensional relationships for the geographic area represented</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Teacher</key>
 	<dict>
@@ -1730,6 +2222,8 @@
 		<string>tch</string>
 		<key>description</key>
 		<string>A performer contributing to a resource by giving instruction or providing a demonstration</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Technical director</key>
 	<dict>
@@ -1737,6 +2231,8 @@
 		<string>tcd</string>
 		<key>description</key>
 		<string>A person who is ultimately in charge of scenery, props, lights and sound for a production</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Television director</key>
 	<dict>
@@ -1744,6 +2240,8 @@
 		<string>tld</string>
 		<key>description</key>
 		<string>A director responsible for the general management and supervision of a television program</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Television producer</key>
 	<dict>
@@ -1751,6 +2249,8 @@
 		<string>tlp</string>
 		<key>description</key>
 		<string>A producer responsible for most of the business aspects of a television program</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Thesis advisor</key>
 	<dict>
@@ -1758,6 +2258,8 @@
 		<string>ths</string>
 		<key>description</key>
 		<string>A person under whose supervision a degree candidate develops and presents a thesis, mémoire, or text of a dissertation</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Transcriber</key>
 	<dict>
@@ -1765,6 +2267,8 @@
 		<string>trc</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by changing it from one system of notation to another. For a work transcribed for a different instrument or performing group, see Arranger [arr]. For makers of pen-facsimiles, use Facsimilist [fac]</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Translator</key>
 	<dict>
@@ -1772,6 +2276,8 @@
 		<string>trl</string>
 		<key>description</key>
 		<string>A person or organization who renders a text from one language into another, or from an older form of a language into the modern form</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Type designer</key>
 	<dict>
@@ -1779,6 +2285,8 @@
 		<string>tyd</string>
 		<key>description</key>
 		<string>A person or organization who designs the type face used in a particular item</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Typographer</key>
 	<dict>
@@ -1786,6 +2294,8 @@
 		<string>tyg</string>
 		<key>description</key>
 		<string>A person or organization primarily responsible for choice and arrangement of type used in an item. If the typographer is also responsible for other aspects of the graphic design of a book (e.g., Book designer [bkd]), codes for both functions may be needed</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>University place</key>
 	<dict>
@@ -1793,6 +2303,8 @@
 		<string>uvp</string>
 		<key>description</key>
 		<string>A place where a university that is associated with a resource is located, for example, a university where an academic dissertation or thesis was presented</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Videographer</key>
 	<dict>
@@ -1800,6 +2312,8 @@
 		<string>vdg</string>
 		<key>description</key>
 		<string>A person in charge of a video production, e.g. the video recording of a stage production as opposed to a commercial motion picture. The videographer may be the camera operator or may supervise one or more camera operators. Do not confuse with cinematographer</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Voice actor</key>
 	<dict>
@@ -1807,6 +2321,8 @@
 		<string>vac</string>
 		<key>description</key>
 		<string>An actor contributing to a resource by providing the voice for characters in radio and audio productions and for animated characters in moving image works, as well as by providing voice overs in radio and television commercials, dubbed resources, etc.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Witness</key>
 	<dict>
@@ -1814,6 +2330,8 @@
 		<string>wit</string>
 		<key>description</key>
 		<string>Use for a person who verifies the truthfulness of an event or action.</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Wood engraver</key>
 	<dict>
@@ -1821,6 +2339,8 @@
 		<string>wde</string>
 		<key>description</key>
 		<string>A person or organization who makes prints by cutting the image in relief on the end-grain of a wood block</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Woodcutter</key>
 	<dict>
@@ -1828,6 +2348,8 @@
 		<string>wdc</string>
 		<key>description</key>
 		<string>A person or organization who makes prints by cutting the image in relief on the plank side of a wood block</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of accompanying material</key>
 	<dict>
@@ -1835,6 +2357,8 @@
 		<string>wam</string>
 		<key>description</key>
 		<string>A person or organization who writes significant material which accompanies a sound recording or other audiovisual material</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of added commentary</key>
 	<dict>
@@ -1842,6 +2366,8 @@
 		<string>wac</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to an expression of a work by providing an interpretation or critical explanation of the original work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of added lyrics</key>
 	<dict>
@@ -1849,6 +2375,8 @@
 		<string>wal</string>
 		<key>description</key>
 		<string>A writer of words added to an expression of a musical work. For lyric writing in collaboration with a composer to form an original work, see lyricist</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of added text</key>
 	<dict>
@@ -1856,6 +2384,8 @@
 		<string>wat</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a non-textual resource by providing text for the non-textual work (e.g., writing captions for photographs, descriptions of maps).</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of introduction</key>
 	<dict>
@@ -1863,6 +2393,8 @@
 		<string>win</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by providing an introduction to the original work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of preface</key>
 	<dict>
@@ -1870,6 +2402,8 @@
 		<string>wpr</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by providing a preface to the original work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 	<key>Writer of supplementary textual content</key>
 	<dict>
@@ -1877,6 +2411,8 @@
 		<string>wst</string>
 		<key>description</key>
 		<string>A person, family, or organization contributing to a resource by providing supplementary textual content (e.g., an introduction, a preface) to the original work</string>
+		<key>scheme</key>
+		<string>marc:relators</string>
 	</dict>
 </dict>
 </plist>

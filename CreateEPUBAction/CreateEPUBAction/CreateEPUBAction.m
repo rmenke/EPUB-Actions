@@ -34,7 +34,8 @@ NSString * const EPUBManifestItemFileTypeIdentifierKey = @"type";
 
 NSString * const EPUBCreatorDisplayNameKey = @"displayName";
 NSString * const EPUBCreatorFileAsKey = @"fileAsName";
-NSString * const EPUBCreatorRoleKey = @"role";
+NSString * const EPUBCreatorRoleKeyPath = @"role.code";
+NSString * const EPUBCreatorSchemeKeyPath = @"role.scheme";
 
 @implementation NSString (UTTypes)
 
@@ -105,8 +106,8 @@ NSString * const EPUBCreatorRoleKey = @"role";
         
         NSBundle *bundle = [NSBundle bundleForClass:self.class];
 
-        NSURL *url = [bundle URLForResource:@"MARC" withExtension:@"plist"];
-        NSAssert(url, @"Unable to locate resource “MARC.plist.”");
+        NSURL *url = [bundle URLForResource:@"Relators" withExtension:@"plist"];
+        NSAssert(url, @"Unable to locate resource “Relators.plist.”");
 
         NSData *data = [[NSData alloc] initWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
         NSAssert(data, @"Unable to read resource: %@", error.localizedFailureReason);
@@ -288,11 +289,13 @@ NSString * const EPUBCreatorRoleKey = @"role";
 #define A(NAME, STRING) [NSXMLNode attributeWithName:@#NAME stringValue:(STRING)]
 
     for (id creator in self.creators) {
-        NSString *displayName = [creator valueForKey:EPUBCreatorDisplayNameKey];
-        NSString *fileAsName = [creator valueForKey:EPUBCreatorFileAsKey];
-        NSString *role = [creator valueForKey:EPUBCreatorRoleKey];
+        NSString * _Nonnull  displayName = [creator valueForKey:EPUBCreatorDisplayNameKey];
+        NSString * _Nullable fileAsName = [creator valueForKey:EPUBCreatorFileAsKey];
+        NSString * _Nullable role = [creator valueForKeyPath:EPUBCreatorRoleKeyPath];
+        NSString * _Nullable scheme = [creator valueForKeyPath:EPUBCreatorSchemeKeyPath];
 
-        NSAssert(displayName, @"A creator must have a display name.");
+        NSAssert((role == nil) || (scheme != nil), @"Cannot have a role without a scheme.");
+        NSAssert((scheme == nil) || (role != nil), @"Cannot have a scheme without a role.");
 
         NSString *ident = [NSString stringWithFormat:@"creator-%lu", (unsigned long)(++index)];
 
@@ -302,7 +305,7 @@ NSString * const EPUBCreatorRoleKey = @"role";
         ident = [@"#" stringByAppendingString:ident];
 
         if (role.length) {
-            element = [NSXMLElement elementWithName:@"meta" children:@[T(role)] attributes:@[A(refines, ident), A(property, @"role"), A(scheme, @"marc:relators")]];
+            element = [NSXMLElement elementWithName:@"meta" children:@[T(role)] attributes:@[A(refines, ident), A(property, @"role"), A(scheme, scheme)]];
             [metadataElement addChild:element];
         }
 
@@ -412,6 +415,12 @@ NSString * const EPUBCreatorRoleKey = @"role";
     }
     if (self.creators.count == 0) {
         [self logMessageWithLevel:AMLogLevelWarn format:@"Some EPUB readers have problems if no creators are specified."];
+    }
+
+    for (id creator in self.creators) {
+        if ([[creator valueForKey:EPUBCreatorDisplayNameKey] length] == 0) {
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Every creator must have a display name." userInfo:nil];
+        }
     }
 
     NSProgress *progress = [NSProgress discreteProgressWithTotalUnitCount:100];
