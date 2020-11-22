@@ -135,7 +135,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git xcode-tag";
+			shellScript = "exec \"${PROJECT_DIR}/../git-xcode-tag\" \"${INFOPLIST_FILE}\"";
 			showEnvVarsInLog = 0;
 		};
 		E1B4C3AC1F491D1300CDC7C0 /* Check for Automator Errors */ = {

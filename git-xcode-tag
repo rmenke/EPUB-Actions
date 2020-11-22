@@ -1,0 +1,138 @@
+#!/bin/bash
+
+COMMAND="$(basename "$0")"
+
+OPTIONS="${COMMAND} [-n] [-t vers] plist-files...
+
+Apply semantic versioning to an Xcode project.  The semantic version
+may be specified on the command line or extracted from annotated tags
+in the repository.
+
+If there are no files supplied on the command-line, $COMMAND
+will use the contents of the environment variable INFOPLIST_FILE.
+This behavior is deprecated and will generate a warning.
+--
+    General Flags
+
+h,help!         show help
+t,tag!=semver   set the semantic version to be used
+
+    Diagnostics
+
+n,dry-run!      do not modify the files; just show the commands
+v,verbose       increase verbosity
+"
+
+eval "$(
+     echo "$OPTIONS" |
+          git rev-parse --parseopt -- "$@" ||
+     echo exit $?
+)"
+
+DRY_RUN=0 VERBOSE=0
+
+log_note () {
+    echo >&2 "${COMMAND}: note: $*"
+}
+
+log_debug () {
+    ((VERBOSE > 0)) && log_note "$*"
+}
+
+log_trace () {
+    ((VERBOSE > 1)) && log_note "$*"
+}
+
+log_warning () {
+    echo >&2 "${COMMAND}: warning: $*"
+}
+
+log_error () {
+    echo >&2 "${COMMAND}: error: $*"
+}
+
+while (($# > 0))
+do
+    OPT="$1"; shift
+
+    case "${OPT}" in
+        --) break;;
+        -n) DRY_RUN=1;;
+        -t) export SEMANTIC_VERSION="$1"; shift;;
+        -v) ((++VERBOSE));;
+
+        --no-verbose) VERBOSE=0;;
+
+        *) log_warning "ignoring unsupported flag '${OPT}'";;
+    esac
+done
+
+if [[ $# == 0 && -f "${INFOPLIST_FILE}" ]]; then
+    log_warning "Using INFOPLIST_FILE as target file"
+    set -- "${INFOPLIST_FILE}"
+fi
+
+if [[ $# == 0 ]]; then
+    log_error "no files specified on command line"
+    exit 2
+fi
+
+# If --dry-run was specified but the verbosity was not, set the
+# verbosity to 1.
+
+((DRY_RUN && !VERBOSE)) && VERBOSE=1
+
+# In most cases, the git-semver utility should be bundled with this
+# script in the repository.
+
+GIT_SEMVER="$(dirname "$0")/git-semver"
+
+# On the off-chance it is not, fall back on an installed version.
+
+[[ ! -x "${GIT_SEMVER}" ]] && GIT_SEMVER="git semver"
+
+SEMANTIC_VERSION="$($GIT_SEMVER)" || exit $?
+
+get_info () {
+    local result
+    result="$(/usr/libexec/PlistBuddy -c "Print :$1" "${PLIST_FILE}")"
+    log_trace "${PLIST_FILE}: get $1 => ${result}"
+    echo "${result}"
+}
+
+set_info () {
+    if ((DRY_RUN)); then
+        log_note "${PLIST_FILE}: would set $1 to $2"
+    else
+        log_debug "${PLIST_FILE}: set $1 to $2"
+        /usr/libexec/PlistBuddy -c "Set :$1 $2" "${PLIST_FILE}"
+    fi
+}
+
+# Determine the workspace status BEFORE modifying any Info.plist
+# files, or we will get spurious version bumps.
+
+DIRTY=0
+
+if [[ "$(git describe --always --dirty)" == *-dirty ]]; then
+    DIRTY=1
+    log_trace "workspace dirty; will bump build number"
+fi
+
+for PLIST_FILE; do
+    if ! /usr/bin/plutil -convert xml1 "${PLIST_FILE}"; then
+        log_warning "${PLIST_FILE}: No such file, skipped"
+        continue
+    fi
+
+    BUILD_NUM="$(get_info CFBundleVersion)"
+    CURRENT_VERSION="$(get_info CFBundleShortVersionString)"
+
+    if ((DIRTY)); then
+        set_info CFBundleVersion $((BUILD_NUM + 1))
+    fi
+
+    if [[ "x${CURRENT_VERSION}" != "x${SEMANTIC_VERSION}" ]]; then
+        set_info CFBundleShortVersionString "'${SEMANTIC_VERSION}'"
+    fi
+done

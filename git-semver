@@ -1,0 +1,186 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+our $VERSION = '1.00';
+
+=head1 NAME
+
+git-semver - extract semantic version from Git history
+
+=head1 SYNOPSIS
+
+B<git-semver>
+
+=head1 DESCRIPTION
+
+B<git-semver> attempts to extract the semantic version of the
+repository from Git annotated tags.  It parses the output of
+git-describe(1) to determine how much to "bump" the version since the
+last tagged release.  If the workspace is dirty, it assumes that the
+semantic version to be generated applies to the I<pending> commit.
+
+A tagged release is a revision with an annotated tag in the format
+B<v>I<semantic-version>.  The 'v' is not part of the version
+identifier but is part of the Git annotated tag.  Since a semantic
+version always begins with a digit, B<git-semver> assumes all tags
+that match the globbing pattern C<v[0-9]*> are tagged releases.
+
+How a version is bumped depends on the presence of a pre-release
+identifier.  If there is no pre-release identifier, then the patch
+level of the identifier is incremented by the value of the bump.
+
+If there is a pre-release, then the last dot-separated identifier of
+it is examined and incremented.  If last identifier is nonnumeric,
+B<git-semver> adds a new numeric identifier to the end of the
+pre-release.  Note that B<git-semver> will treat C<1.0.1-rc> and
+C<1.0.1-rc.0> as equivalent for the purposes of bumping, even though
+the specification states that the former has a lower precedence than
+the latter.  This is not necessarily a problem: if no bumping is
+required then no numeric suffix will be added.
+
+As a fallback, if no tagged versions can be found B<git-semver> will
+output C<0.0.1-alpha.1> and ignore the dirty state of the workspace.
+This is to support new repositories that may incorporate B<git-semver>
+into their build process prior to their first commit.  This behavior
+may change in the future as L<the SEMANTIC_VERSION environment
+variable|/"SEMANTIC_VERSION"> offers a better alternative.
+
+A bump to the major or minor version can be done through the use of
+environment variables instead of explicit annotations.
+
+=head2 Examples
+
+Given the following history with annotated tags:
+
+    v1.0.0
+    v1.0.1
+    <unannotated>
+    <unannotated>
+    HEAD (unannotated)
+
+B<git-semver> would output C<1.0.4> if the workspace is clean, or
+C<1.0.5> if the workspace is dirty.
+
+    v1.0.0
+    v1.0.1-rc
+    HEAD (unannotated)
+
+B<git-semver> would output C<1.0.1-rc.1> if the workspace is clean, or
+C<1.0.1-rc.2> if the workspace is dirty.
+
+=head1 ENVIRONMENT
+
+=over
+
+=item B<SEMANTIC_VERSION>
+
+If set, overrides the extraction of the information from the output of
+git-describe(1).  The state of the workspace is ignored.
+
+This variable is used to allow tools that invoke B<git-semver> to use
+a different semantic version value without adding annotated tags to
+the repository:
+
+    SEMANTIC_VERSION=1.1.0-rc.1 autoreconf --force
+
+The value of the environment variable is still parsed and normalized.
+It should I<not> start with a C<v>.
+
+=item B<GIT_DESCRIPTION>
+
+If set, completely bypasses the call to git-describe(1).  The form of
+B<GIT_DESCRIPTION> should be the same as the output of the command
+C<git describe --long --always --dirty --match='v[0-9]*'>.  Note that
+the annotated tag portion of the string must start with a C<v>.  This
+is used for debugging the parsing routines, although it can also be
+used when porting from existing non-Git RCS systems.
+
+Prefer L</"SEMANTIC_VERSION"> above to this.
+
+=back
+
+=head1 SEE ALSO
+
+git-describe(1), git-tag(1)
+
+L<"Semantic Versioning 2.0.0"|https://semver.org/spec/v2.0.0.html>
+
+=head1 COPYRIGHT AND LICENSE
+
+MIT License
+
+Copyright (c) 2020 Rob Menke
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+=cut
+
+my $bump = 0;                   # How far to change the base version
+
+unless (exists $ENV{SEMANTIC_VERSION}) {
+  # Set GIT_DESCRIPTION if it is not already set.
+
+  $ENV{GIT_DESCRIPTION} //=
+    `git describe --long --always --dirty --match='v[0-9]*'`;
+
+  # Extract the semantic version string and the distance from the
+  # tagged revision from the revision description.  If the workspace
+  # is dirty, increment the distance by one (the "pending" commit).
+
+  if ($ENV{GIT_DESCRIPTION} =~ /^v(.*)-(\d+)-(?:g[[:xdigit:]]+)(-dirty)?$/) {
+    ($ENV{SEMANTIC_VERSION}, $bump) = ($1, $2 + ($3 ? 1 : 0));
+  }
+}
+
+# If SEMANTIC_VERSION is still unset, fall back to the default for
+# unversioned repositories.  This may change in the future.
+
+$ENV{SEMANTIC_VERSION} //= '0.0.1-alpha.1';
+
+# This regular expression is straight from the horse's mouth:
+# https://semver.org/spec/v2.0.0.html#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+
+$ENV{SEMANTIC_VERSION} =~ /^
+    (?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)
+    (?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[[:alpha:]-][[:alnum:]-]*)
+        (?:\.(?:0|[1-9]\d*|\d*[[:alpha:]-][[:alnum:]-]*))*))?
+    (?:\+(?P<buildmetadata>[[:alnum:]-]+(?:\.[[:alnum:]-]+)*))?
+  $/x or die "unable to parse '$ENV{SEMANTIC_VERSION}' as a semantic version.\n";
+
+my %version = %+;
+
+if ($bump) {
+  my @component = split /\./, ($version{prerelease} //= '');
+
+  if (@component) {
+    push @component, 0 unless $component[-1] =~ /^(\d+)$/;
+    $component[-1] += $bump;
+    $version{prerelease} = join '.', @component;
+  }
+  else {
+    $version{patch} += $bump;
+  }
+}
+
+print "$version{major}.$version{minor}.$version{patch}";
+print "-$version{prerelease}" if $version{prerelease};
+print "\n";
