@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-const char * const EPUB_REGION_XATTR = "com.the-wabe.regions";
+static const char * const EPUB_REGION_XATTR = "com.the-wabe.regions";
 
 @interface NSURL (FileExtendedAttributes)
 
@@ -24,6 +24,7 @@ const char * const EPUB_REGION_XATTR = "com.the-wabe.regions";
 
 @property (nonatomic, readonly) BOOL ignoreAlpha;
 @property (nonatomic, readonly, copy, nonnull) NSColor *backgroundColor;
+@property (nonatomic, readonly) NSUInteger openKernelSize;
 
 - (nullable id)runWithInput:(nullable id)input error:(NSError **)error;
 

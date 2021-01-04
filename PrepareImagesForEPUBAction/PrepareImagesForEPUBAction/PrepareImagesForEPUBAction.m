@@ -7,9 +7,9 @@
 //
 
 #import "PrepareImagesForEPUBAction.h"
+#import "ImageBuffer.h"
 
 @import AppKit;
-@import ImageAnalysisKit;
 @import CoreImage;
 @import Darwin.POSIX.sys.xattr;
 
@@ -69,14 +69,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (CGRect)cropRectangle:(CGRect)rectangle {
-    __unused CGSize size = rectangle.size;
-
     DEF_DOUBLE_PARAM(cropTop);
     DEF_DOUBLE_PARAM(cropBottom);
     DEF_DOUBLE_PARAM(cropLeft);
     DEF_DOUBLE_PARAM(cropRight);
-
-    rectangle = CGRectStandardize(rectangle);
 
     if (cropTop > 0) {
         rectangle.origin.y += cropTop;
@@ -92,11 +88,6 @@ NS_ASSUME_NONNULL_BEGIN
     if (cropRight > 0) {
         rectangle.size.width -= cropRight;
     }
-
-    assert(cropLeft == CGRectGetMinX(rectangle));
-    assert(cropTop == CGRectGetMinY(rectangle));
-    assert(size.width - cropRight == CGRectGetMaxX(rectangle));
-    assert(size.height - cropBottom == CGRectGetMaxY(rectangle));
 
     return rectangle;
 }
@@ -120,24 +111,25 @@ NS_ASSUME_NONNULL_BEGIN
             continue;
         }
 
-        IABuffer *buffer = [[IABuffer alloc] initWithContentsOfURL:url error:error];
+        ImageBuffer *buffer = [[ImageBuffer alloc] initWithContentsOfURL:url error:error];
         if (!buffer) return nil;
 
         if (self.ignoreAlpha) {
             [self logMessageWithLevel:AMLogLevelDebug format:@"Flattening image prior to analysis"];
-            buffer = [buffer flattenAgainstColor:self.backgroundColor error:error];
-            if (!buffer) return nil;
+            if (![buffer flattenAgainstColor:self.backgroundColor error:error]) return nil;
         }
 
         CGRect ROI = [self cropRectangle:CGRectMake(0, 0, buffer.width, buffer.height)];
         NSSize openKernelSize = NSMakeSize(self.openKernelSize, self.openKernelSize);
 
-        buffer = [buffer extractBorderMaskWithROI:ROI error:error];
-        buffer = [[buffer erodeWithKernelSize:openKernelSize error:error] dilateWithKernelSize:openKernelSize error:error];
-        buffer = [[buffer dilateWithKernelSize:NSMakeSize(3.0, 3.0) error:error] subtractBuffer:buffer error:error];
+        if (![buffer autoAlphaInROI:ROI error:error]) return nil;
+
+        buffer = [buffer extractAlphaChannelAndReturnError:error];
+        buffer = [[buffer bufferByDilatingWithKernelSize:openKernelSize error:error] bufferByErodingWithKernelSize:openKernelSize error:error];
+        buffer = [[buffer bufferByDilatingWithKernelSize:NSMakeSize(3, 3) error:error] bufferBySubtractingBuffer:buffer error:error];
         if (!buffer) return nil;
 
-        NSArray<NSArray<NSNumber *> *> *regions = [buffer extractRegionsWithParameters:self.parameters error:error];
+        NSArray<NSArray<NSNumber *> *> *regions = [buffer regionsFromBufferWithParameters:self.parameters error:error];
         if (!regions) return nil;
 
         if (![url setRegions:regions error:error]) return nil;

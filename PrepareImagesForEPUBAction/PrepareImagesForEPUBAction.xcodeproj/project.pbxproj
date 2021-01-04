@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E12566C222E69A9500112AA9 /* ImageAnalysisKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */; };
-		E12566C822E69E8400112AA9 /* ImageAnalysisKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E14F64C3210E897E0076280D /* image06.png in Resources */ = {isa = PBXBuildFile; fileRef = E14F64C2210E897E0076280D /* image06.png */; };
 		E15AE4EB20D5DCD000A143D6 /* image03.gif in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E820D5DCD000A143D6 /* image03.gif */; };
 		E15AE4EC20D5DCD000A143D6 /* image04.png in Resources */ = {isa = PBXBuildFile; fileRef = E15AE4E920D5DCD000A143D6 /* image04.png */; };
+		E19CE6B3258B615700EFBA41 /* ImageBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = E19CE6B2258B615700EFBA41 /* ImageBuffer.mm */; };
+		E19CE6B7258B63CA00EFBA41 /* ImageBufferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E19CE6B5258B616600EFBA41 /* ImageBufferTests.m */; };
+		E19CE6BA258B642D00EFBA41 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E19CE6B9258B642D00EFBA41 /* Accelerate.framework */; };
 		E1CEAC7520E0A14800F832A9 /* image05.png in Resources */ = {isa = PBXBuildFile; fileRef = E1CEAC7420E0A14800F832A9 /* image05.png */; };
 		E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */; };
 		E1D0DABC20D21C1A00EF7F35 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D0DABA20D21C1A00EF7F35 /* main.xib */; };
@@ -22,27 +23,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E12566BE22E69A8700112AA9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E132CC4E22669D420021A732;
-			remoteInfo = ImageAnalysisKit;
-		};
-		E12566C022E69A8700112AA9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E132CC5722669D430021A732;
-			remoteInfo = ImageAnalysisKitTests;
-		};
-		E12566C322E69A9D00112AA9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E132CC4D22669D420021A732;
-			remoteInfo = ImageAnalysisKit;
-		};
 		E1D0DADE20D220E400EF7F35 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E1D0DAAB20D21C1A00EF7F35 /* Project object */;
@@ -59,17 +39,19 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E12566C822E69E8400112AA9 /* ImageAnalysisKit.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ImageAnalysisKit.xcodeproj; path = ImageAnalysisKit/ImageAnalysisKit.xcodeproj; sourceTree = "<group>"; };
 		E14F64C2210E897E0076280D /* image06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image06.png; sourceTree = "<group>"; };
 		E15AE4E820D5DCD000A143D6 /* image03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = image03.gif; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image03.gif; sourceTree = "<group>"; };
 		E15AE4E920D5DCD000A143D6 /* image04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image04.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image04.png; sourceTree = "<group>"; };
+		E19CE6B1258B615700EFBA41 /* ImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageBuffer.h; sourceTree = "<group>"; };
+		E19CE6B2258B615700EFBA41 /* ImageBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageBuffer.mm; sourceTree = "<group>"; };
+		E19CE6B5258B616600EFBA41 /* ImageBufferTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageBufferTests.m; sourceTree = "<group>"; };
+		E19CE6B9258B642D00EFBA41 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E1CEAC7420E0A14800F832A9 /* image05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image05.png; sourceTree = "<group>"; };
 		E1D0DAB420D21C1A00EF7F35 /* Prepare Images for EPUB.action */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Prepare Images for EPUB.action"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D0DAB720D21C1A00EF7F35 /* PrepareImagesForEPUBAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PrepareImagesForEPUBAction.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -81,6 +63,15 @@
 		E1D0DADA20D2202300EF7F35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E1D0DAE120D2283700EF7F35 /* image01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = image01.png; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image01.png; sourceTree = "<group>"; };
 		E1D0DAE320D2285000EF7F35 /* image02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = image02.jpg; path = ../../ImagesToEPUBAction/ImagesToEPUBActionTests/image02.jpg; sourceTree = "<group>"; };
+		E1D6E78D25930BE500846103 /* accumulator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = accumulator.hpp; sourceTree = "<group>"; };
+		E1D6E78E25930BE500846103 /* channel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = channel.hpp; sourceTree = "<group>"; };
+		E1D6E78F25930BE500846103 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
+		E1D6E79025930BE500846103 /* point_set.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = point_set.hpp; sourceTree = "<group>"; };
+		E1D6E79125930BE500846103 /* raster.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = raster.hpp; sourceTree = "<group>"; };
+		E1D6E79225930BE500846103 /* state.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = state.hpp; sourceTree = "<group>"; };
+		E1D6E79325930BE500846103 /* trig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = trig.hpp; sourceTree = "<group>"; };
+		E1D6E79425930BE500846103 /* types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = types.hpp; sourceTree = "<group>"; };
+		E1D6E79525930BE500846103 /* ppht.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ppht.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,7 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E12566C222E69A9500112AA9 /* ImageAnalysisKit.framework in Frameworks */,
+				E19CE6BA258B642D00EFBA41 /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,22 +93,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E12566BA22E69A8700112AA9 /* Products */ = {
+		E19CE6B8258B642D00EFBA41 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */,
-				E12566C122E69A8700112AA9 /* ImageAnalysisKitTests.xctest */,
+				E19CE6B9258B642D00EFBA41 /* Accelerate.framework */,
 			);
-			name = Products;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E1D0DAAA20D21C1A00EF7F35 = {
 			isa = PBXGroup;
 			children = (
-				E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */,
+				E1D6E77825930BE500846103 /* PPHT */,
 				E1D0DAB620D21C1A00EF7F35 /* PrepareImagesForEPUBAction */,
 				E1D0DAD720D2202300EF7F35 /* PrepareImagesForEPUBActionTests */,
 				E1D0DAB520D21C1A00EF7F35 /* Products */,
+				E19CE6B8258B642D00EFBA41 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,6 +126,8 @@
 			children = (
 				E1D0DAB720D21C1A00EF7F35 /* PrepareImagesForEPUBAction.h */,
 				E1D0DAB820D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m */,
+				E19CE6B1258B615700EFBA41 /* ImageBuffer.h */,
+				E19CE6B2258B615700EFBA41 /* ImageBuffer.mm */,
 				E1D0DABA20D21C1A00EF7F35 /* main.xib */,
 				E1D0DABD20D21C1A00EF7F35 /* Info.plist */,
 			);
@@ -145,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				E1D0DAD820D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m */,
+				E19CE6B5258B616600EFBA41 /* ImageBufferTests.m */,
 				E1D0DAE120D2283700EF7F35 /* image01.png */,
 				E1D0DAE320D2285000EF7F35 /* image02.jpg */,
 				E15AE4E820D5DCD000A143D6 /* image03.gif */,
@@ -154,6 +148,30 @@
 				E1D0DADA20D2202300EF7F35 /* Info.plist */,
 			);
 			path = PrepareImagesForEPUBActionTests;
+			sourceTree = "<group>";
+		};
+		E1D6E77825930BE500846103 /* PPHT */ = {
+			isa = PBXGroup;
+			children = (
+				E1D6E79525930BE500846103 /* ppht.hpp */,
+				E1D6E78C25930BE500846103 /* ppht */,
+			);
+			path = PPHT;
+			sourceTree = "<group>";
+		};
+		E1D6E78C25930BE500846103 /* ppht */ = {
+			isa = PBXGroup;
+			children = (
+				E1D6E78D25930BE500846103 /* accumulator.hpp */,
+				E1D6E78E25930BE500846103 /* channel.hpp */,
+				E1D6E78F25930BE500846103 /* parameters.hpp */,
+				E1D6E79025930BE500846103 /* point_set.hpp */,
+				E1D6E79125930BE500846103 /* raster.hpp */,
+				E1D6E79225930BE500846103 /* state.hpp */,
+				E1D6E79325930BE500846103 /* trig.hpp */,
+				E1D6E79425930BE500846103 /* types.hpp */,
+			);
+			path = ppht;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,7 +191,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E12566C422E69A9D00112AA9 /* PBXTargetDependency */,
 			);
 			name = "Prepare Images for EPUB";
 			productName = PrepareImagesForEPUBAction;
@@ -228,12 +245,6 @@
 			mainGroup = E1D0DAAA20D21C1A00EF7F35;
 			productRefGroup = E1D0DAB520D21C1A00EF7F35 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = E12566BA22E69A8700112AA9 /* Products */;
-					ProjectRef = E12566B922E69A8700112AA9 /* ImageAnalysisKit.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				E1D0DAB320D21C1A00EF7F35 /* Prepare Images for EPUB */,
@@ -241,23 +252,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		E12566BF22E69A8700112AA9 /* ImageAnalysisKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ImageAnalysisKit.framework;
-			remoteRef = E12566BE22E69A8700112AA9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E12566C122E69A8700112AA9 /* ImageAnalysisKitTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ImageAnalysisKitTests.xctest;
-			remoteRef = E12566C022E69A8700112AA9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E1D0DAB120D21C1A00EF7F35 /* Resources */ = {
@@ -323,6 +317,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1D0DAB920D21C1A00EF7F35 /* PrepareImagesForEPUBAction.m in Sources */,
+				E19CE6B3258B615700EFBA41 /* ImageBuffer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,17 +326,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1D0DAD920D2202300EF7F35 /* PrepareImagesForEPUBActionTests.m in Sources */,
+				E19CE6B7258B63CA00EFBA41 /* ImageBufferTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E12566C422E69A9D00112AA9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ImageAnalysisKit;
-			targetProxy = E12566C322E69A9D00112AA9 /* PBXContainerItemProxy */;
-		};
 		E1D0DADF20D220E400EF7F35 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E1D0DAB320D21C1A00EF7F35 /* Prepare Images for EPUB */;
@@ -387,7 +378,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -401,6 +392,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/PPHT";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -434,7 +426,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -442,6 +434,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/PPHT";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
