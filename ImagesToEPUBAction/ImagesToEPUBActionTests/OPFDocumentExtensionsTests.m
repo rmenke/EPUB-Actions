@@ -129,8 +129,8 @@
 - (void)testAddAuthor {
     NSError * __autoreleasing error;
 
-    [packageDocument addCreator:@"Bob Smith" fileAs:nil role:@"aut"];
-    [packageDocument addCreator:@"Jane Doe" fileAs:nil role:nil];
+    [packageDocument addCreator:@"Bob Smith" fileAs:nil role:@"aut" scheme:@"marc:relators"];
+    [packageDocument addCreator:@"Jane Doe" fileAs:nil role:nil scheme:nil];
 
     NSArray<NSXMLElement *> *elements = [packageDocument objectsForXQuery:Q("/package/metadata/dc:creator") error:&error];
     XCTAssertNotNil(elements, @"xquery - %@", error);

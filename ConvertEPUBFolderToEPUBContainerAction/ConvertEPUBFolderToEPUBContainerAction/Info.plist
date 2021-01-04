@@ -100,9 +100,9 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.4.5</string>
+	<string>3.4.6</string>
 	<key>CFBundleVersion</key>
-	<string>37</string>
+	<string>38</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2017 Rob Menke. All rights reserved.</string>
 	<key>NSPrincipalClass</key>

@@ -643,7 +643,7 @@ static NSRegularExpression *expr = NULL;
 }
 
 - (void)testAddMetadata {
-    [_action parameters][@"creators"] = @[@{@"displayName":@"Bob Smith", @"role":@"aut"}, @{@"displayName":@"Jack Brown", @"role":@"ill"}, @{@"displayName":@"Bill Jones"}];
+    [_action parameters][@"creators"] = @[@{@"displayName":@"Bob Smith", @"code":@"aut", @"scheme":@"marc:relators"}, @{@"displayName":@"Jack Brown", @"code":@"ill", @"scheme":@"marc:relators"}, @{@"displayName":@"Bill Jones"}];
     [_action parameters][@"publicationID"] = @"urn:uuid:2A7F7867-213A-4847-BAC7-E622012A5C47";
 
     NSError * __autoreleasing error;
@@ -835,7 +835,7 @@ static NSRegularExpression *expr = NULL;
 
     parameters[@"outputFolder"] = outDirectory.URLByDeletingLastPathComponent.path;
     parameters[@"title"] = outDirectory.lastPathComponent;
-    parameters[@"creators"] = @[@{@"displayName":@"Anonymous", @"role":@"aut"}];
+    parameters[@"creators"] = @[@{@"displayName":@"Anonymous", @"code":@"aut", @"scheme":@"marc:relators"}];
     parameters[@"publicationID"] = [@"urn:uuid:" stringByAppendingString:NSUUID.UUID.UUIDString];
     parameters[@"doPanelAnalysis"] = @NO;
     parameters[@"firstIsCover"] = @NO;
@@ -945,9 +945,9 @@ static NSRegularExpression *expr = NULL;
 
     if ([fileManager fileExistsAtPath:epubcheck]) {
         NSTask *task = [[NSTask alloc] init];
-        task.launchPath = @"~/bin/epubcheck".stringByStandardizingPath;
+        task.launchPath = epubcheck;
         task.currentDirectoryPath = outDirectory.URLByDeletingLastPathComponent.path;
-        task.arguments = @[@"--mode", @"exp", @"--quiet", outDirectory.lastPathComponent];
+        task.arguments = @[@"--mode", @"exp", @"--out", @"~/Desktop/epubcheck.xml".stringByExpandingTildeInPath, @"--quiet", outDirectory.lastPathComponent];
 
         [task launch];
         [task waitUntilExit];
