@@ -119,6 +119,16 @@
                ReferencedContainer = "container:PrepareImagesForEPUBAction/PrepareImagesForEPUBAction.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E132CC5622669D420021A732"
+               BuildableName = "ImageAnalysisKitTests.xctest"
+               BlueprintName = "ImageAnalysisKitTests"
+               ReferencedContainer = "container:PrepareImagesForEPUBAction/ImageAnalysisKit/ImageAnalysisKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
